@@ -14,5 +14,7 @@ This project explores `masking` in multiple testing.
 
 ## Analysis
 
+0. [Try AdaPT](tryAdaPT.html)
+
 1. [effect of masking, known priors](effectOfMasking.html)
 2. [Estimate priors using masked z scores](estimatePrior.html)
