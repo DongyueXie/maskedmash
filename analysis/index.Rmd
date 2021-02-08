@@ -8,4 +8,11 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+## Overview
+
+This project explores `masking` in multiple testing.
+
+## Analysis
+
+1. [effect of masking, known priors](effectOfMasking.html)
+2. [Estimate priors using masked z scores](estimatePrior.html)
