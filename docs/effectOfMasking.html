@@ -507,16 +507,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong12c121b"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> 12c121b </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong9f29f29"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> 9f29f29 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong12c121b" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrong9f29f29" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 12c121b. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version 9f29f29. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -586,6 +586,40 @@ Message
 Rmd
 </td>
 <td>
+9f29f29
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-02-08
+</td>
+<td>
+wflow_publish(“analysis/effectOfMasking.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+c32a006
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-02-08
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 12c121b
 </td>
 <td>
@@ -609,7 +643,6 @@ wflow_publish(“analysis/effectOfMasking.Rmd”)
 <h2>Introduction</h2>
 <p>Goal: generate data from a simple mixture model and fit masked mash with true, known priors; compare results with mash.</p>
 <p>Generate data: <span class="math display">\[\boldsymbol{z}_i\sim 0.5 N(\boldsymbol{0},\boldsymbol{U}_1+\boldsymbol{I}) + 0.5 N(\boldsymbol{0},\boldsymbol{U}_2+\boldsymbol{I}),\]</span></p>
-<p>where <span class="math inline">\(\boldsymbol{U}_1 = \sigma^2\boldsymbol{u}_1\boldsymbol{u}_1^T\)</span>, <span class="math inline">\(\boldsymbol{u}_1 = (1,1,0,0,0)^T\)</span>, and <span class="math inline">\(\boldsymbol{U}_2 = \sigma^2\boldsymbol{u}_2\boldsymbol{u}_2^T\)</span>, <span class="math inline">\(\boldsymbol{u}_2 = (0,0,1,1,1)^T\)</span>.</p>
 <p>Let’s first verify: when no z score is masked, masked.mash should give same results as mash.</p>
 <pre class="r"><code>library(devtools)</code></pre>
 <pre><code>Loading required package: usethis</code></pre>
@@ -702,8 +735,82 @@ plot(masked_prop,lfdr_cor,type=&#39;l&#39;,xlab = &#39;masked proportion&#39;,yl
 lines(masked_prop,lfsr_cor,type=&#39;l&#39;,col=2)
 legend(&#39;topright&#39;,c(&#39;lfdr&#39;,&#39;lfsr&#39;),lty=c(1,1),col=c(1,2))</code></pre>
 <p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+c32a006
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-02-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(masked_prop,rmses,type=&#39;l&#39;,xlab = &#39;masked proportion&#39;,ylab = &#39;rmse&#39;)</code></pre>
 <p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-2">
+Past versions of unnamed-chunk-2-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+c32a006
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-02-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Take a look at when all z scores are masked, compare posterior summaries.</p>
 <pre class="r"><code>out.maskedmash = masked.mash(data,thresh = NULL,pi=c(0.5,0.5),
                   U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)</code></pre>
@@ -725,14 +832,125 @@ plot(lfsr_list,fdp_maskedmash,type=&#39;l&#39;,ylab=&quot;fdp&quot;,xlab=&quot;l
 lines(lfsr_list,fdp_mash,col=3)
 legend(&quot;topleft&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
 <p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+c32a006
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-02-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(lfsr_list,power_maskedmash,type=&#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;lfsr&quot;,ylim = range(c(power_maskedmash,power_mash)))
 lines(lfsr_list,power_mash,col=3)
 legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
 <p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-2">
+Past versions of unnamed-chunk-4-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+c32a006
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-02-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(fdp_maskedmash,power_maskedmash,type = &#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;fdp&quot;)
 lines(fdp_mash,power_mash,col=3)
 legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
 <p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-3">
+Past versions of unnamed-chunk-4-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+c32a006
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-02-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>simdata$B[5,]</code></pre>
 <pre><code>[1] 3.161343 3.161343 0.000000 0.000000 0.000000</code></pre>
 <pre class="r"><code>simdata$Bhat[5,]</code></pre>
@@ -792,6 +1010,131 @@ $z.det.jacob
 [21] 3955784.2695    6651.8575    3830.0947       6.4405 6347465.6458
 [26]   10673.5944    6145.7837      10.3345 5927264.0274    9967.0035
 [31]    5738.9334       9.6503</code></pre>
+</div>
+<div id="reduce-signal-level" class="section level2">
+<h2>reduce signal level</h2>
+<p>The previous example sets signal-to-noise ratio roughly at 4. Now we reduce it to 1.</p>
+<pre class="r"><code>signal_sd = 1
+set.seed(12345)
+simdata = genData(100,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+g = list(pi=pi, Ulist=U, grid=1, usepointmass=F)
+out.mash = mash(data,g=g,fixg = T)</code></pre>
+<pre><code> - Computing 200 x 2 likelihood matrix.
+ - Likelihood calculations took 0.00 seconds.
+ - Computing posterior matrices.
+ - Computation allocated took 0.04 seconds.</code></pre>
+<pre class="r"><code>#thresh_list = quantile(c(abs(simdata$Bhat)),seq(0,1,length.out = 20))
+thresh_list = seq(qnorm(0.75),max(abs(simdata$Bhat)),length.out = 30)
+lfdr_cor = c()
+lfsr_cor = c()
+rmses = c()
+masked_prop = c()
+for (t in 1:length(thresh_list)) {
+  out_t = masked.mash(data,thresh = thresh_list[t],pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+  lfdr_cor[t] = cor(c(out_t$lfdr),c(out.mash$result$lfdr))
+  lfsr_cor[t] = cor(c(out_t$lfsr),c(out.mash$result$lfsr))
+  rmses[t] = rmse(out_t$PosteriorMean,simdata$B)
+  masked_prop[t] = out_t$maskedProp
+}
+
+plot(masked_prop,lfdr_cor,type=&#39;l&#39;,xlab = &#39;masked proportion&#39;,ylab = &#39;correlation&#39;,ylim = range(c(lfdr_cor,lfsr_cor)))
+lines(masked_prop,lfsr_cor,type=&#39;l&#39;,col=2)
+legend(&#39;topright&#39;,c(&#39;lfdr&#39;,&#39;lfsr&#39;),lty=c(1,1),col=c(1,2))</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(masked_prop,rmses,type=&#39;l&#39;,xlab = &#39;masked proportion&#39;,ylab = &#39;rmse&#39;)</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Take a look at when all z scores are masked, compare posterior summaries.</p>
+<pre class="r"><code>out.maskedmash = masked.mash(data,thresh = NULL,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)</code></pre>
+<pre class="r"><code>lfsr_list = seq(0.01,0.5,length.out = 100)
+power_mash = c()
+fdp_mash = c()
+power_maskedmash = c()
+fdp_maskedmash = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.mash$result$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_mash[l] = temp$power
+ fdp_mash[l] = temp$fdp
+ temp = fdp_power(out.maskedmash$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l] = temp$power
+ fdp_maskedmash[l] = temp$fdp
+}
+
+plot(lfsr_list,fdp_maskedmash,type=&#39;l&#39;,ylab=&quot;fdp&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,fdp_mash,col=3)
+legend(&quot;topleft&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(lfsr_list,power_maskedmash,type=&#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;lfsr&quot;,ylim = range(c(power_maskedmash,power_mash)))
+lines(lfsr_list,power_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fdp_maskedmash,power_maskedmash,type = &#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;fdp&quot;)
+lines(fdp_mash,power_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Further reduce the SNR to arounf 0.5.</p>
+<pre class="r"><code>signal_sd = 0.707
+set.seed(12345)
+simdata = genData(100,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+g = list(pi=pi, Ulist=U, grid=1, usepointmass=F)
+out.mash = mash(data,g=g,fixg = T)</code></pre>
+<pre><code> - Computing 200 x 2 likelihood matrix.
+ - Likelihood calculations took 0.00 seconds.
+ - Computing posterior matrices.
+ - Computation allocated took 0.00 seconds.</code></pre>
+<pre class="r"><code>#thresh_list = quantile(c(abs(simdata$Bhat)),seq(0,1,length.out = 20))
+thresh_list = seq(qnorm(0.75),max(abs(simdata$Bhat)),length.out = 30)
+lfdr_cor = c()
+lfsr_cor = c()
+rmses = c()
+masked_prop = c()
+for (t in 1:length(thresh_list)) {
+  out_t = masked.mash(data,thresh = thresh_list[t],pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+  lfdr_cor[t] = cor(c(out_t$lfdr),c(out.mash$result$lfdr))
+  lfsr_cor[t] = cor(c(out_t$lfsr),c(out.mash$result$lfsr))
+  rmses[t] = rmse(out_t$PosteriorMean,simdata$B)
+  masked_prop[t] = out_t$maskedProp
+}
+
+plot(masked_prop,lfdr_cor,type=&#39;l&#39;,xlab = &#39;masked proportion&#39;,ylab = &#39;correlation&#39;,ylim = range(c(lfdr_cor,lfsr_cor)))
+lines(masked_prop,lfsr_cor,type=&#39;l&#39;,col=2)
+legend(&#39;topright&#39;,c(&#39;lfdr&#39;,&#39;lfsr&#39;),lty=c(1,1),col=c(1,2))</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(masked_prop,rmses,type=&#39;l&#39;,xlab = &#39;masked proportion&#39;,ylab = &#39;rmse&#39;)</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Take a look at when all z scores are masked, compare posterior summaries.</p>
+<pre class="r"><code>out.maskedmash = masked.mash(data,thresh = NULL,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)</code></pre>
+<pre class="r"><code>lfsr_list = seq(0.01,0.5,length.out = 100)
+power_mash = c()
+fdp_mash = c()
+power_maskedmash = c()
+fdp_maskedmash = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.mash$result$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_mash[l] = temp$power
+ fdp_mash[l] = temp$fdp
+ temp = fdp_power(out.maskedmash$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l] = temp$power
+ fdp_maskedmash[l] = temp$fdp
+}
+
+plot(lfsr_list,fdp_maskedmash,type=&#39;l&#39;,ylab=&quot;fdp&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,fdp_mash,col=3)
+legend(&quot;topleft&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(lfsr_list,power_maskedmash,type=&#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;lfsr&quot;,ylim = range(c(power_maskedmash,power_mash)))
+lines(lfsr_list,power_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fdp_maskedmash,power_maskedmash,type = &#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;fdp&quot;)
+lines(fdp_mash,power_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-13-3.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
