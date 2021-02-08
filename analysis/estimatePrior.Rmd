@@ -1,0 +1,242 @@
+---
+title: "Estimate Prior with masked z scores"
+author: "Dongyue Xie"
+date: "2021-01-15"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Estimate prior covariance matrices with masked z scores and run masked mash.
+
+ - run deconvolution using masked z scores, estimate prior covairance matrices
+ - run masked mash.
+
+```{r}
+library(devtools)
+load_all('code/mashr/')
+source('code/genData.R')
+source('code/maskedmash.R')
+source('code/ebupdate.R')
+source('code/maskedmd.R')
+source('code/utils.R')
+source('code/calc_post.R')
+
+
+
+
+u1 = c(1,1,0,0,0)
+u2 = c(0,0,1,1,1)
+cov1 = tcrossprod(u1)
+cov1[1,1] = 1
+cov2 = tcrossprod(u2)
+cov2[5,5] = 2
+cov2[4,4] = 1
+
+U = list(U1=cov1,U2=cov2)
+U
+signal_sd = 2
+
+set.seed(12345)
+simdata = genData(300,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+```
+
+Let's try to run mash: the ED intializaiton are some random postive definite matrices generated from Wishart distribution.
+
+```{r}
+U.c = cov_canonical(data)
+# init at random
+U.init = list(U1 = rWishart(1,5,diag(5))[,,1], 
+              U2 = rWishart(1,5,diag(5))[,,1],
+              U3 = rWishart(1,5,diag(5))[,,1])
+
+U.init = normalize_Ulist(U.init)
+
+U.ed = cov_ed(data,Ulist_init = U.init)
+lapply(U.ed,round,digits=2)
+U.ed = lapply(U.ed,function(x){x+0.01*diag(5)})
+out_mash = mash(data, c(U.c,U.ed),verbose = F)
+lfsr_list = seq(0.01,0.5,length.out = 100)
+power_mash = c()
+fdp_mash = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out_mash$result$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_mash[l] = temp$power
+ fdp_mash[l] = temp$fdp
+}
+
+
+# init at pca
+# U.pca = cov_pca(data,5,subset=NULL)
+# out.ed = cov_ed(data,Ulist_init = U.pca)
+# out_mash1 = mash(data, c(U.c,out.ed),verbose = F)
+# fdp_power(out_mash1$result$lfsr,simdata$B)
+```
+
+Using rank one matrix needs additional attention - add the random effect. For now, we do not use rank one matrix as initialization(so the output is not rank 1).
+
+
+
+Let's check the masked.md function by using the original z scores. The estimated ones are very similar to `cov_ed` outputs.
+
+```{r}
+out.md.check = masked.md(data,thresh=1e5,U.data = U.init,max_iter = 100,printevery = 50)
+plot(out.md.check$loglik,type='l',ylab = 'loglik',xlab='iterations')
+lapply(out.md.check$U.est,round,digits=2)
+```
+
+## mask all z scores
+
+Now run "masked deconvolution".
+
+```{r}
+out.md = masked.md(data,U.data = U.init,max_iter = 100,printevery = 50)
+plot(out.md$loglik,type='l',ylab = 'loglik',xlab='iterations')
+lapply(out.md$U.est,round,digits=2)
+round(out.md$pi,2)
+out.maskedmash = masked.mash(data,U.canon = U.c,U.data = out.md$U.est,
+                             U.update = 'none',fixg = F,
+                             usepointmass = TRUE,verbose = TRUE,printevery = 50)
+
+#out_mash_use_masked.md = mash(data, c(U.c,out.md$U.est),verbose = F,outputlevel = 3)
+#fdp_power(out_mash_use_masked.md$result$lfsr,simdata$B)
+power_maskedmash = c()
+fdp_maskedmash = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.maskedmash$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l] = temp$power
+ fdp_maskedmash[l] = temp$fdp
+}
+plot(lfsr_list,fdp_maskedmash,type='l',ylab="fdp",xlab="lfsr")
+lines(lfsr_list,fdp_mash,col=3)
+legend("bottomright",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
+plot(lfsr_list,power_maskedmash,type='l',ylab="power",xlab="lfsr")
+lines(lfsr_list,power_mash,col=3)
+legend("bottomright",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
+plot(fdp_maskedmash,power_maskedmash,type = 'l',ylab="power",xlab="fdp")
+lines(fdp_mash,power_mash,col=3)
+legend("bottomright",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
+```
+
+1. run mash using masked deconvolution output
+
+```{r}
+out_mash.md = mash(data, c(U.c,out.md$U.est),verbose = F)
+power_mash.md = c()
+fdp_mash.md = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out_mash.md$result$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_mash.md[l] = temp$power
+ fdp_mash.md[l] = temp$fdp
+}
+```
+
+2. run maskedmash using ed output
+
+```{r}
+out.maskedmash.ed = masked.mash(data,U.canon = U.c,U.data = U.ed,
+                             U.update = 'none',fixg = F,
+                             usepointmass = TRUE,verbose = TRUE,printevery = 50)
+power_maskedmash.ed = c()
+fdp_maskedmash.ed = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.maskedmash.ed$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash.ed[l] = temp$power
+ fdp_maskedmash.ed[l] = temp$fdp
+}
+
+plot(lfsr_list,fdp_maskedmash,type='l',ylab="fdp",xlab="lfsr")
+lines(lfsr_list,fdp_mash,col=3)
+lines(lfsr_list,fdp_mash.md,col=2)
+lines(lfsr_list,fdp_maskedmash.ed,col=4)
+legend('bottomright',c('mask.mash+mask.ed',"mash+ed","mash+mask.ed","mask.mash+ed"),lty=c(1,1,1,1),col=c(1,3,2,4))
+```
+
+It seems that the masked ed needs to extra attention.
+
+```{r}
+unlist(lapply(out.md$U.est,kappa))
+unlist(lapply(U.ed,kappa))
+```
+
+The condition number is huge. Let's add a diagonal matrix to stablize it.
+
+```{r}
+U.masked.re = lapply(out.md$U.est,function(x){x+0.01*diag(5)})
+unlist(lapply(U.masked.re,kappa))
+```
+
+Now re-run maskedmash
+
+```{r}
+out.maskedmash.re = masked.mash(data,U.canon = U.c,U.data = U.masked.re,
+                             U.update = 'none',fixg = F,
+                             usepointmass = TRUE,verbose = TRUE,printevery = 50)
+
+#out_mash_use_masked.md = mash(data, c(U.c,out.md$U.est),verbose = F,outputlevel = 3)
+#fdp_power(out_mash_use_masked.md$result$lfsr,simdata$B)
+power_maskedmash.re = c()
+fdp_maskedmash.re = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.maskedmash.re$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash.re[l] = temp$power
+ fdp_maskedmash.re[l] = temp$fdp
+}
+plot(lfsr_list,fdp_maskedmash.re,type='l',ylab="fdp",xlab="lfsr")
+lines(lfsr_list,fdp_mash,col=3)
+legend("bottomright",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
+plot(lfsr_list,power_maskedmash.re,type='l',ylab="power",xlab="lfsr")
+lines(lfsr_list,power_mash,col=3)
+legend("bottomright",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
+plot(fdp_maskedmash.re,power_maskedmash.re,type = 'l',ylab="power",xlab="fdp")
+lines(fdp_mash,power_mash,col=3)
+legend("bottomright",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
+```
+
+
+## masked partial z scores
+
+```{r}
+out.md2 = masked.md(data,U.data = U.init,max_iter = 100,printevery = 50,thresh = 2)
+plot(out.md2$loglik,type='l',ylab = 'loglik',xlab='iterations')
+lapply(out.md2$U.est,round,digits=2)
+round(out.md$pi,2)
+unlist(lapply(out.md2$U.est,kappa))
+U.masked.re2 = lapply(out.md2$U.est,function(x){x+0.01*diag(5)})
+unlist(lapply(U.masked.re2,kappa))
+out.maskedmash2 = masked.mash(data,U.canon = U.c,U.data = U.masked.re2,thresh=2,
+                             U.update = 'none',fixg = F,
+                             usepointmass = TRUE,verbose = TRUE,printevery = 50)
+out.maskedmash2$maskedProp
+
+power_maskedmash.re2 = c()
+fdp_maskedmash.re2 = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.maskedmash2$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash.re2[l] = temp$power
+ fdp_maskedmash.re2[l] = temp$fdp
+}
+
+plot(lfsr_list,fdp_maskedmash.re,type='l',ylab="fdp",xlab="lfsr")
+lines(lfsr_list,fdp_mash,col=3)
+lines(lfsr_list,fdp_maskedmash.re2,col=4)
+legend("bottomright",c("maskedmash","mash","maskedmash25.8%"),lty=c(1,1,1),col=c(1,3,4))
+
+
+plot(lfsr_list,power_maskedmash.re,type='l',ylab="power",xlab="lfsr")
+lines(lfsr_list,power_mash,col=3)
+lines(lfsr_list,power_maskedmash.re2,col=4)
+legend("bottomright",c("maskedmash","mash","maskedmash25.8%"),lty=c(1,1,1),col=c(1,3,4))
+
+plot(fdp_maskedmash.re,power_maskedmash.re,type = 'l',ylab="power",xlab="fdp")
+lines(fdp_mash,power_mash,col=3)
+lines(fdp_maskedmash.re2,power_maskedmash.re2,col=4)
+legend("bottomright",c("maskedmash","mash","maskedmash25.8%"),lty=c(1,1,1),col=c(1,3,4))
+```
+
+## Non-normal Distribution
+
+Consider a situation when the model is mis-speicifed, for example test statistics follow a multivariate t distribution. 
