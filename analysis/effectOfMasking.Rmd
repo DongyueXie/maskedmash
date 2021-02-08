@@ -13,7 +13,6 @@ Goal: generate data from a simple mixture model and fit masked mash with true, k
 
 Generate data: \[\boldsymbol{z}_i\sim 0.5 N(\boldsymbol{0},\boldsymbol{U}_1+\boldsymbol{I}) + 0.5 N(\boldsymbol{0},\boldsymbol{U}_2+\boldsymbol{I}),\]
 
-where $\boldsymbol{U}_1 = \sigma^2\boldsymbol{u}_1\boldsymbol{u}_1^T$, $\boldsymbol{u}_1 = (1,1,0,0,0)^T$, and $\boldsymbol{U}_2 = \sigma^2\boldsymbol{u}_2\boldsymbol{u}_2^T$, $\boldsymbol{u}_2 = (0,0,1,1,1)^T$.
 
 
 Let's first verify: when no z score is masked, masked.mash should give same results as mash. 
@@ -131,4 +130,143 @@ out.maskedmash$lfsr[5,]
 round(lapply(out.maskedmash$PosteriorWeights,rowSums)[[5]],3)
 which(round(lapply(out.maskedmash$PosteriorWeights,rowSums)[[5]],3)!=0)
 lapply(enumerate.z(simdata$Bhat[5,],0),round,digits=4)
+```
+
+
+## reduce signal level
+
+The previous example sets signal-to-noise ratio roughly at 4. Now we reduce it to 1.
+
+```{r}
+signal_sd = 1
+set.seed(12345)
+simdata = genData(100,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+g = list(pi=pi, Ulist=U, grid=1, usepointmass=F)
+out.mash = mash(data,g=g,fixg = T)
+```
+
+
+```{r}
+#thresh_list = quantile(c(abs(simdata$Bhat)),seq(0,1,length.out = 20))
+thresh_list = seq(qnorm(0.75),max(abs(simdata$Bhat)),length.out = 30)
+lfdr_cor = c()
+lfsr_cor = c()
+rmses = c()
+masked_prop = c()
+for (t in 1:length(thresh_list)) {
+  out_t = masked.mash(data,thresh = thresh_list[t],pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+  lfdr_cor[t] = cor(c(out_t$lfdr),c(out.mash$result$lfdr))
+  lfsr_cor[t] = cor(c(out_t$lfsr),c(out.mash$result$lfsr))
+  rmses[t] = rmse(out_t$PosteriorMean,simdata$B)
+  masked_prop[t] = out_t$maskedProp
+}
+
+plot(masked_prop,lfdr_cor,type='l',xlab = 'masked proportion',ylab = 'correlation',ylim = range(c(lfdr_cor,lfsr_cor)))
+lines(masked_prop,lfsr_cor,type='l',col=2)
+legend('topright',c('lfdr','lfsr'),lty=c(1,1),col=c(1,2))
+
+plot(masked_prop,rmses,type='l',xlab = 'masked proportion',ylab = 'rmse')
+```
+
+Take a look at when all z scores are masked, compare posterior summaries.
+
+```{r}
+out.maskedmash = masked.mash(data,thresh = NULL,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+```
+
+```{r}
+lfsr_list = seq(0.01,0.5,length.out = 100)
+power_mash = c()
+fdp_mash = c()
+power_maskedmash = c()
+fdp_maskedmash = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.mash$result$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_mash[l] = temp$power
+ fdp_mash[l] = temp$fdp
+ temp = fdp_power(out.maskedmash$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l] = temp$power
+ fdp_maskedmash[l] = temp$fdp
+}
+
+plot(lfsr_list,fdp_maskedmash,type='l',ylab="fdp",xlab="lfsr")
+lines(lfsr_list,fdp_mash,col=3)
+legend("topleft",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
+plot(lfsr_list,power_maskedmash,type='l',ylab="power",xlab="lfsr",ylim = range(c(power_maskedmash,power_mash)))
+lines(lfsr_list,power_mash,col=3)
+legend("bottomright",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
+plot(fdp_maskedmash,power_maskedmash,type = 'l',ylab="power",xlab="fdp")
+lines(fdp_mash,power_mash,col=3)
+legend("bottomright",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
+```
+
+Further reduce the SNR to arounf 0.5.
+
+```{r}
+signal_sd = 0.707
+set.seed(12345)
+simdata = genData(100,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+g = list(pi=pi, Ulist=U, grid=1, usepointmass=F)
+out.mash = mash(data,g=g,fixg = T)
+```
+
+
+```{r}
+#thresh_list = quantile(c(abs(simdata$Bhat)),seq(0,1,length.out = 20))
+thresh_list = seq(qnorm(0.75),max(abs(simdata$Bhat)),length.out = 30)
+lfdr_cor = c()
+lfsr_cor = c()
+rmses = c()
+masked_prop = c()
+for (t in 1:length(thresh_list)) {
+  out_t = masked.mash(data,thresh = thresh_list[t],pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+  lfdr_cor[t] = cor(c(out_t$lfdr),c(out.mash$result$lfdr))
+  lfsr_cor[t] = cor(c(out_t$lfsr),c(out.mash$result$lfsr))
+  rmses[t] = rmse(out_t$PosteriorMean,simdata$B)
+  masked_prop[t] = out_t$maskedProp
+}
+
+plot(masked_prop,lfdr_cor,type='l',xlab = 'masked proportion',ylab = 'correlation',ylim = range(c(lfdr_cor,lfsr_cor)))
+lines(masked_prop,lfsr_cor,type='l',col=2)
+legend('topright',c('lfdr','lfsr'),lty=c(1,1),col=c(1,2))
+
+plot(masked_prop,rmses,type='l',xlab = 'masked proportion',ylab = 'rmse')
+```
+
+Take a look at when all z scores are masked, compare posterior summaries.
+
+```{r}
+out.maskedmash = masked.mash(data,thresh = NULL,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+```
+
+```{r}
+lfsr_list = seq(0.01,0.5,length.out = 100)
+power_mash = c()
+fdp_mash = c()
+power_maskedmash = c()
+fdp_maskedmash = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.mash$result$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_mash[l] = temp$power
+ fdp_mash[l] = temp$fdp
+ temp = fdp_power(out.maskedmash$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l] = temp$power
+ fdp_maskedmash[l] = temp$fdp
+}
+
+plot(lfsr_list,fdp_maskedmash,type='l',ylab="fdp",xlab="lfsr")
+lines(lfsr_list,fdp_mash,col=3)
+legend("topleft",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
+plot(lfsr_list,power_maskedmash,type='l',ylab="power",xlab="lfsr",ylim = range(c(power_maskedmash,power_mash)))
+lines(lfsr_list,power_mash,col=3)
+legend("bottomright",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
+plot(fdp_maskedmash,power_maskedmash,type = 'l',ylab="power",xlab="fdp")
+lines(fdp_mash,power_mash,col=3)
+legend("bottomright",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
 ```
