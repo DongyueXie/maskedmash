@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Dongyue Xie" />
+
+<meta name="date" content="2021-01-15" />
+
+<title>Estimate Prior with masked z scores</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/simplex.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">maskedmash</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Estimate Prior with masked z scores</h1>
+<h4 class="author">Dongyue Xie</h4>
+<h4 class="date">2021-01-15</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-02-08
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>maskedmash/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210205code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210205)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210205code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210205)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongb237e99"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> b237e99 </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongb237e99" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version b237e99. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    code/.DS_Store
+
+Untracked files:
+    Untracked:  code/calc_post.R
+    Untracked:  code/ebupdate.R
+    Untracked:  code/genData.R
+    Untracked:  code/genData2rank1.R
+    Untracked:  code/mashr/
+    Untracked:  code/maskedmash.R
+    Untracked:  code/maskedmd.R
+    Untracked:  code/plot_ztilde.R
+    Untracked:  code/utils.R
+    Untracked:  data/ztilde.png
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/estimatePrior.Rmd</code>) and HTML (<code>docs/estimatePrior.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+b237e99
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-02-08
+</td>
+<td>
+wflow_publish(“analysis/estimatePrior.Rmd”)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Estimate prior covariance matrices with masked z scores and run masked mash.</p>
+<ul>
+<li>run deconvolution using masked z scores, estimate prior covairance matrices</li>
+<li>run masked mash.</li>
+</ul>
+<pre class="r"><code>library(devtools)</code></pre>
+<pre><code>Loading required package: usethis</code></pre>
+<pre class="r"><code>load_all(&#39;code/mashr/&#39;)</code></pre>
+<pre><code>Loading mashr</code></pre>
+<pre><code>Loading required package: ashr</code></pre>
+<pre><code>
+Attaching package: &#39;testthat&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:devtools&#39;:
+
+    test_file</code></pre>
+<pre class="r"><code>source(&#39;code/genData.R&#39;)
+source(&#39;code/maskedmash.R&#39;)
+source(&#39;code/ebupdate.R&#39;)
+source(&#39;code/maskedmd.R&#39;)
+source(&#39;code/utils.R&#39;)
+source(&#39;code/calc_post.R&#39;)
+
+
+
+
+u1 = c(1,1,0,0,0)
+u2 = c(0,0,1,1,1)
+cov1 = tcrossprod(u1)
+cov1[1,1] = 1
+cov2 = tcrossprod(u2)
+cov2[5,5] = 2
+cov2[4,4] = 1
+
+U = list(U1=cov1,U2=cov2)
+U</code></pre>
+<pre><code>$U1
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    1    1    0    0    0
+[2,]    1    1    0    0    0
+[3,]    0    0    0    0    0
+[4,]    0    0    0    0    0
+[5,]    0    0    0    0    0
+
+$U2
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    0    0    0    0    0
+[2,]    0    0    0    0    0
+[3,]    0    0    1    1    1
+[4,]    0    0    1    1    1
+[5,]    0    0    1    1    2</code></pre>
+<pre class="r"><code>signal_sd = 2
+
+set.seed(12345)
+simdata = genData(300,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)</code></pre>
+<p>Let’s try to run mash: the ED intializaiton are some random postive definite matrices generated from Wishart distribution.</p>
+<pre class="r"><code>U.c = cov_canonical(data)
+# init at random
+U.init = list(U1 = rWishart(1,5,diag(5))[,,1], 
+              U2 = rWishart(1,5,diag(5))[,,1],
+              U3 = rWishart(1,5,diag(5))[,,1])
+
+U.init = normalize_Ulist(U.init)
+
+U.ed = cov_ed(data,Ulist_init = U.init)
+lapply(U.ed,round,digits=2)</code></pre>
+<pre><code>$ED_U1
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  0.72  0.30 -0.10 -0.39  0.70
+[2,]  0.30  0.16 -0.42 -0.52 -0.05
+[3,] -0.10 -0.42  7.02  6.44  5.74
+[4,] -0.39 -0.52  6.44  6.06  4.92
+[5,]  0.70 -0.05  5.74  4.92  5.67
+
+$ED_U2
+      [,1]  [,2] [,3] [,4]  [,5]
+[1,]  0.04 -0.01 0.11 0.12  0.16
+[2,] -0.01  0.07 0.16 0.16 -0.21
+[3,]  0.11  0.16 2.99 3.04  4.05
+[4,]  0.12  0.16 3.04 3.11  4.03
+[5,]  0.16 -0.21 4.05 4.03  9.41
+
+$ED_U3
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  4.49  4.45  0.01  0.05 -0.25
+[2,]  4.45  4.45  0.02  0.04 -0.26
+[3,]  0.01  0.02  0.01  0.00 -0.01
+[4,]  0.05  0.04  0.00  0.03 -0.02
+[5,] -0.25 -0.26 -0.01 -0.02  0.04</code></pre>
+<pre class="r"><code>U.ed = lapply(U.ed,function(x){x+0.01*diag(5)})
+out_mash = mash(data, c(U.c,U.ed),verbose = F)
+lfsr_list = seq(0.01,0.5,length.out = 100)
+power_mash = c()
+fdp_mash = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out_mash$result$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_mash[l] = temp$power
+ fdp_mash[l] = temp$fdp
+}
+
+
+# init at pca
+# U.pca = cov_pca(data,5,subset=NULL)
+# out.ed = cov_ed(data,Ulist_init = U.pca)
+# out_mash1 = mash(data, c(U.c,out.ed),verbose = F)
+# fdp_power(out_mash1$result$lfsr,simdata$B)</code></pre>
+<p>Using rank one matrix needs additional attention - add the random effect. For now, we do not use rank one matrix as initialization(so the output is not rank 1).</p>
+<p>Let’s check the masked.md function by using the original z scores. The estimated ones are very similar to <code>cov_ed</code> outputs.</p>
+<pre class="r"><code>out.md.check = masked.md(data,thresh=1e5,U.data = U.init,max_iter = 100,printevery = 50)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglikelihood at -5379.13&quot;</code></pre>
+<pre class="r"><code>plot(out.md.check$loglik,type=&#39;l&#39;,ylab = &#39;loglik&#39;,xlab=&#39;iterations&#39;)</code></pre>
+<p><img src="figure/estimatePrior.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>lapply(out.md.check$U.est,round,digits=2)</code></pre>
+<pre><code>$U1
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  2.17  1.98 -0.03  0.75 -0.53
+[2,]  1.98  1.86  0.02  0.65 -0.53
+[3,] -0.03  0.02  0.04 -0.03 -0.03
+[4,]  0.75  0.65 -0.03  0.27 -0.16
+[5,] -0.53 -0.53 -0.03 -0.16  0.16
+
+$U2
+      [,1]  [,2] [,3]  [,4]  [,5]
+[1,]  0.17  0.03 0.06 -0.01  0.29
+[2,]  0.03  0.03 0.02  0.00 -0.19
+[3,]  0.06  0.02 4.01  3.91  4.56
+[4,] -0.01  0.00 3.91  3.86  4.34
+[5,]  0.29 -0.19 4.56  4.34  8.80
+
+$U3
+      [,1]  [,2] [,3]  [,4]  [,5]
+[1,]  5.15  5.19 0.02 -0.18 -0.15
+[2,]  5.19  5.22 0.02 -0.18 -0.15
+[3,]  0.02  0.02 0.00  0.00  0.00
+[4,] -0.18 -0.18 0.00  0.01  0.01
+[5,] -0.15 -0.15 0.00  0.01  0.00</code></pre>
+</div>
+<div id="mask-all-z-scores" class="section level2">
+<h2>mask all z scores</h2>
+<p>Now run “masked deconvolution”.</p>
+<pre class="r"><code>out.md = masked.md(data,U.data = U.init,max_iter = 100,printevery = 50)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglikelihood at -1897.91&quot;
+[1] &quot;Done 100 iterations, loglikelihood at -1896.75&quot;</code></pre>
+<pre class="r"><code>plot(out.md$loglik,type=&#39;l&#39;,ylab = &#39;loglik&#39;,xlab=&#39;iterations&#39;)</code></pre>
+<p><img src="figure/estimatePrior.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>lapply(out.md$U.est,round,digits=2)</code></pre>
+<pre><code>$U1
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  4.73  4.63  0.14 -0.01 -0.47
+[2,]  4.63  4.54  0.18 -0.01 -0.47
+[3,]  0.14  0.18  0.16  0.00 -0.04
+[4,] -0.01 -0.01  0.00  0.00  0.00
+[5,] -0.47 -0.47 -0.04  0.00  0.05
+
+$U2
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  0.12 -0.05 -0.02 -0.11  0.05
+[2,] -0.05  0.03 -0.04  0.00 -0.10
+[3,] -0.02 -0.04  4.06  3.98  4.52
+[4,] -0.11  0.00  3.98  3.98  4.34
+[5,]  0.05 -0.10  4.52  4.34  8.59
+
+$U3
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  3.19  2.97 -0.51  0.01  1.20
+[2,]  2.97  3.56 -0.35  0.03  0.20
+[3,] -0.51 -0.35  0.16 -0.04 -0.20
+[4,]  0.01  0.03 -0.04  0.03 -0.12
+[5,]  1.20  0.20 -0.20 -0.12  1.86</code></pre>
+<pre class="r"><code>round(out.md$pi,2)</code></pre>
+<pre><code>  U1   U2   U3 
+0.40 0.48 0.12 </code></pre>
+<pre class="r"><code>out.maskedmash = masked.mash(data,U.canon = U.c,U.data = out.md$U.est,
+                             U.update = &#39;none&#39;,fixg = F,
+                             usepointmass = TRUE,verbose = TRUE,printevery = 50)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglikelihood at -1898.99&quot;
+[1] &quot;Done 100 iterations, loglikelihood at -1897.72&quot;
+[1] &quot;Done 150 iterations, loglikelihood at -1897.43&quot;
+[1] &quot;Done 200 iterations, loglikelihood at -1897.32&quot;</code></pre>
+<pre class="r"><code>#out_mash_use_masked.md = mash(data, c(U.c,out.md$U.est),verbose = F,outputlevel = 3)
+#fdp_power(out_mash_use_masked.md$result$lfsr,simdata$B)
+power_maskedmash = c()
+fdp_maskedmash = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.maskedmash$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l] = temp$power
+ fdp_maskedmash[l] = temp$fdp
+}
+plot(lfsr_list,fdp_maskedmash,type=&#39;l&#39;,ylab=&quot;fdp&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,fdp_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/estimatePrior.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(lfsr_list,power_maskedmash,type=&#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,power_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/estimatePrior.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fdp_maskedmash,power_maskedmash,type = &#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;fdp&quot;)
+lines(fdp_mash,power_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/estimatePrior.Rmd/unnamed-chunk-4-4.png" width="672" style="display: block; margin: auto;" /></p>
+<ol style="list-style-type: decimal">
+<li>run mash using masked deconvolution output</li>
+</ol>
+<pre class="r"><code>out_mash.md = mash(data, c(U.c,out.md$U.est),verbose = F)
+power_mash.md = c()
+fdp_mash.md = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out_mash.md$result$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_mash.md[l] = temp$power
+ fdp_mash.md[l] = temp$fdp
+}</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>run maskedmash using ed output</li>
+</ol>
+<pre class="r"><code>out.maskedmash.ed = masked.mash(data,U.canon = U.c,U.data = U.ed,
+                             U.update = &#39;none&#39;,fixg = F,
+                             usepointmass = TRUE,verbose = TRUE,printevery = 50)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglikelihood at -1903.85&quot;
+[1] &quot;Done 100 iterations, loglikelihood at -1902.43&quot;
+[1] &quot;Done 150 iterations, loglikelihood at -1902.16&quot;
+[1] &quot;Done 200 iterations, loglikelihood at -1902.06&quot;</code></pre>
+<pre class="r"><code>power_maskedmash.ed = c()
+fdp_maskedmash.ed = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.maskedmash.ed$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash.ed[l] = temp$power
+ fdp_maskedmash.ed[l] = temp$fdp
+}
+
+plot(lfsr_list,fdp_maskedmash,type=&#39;l&#39;,ylab=&quot;fdp&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,fdp_mash,col=3)
+lines(lfsr_list,fdp_mash.md,col=2)
+lines(lfsr_list,fdp_maskedmash.ed,col=4)
+legend(&#39;bottomright&#39;,c(&#39;mask.mash+mask.ed&#39;,&quot;mash+ed&quot;,&quot;mash+mask.ed&quot;,&quot;mask.mash+ed&quot;),lty=c(1,1,1,1),col=c(1,3,2,4))</code></pre>
+<p><img src="figure/estimatePrior.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>It seems that the masked ed needs to extra attention.</p>
+<pre class="r"><code>unlist(lapply(out.md$U.est,kappa))</code></pre>
+<pre><code>          U1           U2           U3 
+1.512908e+21 2.021384e+17 1.089841e+18 </code></pre>
+<pre class="r"><code>unlist(lapply(U.ed,kappa))</code></pre>
+<pre><code>    ED_U1     ED_U2     ED_U3 
+1196.8504 1291.4573  446.9413 </code></pre>
+<p>The condition number is huge. Let’s add a diagonal matrix to stablize it.</p>
+<pre class="r"><code>U.masked.re = lapply(out.md$U.est,function(x){x+0.01*diag(5)})
+unlist(lapply(U.masked.re,kappa))</code></pre>
+<pre><code>       U1        U2        U3 
+ 771.4665 1077.6307 1169.1956 </code></pre>
+<p>Now re-run maskedmash</p>
+<pre class="r"><code>out.maskedmash.re = masked.mash(data,U.canon = U.c,U.data = U.masked.re,
+                             U.update = &#39;none&#39;,fixg = F,
+                             usepointmass = TRUE,verbose = TRUE,printevery = 50)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglikelihood at -1899.34&quot;
+[1] &quot;Done 100 iterations, loglikelihood at -1898.06&quot;
+[1] &quot;Done 150 iterations, loglikelihood at -1897.78&quot;
+[1] &quot;Done 200 iterations, loglikelihood at -1897.67&quot;</code></pre>
+<pre class="r"><code>#out_mash_use_masked.md = mash(data, c(U.c,out.md$U.est),verbose = F,outputlevel = 3)
+#fdp_power(out_mash_use_masked.md$result$lfsr,simdata$B)
+power_maskedmash.re = c()
+fdp_maskedmash.re = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.maskedmash.re$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash.re[l] = temp$power
+ fdp_maskedmash.re[l] = temp$fdp
+}
+plot(lfsr_list,fdp_maskedmash.re,type=&#39;l&#39;,ylab=&quot;fdp&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,fdp_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/estimatePrior.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(lfsr_list,power_maskedmash.re,type=&#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,power_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/estimatePrior.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fdp_maskedmash.re,power_maskedmash.re,type = &#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;fdp&quot;)
+lines(fdp_mash,power_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/estimatePrior.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="masked-partial-z-scores" class="section level2">
+<h2>masked partial z scores</h2>
+<pre class="r"><code>out.md2 = masked.md(data,U.data = U.init,max_iter = 100,printevery = 50,thresh = 2)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglikelihood at -3523.89&quot;
+[1] &quot;Done 100 iterations, loglikelihood at -3523.72&quot;</code></pre>
+<pre class="r"><code>plot(out.md2$loglik,type=&#39;l&#39;,ylab = &#39;loglik&#39;,xlab=&#39;iterations&#39;)</code></pre>
+<p><img src="figure/estimatePrior.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>lapply(out.md2$U.est,round,digits=2)</code></pre>
+<pre><code>$U1
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  5.44  4.85  0.78 -0.27 -0.49
+[2,]  4.85  4.38  0.75 -0.28 -0.46
+[3,]  0.78  0.75  0.17 -0.08 -0.09
+[4,] -0.27 -0.28 -0.08  0.04  0.04
+[5,] -0.49 -0.46 -0.09  0.04  0.05
+
+$U2
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  0.13  0.01 -0.01 -0.05  0.19
+[2,]  0.01  0.05  0.01 -0.03 -0.20
+[3,] -0.01  0.01  3.94  3.85  4.39
+[4,] -0.05 -0.03  3.85  3.81  4.19
+[5,]  0.19 -0.20  4.39  4.19  8.48
+
+$U3
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  3.92  4.20 -0.26  0.25 -0.09
+[2,]  4.20  4.50 -0.28  0.26 -0.10
+[3,] -0.26 -0.28  0.02 -0.02  0.01
+[4,]  0.25  0.26 -0.02  0.11 -0.09
+[5,] -0.09 -0.10  0.01 -0.09  0.07</code></pre>
+<pre class="r"><code>round(out.md$pi,2)</code></pre>
+<pre><code>  U1   U2   U3 
+0.40 0.48 0.12 </code></pre>
+<pre class="r"><code>unlist(lapply(out.md2$U.est,kappa))</code></pre>
+<pre><code>          U1           U2           U3 
+5.085003e+18 1.130196e+17 6.259596e+19 </code></pre>
+<pre class="r"><code>U.masked.re2 = lapply(out.md2$U.est,function(x){x+0.01*diag(5)})
+unlist(lapply(U.masked.re2,kappa))</code></pre>
+<pre><code>       U1        U2        U3 
+ 933.8434 2625.8944  769.8508 </code></pre>
+<pre class="r"><code>out.maskedmash2 = masked.mash(data,U.canon = U.c,U.data = U.masked.re2,thresh=2,
+                             U.update = &#39;none&#39;,fixg = F,
+                             usepointmass = TRUE,verbose = TRUE,printevery = 50)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglikelihood at -3526.68&quot;
+[1] &quot;Done 100 iterations, loglikelihood at -3525.65&quot;
+[1] &quot;Done 150 iterations, loglikelihood at -3525.41&quot;
+[1] &quot;Done 200 iterations, loglikelihood at -3525.31&quot;</code></pre>
+<pre class="r"><code>out.maskedmash2$maskedProp</code></pre>
+<pre><code>[1] 0.2583333</code></pre>
+<pre class="r"><code>power_maskedmash.re2 = c()
+fdp_maskedmash.re2 = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.maskedmash2$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash.re2[l] = temp$power
+ fdp_maskedmash.re2[l] = temp$fdp
+}
+
+plot(lfsr_list,fdp_maskedmash.re,type=&#39;l&#39;,ylab=&quot;fdp&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,fdp_mash,col=3)
+lines(lfsr_list,fdp_maskedmash.re2,col=4)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;,&quot;maskedmash25.8%&quot;),lty=c(1,1,1),col=c(1,3,4))</code></pre>
+<p><img src="figure/estimatePrior.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(lfsr_list,power_maskedmash.re,type=&#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,power_mash,col=3)
+lines(lfsr_list,power_maskedmash.re2,col=4)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;,&quot;maskedmash25.8%&quot;),lty=c(1,1,1),col=c(1,3,4))</code></pre>
+<p><img src="figure/estimatePrior.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fdp_maskedmash.re,power_maskedmash.re,type = &#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;fdp&quot;)
+lines(fdp_mash,power_mash,col=3)
+lines(fdp_maskedmash.re2,power_maskedmash.re2,col=4)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;,&quot;maskedmash25.8%&quot;),lty=c(1,1,1),col=c(1,3,4))</code></pre>
+<p><img src="figure/estimatePrior.Rmd/unnamed-chunk-10-4.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="non-normal-distribution" class="section level2">
+<h2>Non-normal Distribution</h2>
+<p>Consider a situation when the model is mis-speicifed, for example test statistics follow a multivariate t distribution.</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.3 (2020-10-10)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS High Sierra 10.13.6
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] mashr_0.2.40    testthat_3.0.0  ashr_2.2-47     devtools_2.3.2 
+[5] usethis_1.6.3   workflowr_1.6.2
+
+loaded via a namespace (and not attached):
+ [1] xfun_0.18         remotes_2.2.0     lattice_0.20-41   vctrs_0.3.4      
+ [5] htmltools_0.5.0   yaml_2.2.1        rlang_0.4.8       pkgbuild_1.1.0   
+ [9] mixsqp_0.3-43     later_1.1.0.1     pillar_1.4.6      glue_1.4.2       
+[13] withr_2.3.0       sessioninfo_1.1.1 plyr_1.8.6        lifecycle_0.2.0  
+[17] stringr_1.4.0     mvtnorm_1.1-1     memoise_1.1.0     evaluate_0.14    
+[21] knitr_1.30        callr_3.5.1       httpuv_1.5.4      ps_1.4.0         
+[25] invgamma_1.1      irlba_2.3.3       fansi_0.4.1       Rcpp_1.0.5       
+[29] promises_1.1.1    backports_1.1.10  rmeta_3.0         desc_1.2.0       
+[33] pkgload_1.1.0     abind_1.4-5       truncnorm_1.0-8   fs_1.5.0         
+[37] digest_0.6.27     stringi_1.5.3     processx_3.4.4    rprojroot_1.3-2  
+[41] grid_4.0.3        cli_2.1.0         tools_4.0.3       magrittr_1.5     
+[45] tibble_3.0.4      crayon_1.3.4      whisker_0.4       pkgconfig_2.0.3  
+[49] ellipsis_0.3.1    Matrix_1.2-18     SQUAREM_2020.5    prettyunits_1.1.1
+[53] assertthat_0.2.1  rmarkdown_2.5     rstudioapi_0.11   R6_2.4.1         
+[57] git2r_0.27.1      compiler_4.0.3   </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
