@@ -29,6 +29,8 @@
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
 <script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -379,7 +381,13 @@ div.tocify {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/DongyueXie/maskedmash">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -416,7 +424,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-02-08
+<strong>Last updated:</strong> 2021-02-15
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -507,16 +515,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong9f29f29"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> 9f29f29 </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree6cbab3d6627345e6e7b0c5af7349b79a7b4baa4ftargetblank6cbab3da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/6cbab3d6627345e6e7b0c5af7349b79a7b4baa4f" target="_blank">6cbab3d</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong9f29f29" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree6cbab3d6627345e6e7b0c5af7349b79a7b4baa4ftargetblank6cbab3da" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 9f29f29. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/6cbab3d6627345e6e7b0c5af7349b79a7b4baa4f" target="_blank">6cbab3d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -529,20 +537,15 @@ Ignored files:
     Ignored:    code/.DS_Store
 
 Untracked files:
-    Untracked:  analysis/estimatePrior.Rmd
-    Untracked:  code/calc_post.R
-    Untracked:  code/ebupdate.R
-    Untracked:  code/genData.R
-    Untracked:  code/genData2rank1.R
     Untracked:  code/mashr/
-    Untracked:  code/maskedmash.R
-    Untracked:  code/maskedmd.R
-    Untracked:  code/plot_ztilde.R
-    Untracked:  code/utils.R
-    Untracked:  data/ztilde.png
+    Untracked:  code/maskedmd_rank1.R
+    Untracked:  code/maskedmd_rank1info.R
 
 Unstaged changes:
+    Modified:   analysis/estimatePrior.Rmd
     Modified:   analysis/index.Rmd
+    Modified:   code/ebupdate.R
+    Modified:   code/maskedmash.R
 
 </code></pre>
 <p>
@@ -586,13 +589,13 @@ Message
 Rmd
 </td>
 <td>
-9f29f29
+<a href="https://github.com/DongyueXie/maskedmash/blob/6cbab3d6627345e6e7b0c5af7349b79a7b4baa4f/analysis/effectOfMasking.Rmd" target="_blank">6cbab3d</a>
 </td>
 <td>
 Dongyue Xie
 </td>
 <td>
-2021-02-08
+2021-02-15
 </td>
 <td>
 wflow_publish(“analysis/effectOfMasking.Rmd”)
@@ -603,7 +606,7 @@ wflow_publish(“analysis/effectOfMasking.Rmd”)
 html
 </td>
 <td>
-c32a006
+<a href="https://rawcdn.githack.com/DongyueXie/maskedmash/c5b9e2efd872d7b828803b957ba88ad4f1de7cfc/docs/effectOfMasking.html" target="_blank">c5b9e2e</a>
 </td>
 <td>
 Dongyue Xie
@@ -620,7 +623,41 @@ Build site.
 Rmd
 </td>
 <td>
-12c121b
+<a href="https://github.com/DongyueXie/maskedmash/blob/9f29f292b80ccd95e78c1399635085f862c63d44/analysis/effectOfMasking.Rmd" target="_blank">9f29f29</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-02-08
+</td>
+<td>
+wflow_publish(“analysis/effectOfMasking.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/maskedmash/c32a00614e8eaa2965d63c5441c84a01d1632636/docs/effectOfMasking.html" target="_blank">c32a006</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-02-08
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/12c121bdb76632e9d0bc6a59ad8f2e0d1a6989aa/analysis/effectOfMasking.Rmd" target="_blank">12c121b</a>
 </td>
 <td>
 Dongyue Xie
@@ -661,13 +698,13 @@ source(&#39;code/utils.R&#39;)
 source(&#39;code/calc_post.R&#39;)
 
 
-signal_sd = 2
+signal_sd = sqrt(3)
 u1 = c(1,1,0,0,0)
 u2 = c(0,0,1,1,1)
 cov1 = tcrossprod(u1)
 cov1[1,1] = 1
 cov2 = tcrossprod(u2)
-cov2[5,5] = 2
+cov2[5,5] = 1
 cov2[4,4] = 1
 
 U = list(U1=cov1,U2=cov2)
@@ -686,7 +723,7 @@ $U2
 [2,]    0    0    0    0    0
 [3,]    0    0    1    1    1
 [4,]    0    0    1    1    1
-[5,]    0    0    1    1    2</code></pre>
+[5,]    0    0    1    1    1</code></pre>
 <pre class="r"><code>set.seed(12345)
 simdata = genData(100,U,signal_sd)
 data = mash_set_data(simdata$Bhat,simdata$Shat)
@@ -699,6 +736,7 @@ pi = c(0.5,0.5)
 ## first fit mash model, fix the prior.
 #### fixed g #####
 #### true priors ####
+U = list(U1=cov1*signal_sd^2,U2=cov2*signal_sd^2)
 g = list(pi=pi, Ulist=U, grid=1, usepointmass=F)
 out.mash = mash(data,g=g,fixg = T)</code></pre>
 <pre><code> - Computing 200 x 2 likelihood matrix.
@@ -706,7 +744,7 @@ out.mash = mash(data,g=g,fixg = T)</code></pre>
  - Computing posterior matrices.
  - Computation allocated took 0.00 seconds.</code></pre>
 <pre class="r"><code>## now run masked mash, with no masked z scores, so results should be the same as mash
-out = masked.mash(data,thresh = 1e5,pi=c(0.5,0.5),
+out = masked.mash(data,thresh = 1e10,pi=c(0.5,0.5),
                   U.canon = NULL,U.data = U,
                   normalizeU = FALSE,
                   usepointmass = F,fixg = TRUE)
@@ -759,7 +797,7 @@ Date
 <tbody>
 <tr>
 <td>
-c32a006
+<a href="https://github.com/DongyueXie/maskedmash/blob/c32a00614e8eaa2965d63c5441c84a01d1632636/docs/figure/effectOfMasking.Rmd/unnamed-chunk-2-1.png" target="_blank">c32a006</a>
 </td>
 <td>
 Dongyue Xie
@@ -798,7 +836,7 @@ Date
 <tbody>
 <tr>
 <td>
-c32a006
+<a href="https://github.com/DongyueXie/maskedmash/blob/c32a00614e8eaa2965d63c5441c84a01d1632636/docs/figure/effectOfMasking.Rmd/unnamed-chunk-2-2.png" target="_blank">c32a006</a>
 </td>
 <td>
 Dongyue Xie
@@ -856,7 +894,7 @@ Date
 <tbody>
 <tr>
 <td>
-c32a006
+<a href="https://github.com/DongyueXie/maskedmash/blob/c32a00614e8eaa2965d63c5441c84a01d1632636/docs/figure/effectOfMasking.Rmd/unnamed-chunk-4-1.png" target="_blank">c32a006</a>
 </td>
 <td>
 Dongyue Xie
@@ -897,7 +935,7 @@ Date
 <tbody>
 <tr>
 <td>
-c32a006
+<a href="https://github.com/DongyueXie/maskedmash/blob/c32a00614e8eaa2965d63c5441c84a01d1632636/docs/figure/effectOfMasking.Rmd/unnamed-chunk-4-2.png" target="_blank">c32a006</a>
 </td>
 <td>
 Dongyue Xie
@@ -938,7 +976,7 @@ Date
 <tbody>
 <tr>
 <td>
-c32a006
+<a href="https://github.com/DongyueXie/maskedmash/blob/c32a00614e8eaa2965d63c5441c84a01d1632636/docs/figure/effectOfMasking.Rmd/unnamed-chunk-4-3.png" target="_blank">c32a006</a>
 </td>
 <td>
 Dongyue Xie
@@ -951,71 +989,167 @@ Dongyue Xie
 </table>
 </div>
 </div>
-<pre class="r"><code>simdata$B[5,]</code></pre>
-<pre><code>[1] 3.161343 3.161343 0.000000 0.000000 0.000000</code></pre>
-<pre class="r"><code>simdata$Bhat[5,]</code></pre>
-<pre><code>[1]  3.5743638  3.7255992  0.7260660 -0.4151022  0.0416153</code></pre>
-<pre class="r"><code>out.maskedmash$lfsr[5,]</code></pre>
-<pre><code>[1] 0.0009774356 0.0009774356 0.9994327818 0.9994327818 0.9992748881</code></pre>
-<pre class="r"><code>round(lapply(out.maskedmash$PosteriorWeights,rowSums)[[5]],3)</code></pre>
-<pre><code> [1] 0.125 0.000 0.000 0.000 0.125 0.000 0.000 0.000 0.125 0.000 0.000 0.000
-[13] 0.125 0.000 0.000 0.000 0.125 0.000 0.000 0.000 0.125 0.000 0.000 0.000
-[25] 0.125 0.000 0.000 0.000 0.125 0.000 0.000 0.000</code></pre>
-<pre class="r"><code>which(round(lapply(out.maskedmash$PosteriorWeights,rowSums)[[5]],3)!=0)</code></pre>
-<pre><code>[1]  1  5  9 13 17 21 25 29</code></pre>
-<pre class="r"><code>lapply(enumerate.z(simdata$Bhat[5,],0),round,digits=4)</code></pre>
-<pre><code>$z.mask
-[1]  0.0004  0.0002  0.6246 -0.9905  0.0416
-
-$z.comb
-          V1     V2     V3      V4     V5
- [1,] 3.5744 3.7256 0.7261 -0.4151 0.0416
- [2,] 0.0004 3.7256 0.7261 -0.4151 0.0416
- [3,] 3.5744 0.0002 0.7261 -0.4151 0.0416
- [4,] 0.0004 0.0002 0.7261 -0.4151 0.0416
- [5,] 3.5744 3.7256 0.6246 -0.4151 0.0416
- [6,] 0.0004 3.7256 0.6246 -0.4151 0.0416
- [7,] 3.5744 0.0002 0.6246 -0.4151 0.0416
- [8,] 0.0004 0.0002 0.6246 -0.4151 0.0416
- [9,] 3.5744 3.7256 0.7261 -0.9905 0.0416
-[10,] 0.0004 3.7256 0.7261 -0.9905 0.0416
-[11,] 3.5744 0.0002 0.7261 -0.9905 0.0416
-[12,] 0.0004 0.0002 0.7261 -0.9905 0.0416
-[13,] 3.5744 3.7256 0.6246 -0.9905 0.0416
-[14,] 0.0004 3.7256 0.6246 -0.9905 0.0416
-[15,] 3.5744 0.0002 0.6246 -0.9905 0.0416
-[16,] 0.0004 0.0002 0.6246 -0.9905 0.0416
-[17,] 3.5744 3.7256 0.7261 -0.4151 2.1297
-[18,] 0.0004 3.7256 0.7261 -0.4151 2.1297
-[19,] 3.5744 0.0002 0.7261 -0.4151 2.1297
-[20,] 0.0004 0.0002 0.7261 -0.4151 2.1297
-[21,] 3.5744 3.7256 0.6246 -0.4151 2.1297
-[22,] 0.0004 3.7256 0.6246 -0.4151 2.1297
-[23,] 3.5744 0.0002 0.6246 -0.4151 2.1297
-[24,] 0.0004 0.0002 0.6246 -0.4151 2.1297
-[25,] 3.5744 3.7256 0.7261 -0.9905 2.1297
-[26,] 0.0004 3.7256 0.7261 -0.9905 2.1297
-[27,] 3.5744 0.0002 0.7261 -0.9905 2.1297
-[28,] 0.0004 0.0002 0.7261 -0.9905 2.1297
-[29,] 3.5744 3.7256 0.6246 -0.9905 2.1297
-[30,] 0.0004 3.7256 0.6246 -0.9905 2.1297
-[31,] 3.5744 0.0002 0.6246 -0.9905 2.1297
-[32,] 0.0004 0.0002 0.6246 -0.9905 2.1297
-
-$z.det.jacob
- [1]  438972.3474     738.1549     425.0246       0.7147  409912.4200
- [6]     689.2891     396.8880       0.6674  657746.9413    1106.0358
-[11]     636.8479       1.0709  614204.1567    1032.8163     594.6887
-[16]       1.0000 4236221.7435    7123.4277    4101.6216       6.8971
-[21] 3955784.2695    6651.8575    3830.0947       6.4405 6347465.6458
-[26]   10673.5944    6145.7837      10.3345 5927264.0274    9967.0035
-[31]    5738.9334       9.6503</code></pre>
 </div>
-<div id="reduce-signal-level" class="section level2">
-<h2>reduce signal level</h2>
-<p>The previous example sets signal-to-noise ratio roughly at 4. Now we reduce it to 1.</p>
-<pre class="r"><code>signal_sd = 1
+<div id="snr-3" class="section level2">
+<h2>SNR = 3</h2>
+<p>mask partial z scores:</p>
+<pre class="r"><code>out.maskedmash0 = masked.mash(data,thresh = 0,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+out.maskedmash1 = masked.mash(data,thresh = 1,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+out.maskedmash15 = masked.mash(data,thresh = 1.5,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+out.maskedmash2 = masked.mash(data,thresh = 2,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+out.maskedmash3 = masked.mash(data,thresh = 3,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)</code></pre>
+<pre class="r"><code>lfsr_list = seq(0.01,0.5,length.out = 100)
+power_maskedmash = matrix(nrow=length(lfsr_list),ncol=5)
+fdp_maskedmash = matrix(nrow=length(lfsr_list),ncol=5)
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.maskedmash0$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,1] = temp$power
+ fdp_maskedmash[l,1] = temp$fdp
+ temp = fdp_power(out.maskedmash1$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,2] = temp$power
+ fdp_maskedmash[l,2] = temp$fdp
+ temp = fdp_power(out.maskedmash15$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,3] = temp$power
+ fdp_maskedmash[l,3] = temp$fdp
+ temp = fdp_power(out.maskedmash2$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,4] = temp$power
+ fdp_maskedmash[l,4] = temp$fdp
+ temp = fdp_power(out.maskedmash3$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,5] = temp$power
+ fdp_maskedmash[l,5] = temp$fdp
+}
+
+
+col = c(2,3,4,5,&#39;yellow&#39;)
+
+###########1. 
+
+plot(lfsr_list,fdp_mash,type=&#39;l&#39;,lwd=2,xlab = &#39;lfsr&#39;,ylab=&#39;fdp&#39;)
+
+for(i in 1:5){
+  lines(lfsr_list,fdp_maskedmash[,i],col=col[i],lwd=2)
+}
+legend(&quot;topleft&quot;,c(&quot;mash&quot;,
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash0$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash1$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash15$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash2$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash3$maskedProp,2))),
+       lty=c(1,1,1,1,1,1),col=c(1,col),lwd=rep(2,6))</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/c5b9e2efd872d7b828803b957ba88ad4f1de7cfc/docs/figure/effectOfMasking.Rmd/unnamed-chunk-7-1.png" target="_blank">c5b9e2e</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-02-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>###########2. 
+plot(lfsr_list,power_mash,type=&#39;l&#39;,lwd=2,xlab = &#39;lfsr&#39;,ylab=&#39;power&#39;)
+
+for(i in 1:5){
+  lines(lfsr_list,power_maskedmash[,i],col=col[i],lwd=2)
+}
+legend(&quot;bottomright&quot;,c(&quot;mash&quot;,
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash0$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash1$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash15$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash2$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash3$maskedProp,2))),
+       lty=c(1,1,1,1,1,1),col=c(1,col),lwd=rep(2,6))</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-2">
+Past versions of unnamed-chunk-7-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/c5b9e2efd872d7b828803b957ba88ad4f1de7cfc/docs/figure/effectOfMasking.Rmd/unnamed-chunk-7-2.png" target="_blank">c5b9e2e</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-02-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>###########2. 
+plot(fdp_mash,power_mash,type=&#39;l&#39;,lwd=2,xlab = &#39;fdp&#39;,ylab=&#39;power&#39;)
+
+for(i in 1:5){
+  lines(fdp_maskedmash[,i],power_maskedmash[,i],col=col[i],lwd=2)
+}
+legend(&quot;bottomright&quot;,c(&quot;mash&quot;,
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash0$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash1$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash15$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash2$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash3$maskedProp,2))),
+       lty=c(1,1,1,1,1,1),col=c(1,col),lwd=rep(2,6))</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="snr-1" class="section level2">
+<h2>SNR = 1</h2>
+<pre class="r"><code>signal_sd = sqrt(1)
 set.seed(12345)
+U = list(U1=cov1,U2=cov2)
 simdata = genData(100,U,signal_sd)
 data = mash_set_data(simdata$Bhat,simdata$Shat)
 g = list(pi=pi, Ulist=U, grid=1, usepointmass=F)
@@ -1024,117 +1158,91 @@ out.mash = mash(data,g=g,fixg = T)</code></pre>
  - Likelihood calculations took 0.00 seconds.
  - Computing posterior matrices.
  - Computation allocated took 0.04 seconds.</code></pre>
-<pre class="r"><code>#thresh_list = quantile(c(abs(simdata$Bhat)),seq(0,1,length.out = 20))
-thresh_list = seq(qnorm(0.75),max(abs(simdata$Bhat)),length.out = 30)
-lfdr_cor = c()
-lfsr_cor = c()
-rmses = c()
-masked_prop = c()
-for (t in 1:length(thresh_list)) {
-  out_t = masked.mash(data,thresh = thresh_list[t],pi=c(0.5,0.5),
-                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
-  lfdr_cor[t] = cor(c(out_t$lfdr),c(out.mash$result$lfdr))
-  lfsr_cor[t] = cor(c(out_t$lfsr),c(out.mash$result$lfsr))
-  rmses[t] = rmse(out_t$PosteriorMean,simdata$B)
-  masked_prop[t] = out_t$maskedProp
-}
-
-plot(masked_prop,lfdr_cor,type=&#39;l&#39;,xlab = &#39;masked proportion&#39;,ylab = &#39;correlation&#39;,ylim = range(c(lfdr_cor,lfsr_cor)))
-lines(masked_prop,lfsr_cor,type=&#39;l&#39;,col=2)
-legend(&#39;topright&#39;,c(&#39;lfdr&#39;,&#39;lfsr&#39;),lty=c(1,1),col=c(1,2))</code></pre>
-<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(masked_prop,rmses,type=&#39;l&#39;,xlab = &#39;masked proportion&#39;,ylab = &#39;rmse&#39;)</code></pre>
-<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Take a look at when all z scores are masked, compare posterior summaries.</p>
-<pre class="r"><code>out.maskedmash = masked.mash(data,thresh = NULL,pi=c(0.5,0.5),
-                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)</code></pre>
 <pre class="r"><code>lfsr_list = seq(0.01,0.5,length.out = 100)
 power_mash = c()
 fdp_mash = c()
-power_maskedmash = c()
-fdp_maskedmash = c()
 for(l in 1:length(lfsr_list)){
  temp = fdp_power(out.mash$result$lfsr,simdata$B,alpha = lfsr_list[l])
  power_mash[l] = temp$power
  fdp_mash[l] = temp$fdp
- temp = fdp_power(out.maskedmash$lfsr,simdata$B,alpha = lfsr_list[l])
- power_maskedmash[l] = temp$power
- fdp_maskedmash[l] = temp$fdp
-}
-
-plot(lfsr_list,fdp_maskedmash,type=&#39;l&#39;,ylab=&quot;fdp&quot;,xlab=&quot;lfsr&quot;)
-lines(lfsr_list,fdp_mash,col=3)
-legend(&quot;topleft&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
-<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(lfsr_list,power_maskedmash,type=&#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;lfsr&quot;,ylim = range(c(power_maskedmash,power_mash)))
-lines(lfsr_list,power_mash,col=3)
-legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
-<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(fdp_maskedmash,power_maskedmash,type = &#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;fdp&quot;)
-lines(fdp_mash,power_mash,col=3)
-legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
-<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Further reduce the SNR to arounf 0.5.</p>
-<pre class="r"><code>signal_sd = 0.707
-set.seed(12345)
-simdata = genData(100,U,signal_sd)
-data = mash_set_data(simdata$Bhat,simdata$Shat)
-g = list(pi=pi, Ulist=U, grid=1, usepointmass=F)
-out.mash = mash(data,g=g,fixg = T)</code></pre>
-<pre><code> - Computing 200 x 2 likelihood matrix.
- - Likelihood calculations took 0.00 seconds.
- - Computing posterior matrices.
- - Computation allocated took 0.00 seconds.</code></pre>
-<pre class="r"><code>#thresh_list = quantile(c(abs(simdata$Bhat)),seq(0,1,length.out = 20))
-thresh_list = seq(qnorm(0.75),max(abs(simdata$Bhat)),length.out = 30)
-lfdr_cor = c()
-lfsr_cor = c()
-rmses = c()
-masked_prop = c()
-for (t in 1:length(thresh_list)) {
-  out_t = masked.mash(data,thresh = thresh_list[t],pi=c(0.5,0.5),
+}</code></pre>
+<pre class="r"><code>out.maskedmash0 = masked.mash(data,thresh = 0,pi=c(0.5,0.5),
                   U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
-  lfdr_cor[t] = cor(c(out_t$lfdr),c(out.mash$result$lfdr))
-  lfsr_cor[t] = cor(c(out_t$lfsr),c(out.mash$result$lfsr))
-  rmses[t] = rmse(out_t$PosteriorMean,simdata$B)
-  masked_prop[t] = out_t$maskedProp
-}
-
-plot(masked_prop,lfdr_cor,type=&#39;l&#39;,xlab = &#39;masked proportion&#39;,ylab = &#39;correlation&#39;,ylim = range(c(lfdr_cor,lfsr_cor)))
-lines(masked_prop,lfsr_cor,type=&#39;l&#39;,col=2)
-legend(&#39;topright&#39;,c(&#39;lfdr&#39;,&#39;lfsr&#39;),lty=c(1,1),col=c(1,2))</code></pre>
-<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(masked_prop,rmses,type=&#39;l&#39;,xlab = &#39;masked proportion&#39;,ylab = &#39;rmse&#39;)</code></pre>
-<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Take a look at when all z scores are masked, compare posterior summaries.</p>
-<pre class="r"><code>out.maskedmash = masked.mash(data,thresh = NULL,pi=c(0.5,0.5),
+out.maskedmash1 = masked.mash(data,thresh = 1,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+out.maskedmash15 = masked.mash(data,thresh = 1.5,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+out.maskedmash2 = masked.mash(data,thresh = 2,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+out.maskedmash3 = masked.mash(data,thresh = 3,pi=c(0.5,0.5),
                   U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)</code></pre>
 <pre class="r"><code>lfsr_list = seq(0.01,0.5,length.out = 100)
-power_mash = c()
-fdp_mash = c()
-power_maskedmash = c()
-fdp_maskedmash = c()
+power_maskedmash = matrix(nrow=length(lfsr_list),ncol=5)
+fdp_maskedmash = matrix(nrow=length(lfsr_list),ncol=5)
 for(l in 1:length(lfsr_list)){
- temp = fdp_power(out.mash$result$lfsr,simdata$B,alpha = lfsr_list[l])
- power_mash[l] = temp$power
- fdp_mash[l] = temp$fdp
- temp = fdp_power(out.maskedmash$lfsr,simdata$B,alpha = lfsr_list[l])
- power_maskedmash[l] = temp$power
- fdp_maskedmash[l] = temp$fdp
+ temp = fdp_power(out.maskedmash0$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,1] = temp$power
+ fdp_maskedmash[l,1] = temp$fdp
+ temp = fdp_power(out.maskedmash1$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,2] = temp$power
+ fdp_maskedmash[l,2] = temp$fdp
+ temp = fdp_power(out.maskedmash15$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,3] = temp$power
+ fdp_maskedmash[l,3] = temp$fdp
+ temp = fdp_power(out.maskedmash2$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,4] = temp$power
+ fdp_maskedmash[l,4] = temp$fdp
+ temp = fdp_power(out.maskedmash3$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,5] = temp$power
+ fdp_maskedmash[l,5] = temp$fdp
 }
 
-plot(lfsr_list,fdp_maskedmash,type=&#39;l&#39;,ylab=&quot;fdp&quot;,xlab=&quot;lfsr&quot;)
-lines(lfsr_list,fdp_mash,col=3)
-legend(&quot;topleft&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
-<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(lfsr_list,power_maskedmash,type=&#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;lfsr&quot;,ylim = range(c(power_maskedmash,power_mash)))
-lines(lfsr_list,power_mash,col=3)
-legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
-<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(fdp_maskedmash,power_maskedmash,type = &#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;fdp&quot;)
-lines(fdp_mash,power_mash,col=3)
-legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
-<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-13-3.png" width="672" style="display: block; margin: auto;" /></p>
+
+col = c(2,3,4,5,&#39;yellow&#39;)
+
+###########1. 
+
+plot(lfsr_list,fdp_mash,type=&#39;l&#39;,lwd=2,xlab = &#39;lfsr&#39;,ylab=&#39;fdp&#39;)
+
+for(i in 1:5){
+  lines(lfsr_list,fdp_maskedmash[,i],col=col[i],lwd=2)
+}
+legend(&quot;topleft&quot;,c(&quot;mash&quot;,
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash0$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash1$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash15$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash2$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash3$maskedProp,2))),
+       lty=c(1,1,1,1,1,1),col=c(1,col),lwd=rep(2,6))</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>###########2. 
+plot(lfsr_list,power_mash,type=&#39;l&#39;,lwd=2,xlab = &#39;lfsr&#39;,ylab=&#39;power&#39;)
+
+for(i in 1:5){
+  lines(lfsr_list,power_maskedmash[,i],col=col[i],lwd=2)
+}
+legend(&quot;bottomright&quot;,c(&quot;mash&quot;,
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash0$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash1$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash15$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash2$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash3$maskedProp,2))),
+       lty=c(1,1,1,1,1,1),col=c(1,col),lwd=rep(2,6))</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>###########2. 
+plot(fdp_mash,power_mash,type=&#39;l&#39;,lwd=2,xlab = &#39;fdp&#39;,ylab=&#39;power&#39;)
+
+for(i in 1:5){
+  lines(fdp_maskedmash[,i],power_maskedmash[,i],col=col[i],lwd=2)
+}
+legend(&quot;bottomright&quot;,c(&quot;mash&quot;,
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash0$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash1$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash15$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash2$maskedProp,2)),
+                   paste(&quot;maskedmash&quot;,round(out.maskedmash3$maskedProp,2))),
+       lty=c(1,1,1,1,1,1),col=c(1,col),lwd=rep(2,6))</code></pre>
+<p><img src="figure/effectOfMasking.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
