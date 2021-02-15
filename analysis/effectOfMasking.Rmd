@@ -27,13 +27,13 @@ source('code/utils.R')
 source('code/calc_post.R')
 
 
-signal_sd = 2
+signal_sd = sqrt(3)
 u1 = c(1,1,0,0,0)
 u2 = c(0,0,1,1,1)
 cov1 = tcrossprod(u1)
 cov1[1,1] = 1
 cov2 = tcrossprod(u2)
-cov2[5,5] = 2
+cov2[5,5] = 1
 cov2[4,4] = 1
 
 U = list(U1=cov1,U2=cov2)
@@ -50,11 +50,12 @@ pi = c(0.5,0.5)
 ## first fit mash model, fix the prior.
 #### fixed g #####
 #### true priors ####
+U = list(U1=cov1*signal_sd^2,U2=cov2*signal_sd^2)
 g = list(pi=pi, Ulist=U, grid=1, usepointmass=F)
 out.mash = mash(data,g=g,fixg = T)
 
 ## now run masked mash, with no masked z scores, so results should be the same as mash
-out = masked.mash(data,thresh = 1e5,pi=c(0.5,0.5),
+out = masked.mash(data,thresh = 1e10,pi=c(0.5,0.5),
                   U.canon = NULL,U.data = U,
                   normalizeU = FALSE,
                   usepointmass = F,fixg = TRUE)
@@ -123,150 +124,206 @@ legend("bottomright",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
 
 
 
-```{r}
+```{r,include=FALSE}
 simdata$B[5,]
 simdata$Bhat[5,]
 out.maskedmash$lfsr[5,]
 round(lapply(out.maskedmash$PosteriorWeights,rowSums)[[5]],3)
+round(lapply(out.maskedmash$PosteriorWeights,colSums)[[5]],3)
 which(round(lapply(out.maskedmash$PosteriorWeights,rowSums)[[5]],3)!=0)
-lapply(enumerate.z(simdata$Bhat[5,],0),round,digits=4)
+lapply(enumerate.z(simdata$Bhat[5,],0),round,digits=4)$z.comb[which(round(lapply(out.maskedmash$PosteriorWeights,rowSums)[[5]],3)!=0),]
 ```
 
 
-## reduce signal level
+## SNR = 3
 
-The previous example sets signal-to-noise ratio roughly at 4. Now we reduce it to 1.
-
-```{r}
-signal_sd = 1
-set.seed(12345)
-simdata = genData(100,U,signal_sd)
-data = mash_set_data(simdata$Bhat,simdata$Shat)
-g = list(pi=pi, Ulist=U, grid=1, usepointmass=F)
-out.mash = mash(data,g=g,fixg = T)
-```
+mask partial z scores: 
 
 
 ```{r}
-#thresh_list = quantile(c(abs(simdata$Bhat)),seq(0,1,length.out = 20))
-thresh_list = seq(qnorm(0.75),max(abs(simdata$Bhat)),length.out = 30)
-lfdr_cor = c()
-lfsr_cor = c()
-rmses = c()
-masked_prop = c()
-for (t in 1:length(thresh_list)) {
-  out_t = masked.mash(data,thresh = thresh_list[t],pi=c(0.5,0.5),
+out.maskedmash0 = masked.mash(data,thresh = 0,pi=c(0.5,0.5),
                   U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
-  lfdr_cor[t] = cor(c(out_t$lfdr),c(out.mash$result$lfdr))
-  lfsr_cor[t] = cor(c(out_t$lfsr),c(out.mash$result$lfsr))
-  rmses[t] = rmse(out_t$PosteriorMean,simdata$B)
-  masked_prop[t] = out_t$maskedProp
-}
-
-plot(masked_prop,lfdr_cor,type='l',xlab = 'masked proportion',ylab = 'correlation',ylim = range(c(lfdr_cor,lfsr_cor)))
-lines(masked_prop,lfsr_cor,type='l',col=2)
-legend('topright',c('lfdr','lfsr'),lty=c(1,1),col=c(1,2))
-
-plot(masked_prop,rmses,type='l',xlab = 'masked proportion',ylab = 'rmse')
-```
-
-Take a look at when all z scores are masked, compare posterior summaries.
-
-```{r}
-out.maskedmash = masked.mash(data,thresh = NULL,pi=c(0.5,0.5),
+out.maskedmash1 = masked.mash(data,thresh = 1,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+out.maskedmash15 = masked.mash(data,thresh = 1.5,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+out.maskedmash2 = masked.mash(data,thresh = 2,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+out.maskedmash3 = masked.mash(data,thresh = 3,pi=c(0.5,0.5),
                   U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
 ```
 
 ```{r}
 lfsr_list = seq(0.01,0.5,length.out = 100)
-power_mash = c()
-fdp_mash = c()
-power_maskedmash = c()
-fdp_maskedmash = c()
+power_maskedmash = matrix(nrow=length(lfsr_list),ncol=5)
+fdp_maskedmash = matrix(nrow=length(lfsr_list),ncol=5)
 for(l in 1:length(lfsr_list)){
- temp = fdp_power(out.mash$result$lfsr,simdata$B,alpha = lfsr_list[l])
- power_mash[l] = temp$power
- fdp_mash[l] = temp$fdp
- temp = fdp_power(out.maskedmash$lfsr,simdata$B,alpha = lfsr_list[l])
- power_maskedmash[l] = temp$power
- fdp_maskedmash[l] = temp$fdp
+ temp = fdp_power(out.maskedmash0$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,1] = temp$power
+ fdp_maskedmash[l,1] = temp$fdp
+ temp = fdp_power(out.maskedmash1$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,2] = temp$power
+ fdp_maskedmash[l,2] = temp$fdp
+ temp = fdp_power(out.maskedmash15$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,3] = temp$power
+ fdp_maskedmash[l,3] = temp$fdp
+ temp = fdp_power(out.maskedmash2$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,4] = temp$power
+ fdp_maskedmash[l,4] = temp$fdp
+ temp = fdp_power(out.maskedmash3$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,5] = temp$power
+ fdp_maskedmash[l,5] = temp$fdp
 }
 
-plot(lfsr_list,fdp_maskedmash,type='l',ylab="fdp",xlab="lfsr")
-lines(lfsr_list,fdp_mash,col=3)
-legend("topleft",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
-plot(lfsr_list,power_maskedmash,type='l',ylab="power",xlab="lfsr",ylim = range(c(power_maskedmash,power_mash)))
-lines(lfsr_list,power_mash,col=3)
-legend("bottomright",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
-plot(fdp_maskedmash,power_maskedmash,type = 'l',ylab="power",xlab="fdp")
-lines(fdp_mash,power_mash,col=3)
-legend("bottomright",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
+
+col = c(2,3,4,5,'yellow')
+
+###########1. 
+
+plot(lfsr_list,fdp_mash,type='l',lwd=2,xlab = 'lfsr',ylab='fdp')
+
+for(i in 1:5){
+  lines(lfsr_list,fdp_maskedmash[,i],col=col[i],lwd=2)
+}
+legend("topleft",c("mash",
+                   paste("maskedmash",round(out.maskedmash0$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash1$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash15$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash2$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash3$maskedProp,2))),
+       lty=c(1,1,1,1,1,1),col=c(1,col),lwd=rep(2,6))
+
+###########2. 
+plot(lfsr_list,power_mash,type='l',lwd=2,xlab = 'lfsr',ylab='power')
+
+for(i in 1:5){
+  lines(lfsr_list,power_maskedmash[,i],col=col[i],lwd=2)
+}
+legend("bottomright",c("mash",
+                   paste("maskedmash",round(out.maskedmash0$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash1$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash15$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash2$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash3$maskedProp,2))),
+       lty=c(1,1,1,1,1,1),col=c(1,col),lwd=rep(2,6))
+
+###########2. 
+plot(fdp_mash,power_mash,type='l',lwd=2,xlab = 'fdp',ylab='power')
+
+for(i in 1:5){
+  lines(fdp_maskedmash[,i],power_maskedmash[,i],col=col[i],lwd=2)
+}
+legend("bottomright",c("mash",
+                   paste("maskedmash",round(out.maskedmash0$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash1$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash15$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash2$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash3$maskedProp,2))),
+       lty=c(1,1,1,1,1,1),col=c(1,col),lwd=rep(2,6))
 ```
 
-Further reduce the SNR to arounf 0.5.
+## SNR = 1
 
 ```{r}
-signal_sd = 0.707
+signal_sd = sqrt(1)
 set.seed(12345)
+U = list(U1=cov1,U2=cov2)
 simdata = genData(100,U,signal_sd)
 data = mash_set_data(simdata$Bhat,simdata$Shat)
 g = list(pi=pi, Ulist=U, grid=1, usepointmass=F)
 out.mash = mash(data,g=g,fixg = T)
-```
 
-
-```{r}
-#thresh_list = quantile(c(abs(simdata$Bhat)),seq(0,1,length.out = 20))
-thresh_list = seq(qnorm(0.75),max(abs(simdata$Bhat)),length.out = 30)
-lfdr_cor = c()
-lfsr_cor = c()
-rmses = c()
-masked_prop = c()
-for (t in 1:length(thresh_list)) {
-  out_t = masked.mash(data,thresh = thresh_list[t],pi=c(0.5,0.5),
-                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
-  lfdr_cor[t] = cor(c(out_t$lfdr),c(out.mash$result$lfdr))
-  lfsr_cor[t] = cor(c(out_t$lfsr),c(out.mash$result$lfsr))
-  rmses[t] = rmse(out_t$PosteriorMean,simdata$B)
-  masked_prop[t] = out_t$maskedProp
+lfsr_list = seq(0.01,0.5,length.out = 100)
+power_mash = c()
+fdp_mash = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.mash$result$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_mash[l] = temp$power
+ fdp_mash[l] = temp$fdp
 }
 
-plot(masked_prop,lfdr_cor,type='l',xlab = 'masked proportion',ylab = 'correlation',ylim = range(c(lfdr_cor,lfsr_cor)))
-lines(masked_prop,lfsr_cor,type='l',col=2)
-legend('topright',c('lfdr','lfsr'),lty=c(1,1),col=c(1,2))
-
-plot(masked_prop,rmses,type='l',xlab = 'masked proportion',ylab = 'rmse')
 ```
 
-Take a look at when all z scores are masked, compare posterior summaries.
+
 
 ```{r}
-out.maskedmash = masked.mash(data,thresh = NULL,pi=c(0.5,0.5),
+out.maskedmash0 = masked.mash(data,thresh = 0,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+out.maskedmash1 = masked.mash(data,thresh = 1,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+out.maskedmash15 = masked.mash(data,thresh = 1.5,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+out.maskedmash2 = masked.mash(data,thresh = 2,pi=c(0.5,0.5),
+                  U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
+out.maskedmash3 = masked.mash(data,thresh = 3,pi=c(0.5,0.5),
                   U.canon = NULL,U.data = U,usepointmass = F,fixg = TRUE,normalizeU = FALSE)
 ```
 
 ```{r}
 lfsr_list = seq(0.01,0.5,length.out = 100)
-power_mash = c()
-fdp_mash = c()
-power_maskedmash = c()
-fdp_maskedmash = c()
+power_maskedmash = matrix(nrow=length(lfsr_list),ncol=5)
+fdp_maskedmash = matrix(nrow=length(lfsr_list),ncol=5)
 for(l in 1:length(lfsr_list)){
- temp = fdp_power(out.mash$result$lfsr,simdata$B,alpha = lfsr_list[l])
- power_mash[l] = temp$power
- fdp_mash[l] = temp$fdp
- temp = fdp_power(out.maskedmash$lfsr,simdata$B,alpha = lfsr_list[l])
- power_maskedmash[l] = temp$power
- fdp_maskedmash[l] = temp$fdp
+ temp = fdp_power(out.maskedmash0$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,1] = temp$power
+ fdp_maskedmash[l,1] = temp$fdp
+ temp = fdp_power(out.maskedmash1$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,2] = temp$power
+ fdp_maskedmash[l,2] = temp$fdp
+ temp = fdp_power(out.maskedmash15$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,3] = temp$power
+ fdp_maskedmash[l,3] = temp$fdp
+ temp = fdp_power(out.maskedmash2$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,4] = temp$power
+ fdp_maskedmash[l,4] = temp$fdp
+ temp = fdp_power(out.maskedmash3$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l,5] = temp$power
+ fdp_maskedmash[l,5] = temp$fdp
 }
 
-plot(lfsr_list,fdp_maskedmash,type='l',ylab="fdp",xlab="lfsr")
-lines(lfsr_list,fdp_mash,col=3)
-legend("topleft",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
-plot(lfsr_list,power_maskedmash,type='l',ylab="power",xlab="lfsr",ylim = range(c(power_maskedmash,power_mash)))
-lines(lfsr_list,power_mash,col=3)
-legend("bottomright",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
-plot(fdp_maskedmash,power_maskedmash,type = 'l',ylab="power",xlab="fdp")
-lines(fdp_mash,power_mash,col=3)
-legend("bottomright",c("maskedmash","mash"),lty=c(1,1),col=c(1,3))
+
+col = c(2,3,4,5,'yellow')
+
+###########1. 
+
+plot(lfsr_list,fdp_mash,type='l',lwd=2,xlab = 'lfsr',ylab='fdp')
+
+for(i in 1:5){
+  lines(lfsr_list,fdp_maskedmash[,i],col=col[i],lwd=2)
+}
+legend("topleft",c("mash",
+                   paste("maskedmash",round(out.maskedmash0$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash1$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash15$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash2$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash3$maskedProp,2))),
+       lty=c(1,1,1,1,1,1),col=c(1,col),lwd=rep(2,6))
+
+###########2. 
+plot(lfsr_list,power_mash,type='l',lwd=2,xlab = 'lfsr',ylab='power')
+
+for(i in 1:5){
+  lines(lfsr_list,power_maskedmash[,i],col=col[i],lwd=2)
+}
+legend("bottomright",c("mash",
+                   paste("maskedmash",round(out.maskedmash0$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash1$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash15$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash2$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash3$maskedProp,2))),
+       lty=c(1,1,1,1,1,1),col=c(1,col),lwd=rep(2,6))
+
+###########2. 
+plot(fdp_mash,power_mash,type='l',lwd=2,xlab = 'fdp',ylab='power')
+
+for(i in 1:5){
+  lines(fdp_maskedmash[,i],power_maskedmash[,i],col=col[i],lwd=2)
+}
+legend("bottomright",c("mash",
+                   paste("maskedmash",round(out.maskedmash0$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash1$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash15$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash2$maskedProp,2)),
+                   paste("maskedmash",round(out.maskedmash3$maskedProp,2))),
+       lty=c(1,1,1,1,1,1),col=c(1,col),lwd=rep(2,6))
 ```
