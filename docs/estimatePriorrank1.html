@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Dongyue Xie" />
+
+<meta name="date" content="2021-01-30" />
+
+<title>estimate covariance matrix with masked z scores</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/simplex.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">maskedmash</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/DongyueXie/maskedmash">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">estimate covariance matrix with masked z scores</h1>
+<h4 class="author">Dongyue Xie</h4>
+<h4 class="date">2021-01-30</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-02-15
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>maskedmash/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210205code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210205)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210205code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210205)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreeeab00aa4458a90af3b6310aaf0454391ab375cactargetblankeab00aaa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/eab00aa4458a90af3b6310aaf0454391ab375cac" target="_blank">eab00aa</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreeeab00aa4458a90af3b6310aaf0454391ab375cactargetblankeab00aaa" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/eab00aa4458a90af3b6310aaf0454391ab375cac" target="_blank">eab00aa</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    code/.DS_Store
+
+Untracked files:
+    Untracked:  code/mashr/
+    Untracked:  code/maskedmd_rank1.R
+    Untracked:  code/maskedmd_rank1info.R
+
+Unstaged changes:
+    Modified:   analysis/estimatePrior.Rmd
+    Modified:   code/ebupdate.R
+    Modified:   code/maskedmash.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/estimatePriorrank1.Rmd</code>) and HTML (<code>docs/estimatePriorrank1.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/eab00aa4458a90af3b6310aaf0454391ab375cac/analysis/estimatePriorrank1.Rmd" target="_blank">eab00aa</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-02-15
+</td>
+<td>
+wflow_publish(“analysis/estimatePriorrank1.Rmd”)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<pre class="r"><code>library(devtools)</code></pre>
+<pre><code>Loading required package: usethis</code></pre>
+<pre class="r"><code>load_all(&#39;code/mashr/&#39;)</code></pre>
+<pre><code>Loading mashr</code></pre>
+<pre><code>Loading required package: ashr</code></pre>
+<pre><code>
+Attaching package: &#39;testthat&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:devtools&#39;:
+
+    test_file</code></pre>
+<pre class="r"><code>source(&#39;code/genData.R&#39;)
+source(&#39;code/maskedmash.R&#39;)
+source(&#39;code/ebupdate.R&#39;)
+source(&#39;code/maskedmd_rank1info.R&#39;)
+source(&#39;code/maskedmd.R&#39;)
+source(&#39;code/utils.R&#39;)
+source(&#39;code/calc_post.R&#39;)</code></pre>
+<pre class="r"><code>u1 = c(1,1,0,0,0)
+u2 = c(0,0,1,1,1)
+cov1 = tcrossprod(u1)
+cov1[1,1] = 1
+cov2 = tcrossprod(u2)
+# cov2[5,5] = 2
+# cov2[4,4] = 1
+
+U = list(U1=cov1,U2=cov2)
+U</code></pre>
+<pre><code>$U1
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    1    1    0    0    0
+[2,]    1    1    0    0    0
+[3,]    0    0    0    0    0
+[4,]    0    0    0    0    0
+[5,]    0    0    0    0    0
+
+$U2
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    0    0    0    0    0
+[2,]    0    0    0    0    0
+[3,]    0    0    1    1    1
+[4,]    0    0    1    1    1
+[5,]    0    0    1    1    1</code></pre>
+<pre class="r"><code>signal_sd = sqrt(3)
+
+set.seed(12345)
+simdata = genData(300,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.pca = cov_pca(data,5)
+U.pca = U.pca[1:4]
+out.md0 = masked.md.rank1info(data,thresh = 1e10,U.data = U.pca,printevery = 50)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglik at -5088.30&quot;</code></pre>
+<pre class="r"><code>out.md0$pi</code></pre>
+<pre><code>     PCA_1      PCA_2      PCA_3      PCA_4 
+0.46599071 0.39766902 0.09105281 0.04528745 </code></pre>
+<pre class="r"><code>lapply(out.md0$U.est,round,digits=2)</code></pre>
+<pre><code>$PCA_1
+     [,1]  [,2]  [,3]  [,4]  [,5]
+[1,] 0.00  0.00  0.09  0.08  0.09
+[2,] 0.00  0.00 -0.05 -0.05 -0.05
+[3,] 0.09 -0.05  3.26  3.18  3.26
+[4,] 0.08 -0.05  3.18  3.10  3.17
+[5,] 0.09 -0.05  3.26  3.17  3.25
+
+$PCA_2
+      [,1]  [,2] [,3]  [,4]  [,5]
+[1,]  3.90  3.86 0.06 -0.13 -0.14
+[2,]  3.86  3.83 0.06 -0.13 -0.14
+[3,]  0.06  0.06 0.00  0.00  0.00
+[4,] -0.13 -0.13 0.00  0.00  0.00
+[5,] -0.14 -0.14 0.00  0.00  0.01
+
+$PCA_3
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  0.85  1.07  0.31  0.42 -0.59
+[2,]  1.07  1.34  0.38  0.53 -0.74
+[3,]  0.31  0.38  0.11  0.15 -0.21
+[4,]  0.42  0.53  0.15  0.21 -0.29
+[5,] -0.59 -0.74 -0.21 -0.29  0.41
+
+$PCA_4
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  2.37  1.23 -1.06  0.90  0.05
+[2,]  1.23  0.64 -0.55  0.47  0.03
+[3,] -1.06 -0.55  0.47 -0.40 -0.02
+[4,]  0.90  0.47 -0.40  0.34  0.02
+[5,]  0.05  0.03 -0.02  0.02  0.00</code></pre>
+<p>first run mash</p>
+<pre class="r"><code>U.c = cov_canonical(data)
+out_mash = mash(data, c(U.c,out.md0$U.est.adj),verbose = F)
+lfsr_list = seq(0.01,0.5,length.out = 100)
+power_mash = c()
+fdp_mash = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out_mash$result$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_mash[l] = temp$power
+ fdp_mash[l] = temp$fdp
+}</code></pre>
+</div>
+<div id="mask-all-z-scores" class="section level2">
+<h2>Mask all z scores</h2>
+<p>Now run “masked deconvolution”.</p>
+<pre class="r"><code>out.md1 = masked.md.rank1info(data,U.data = U.pca,printevery = 50)
+plot(out.md1$loglik,type=&#39;l&#39;,ylab = &#39;loglik&#39;,xlab=&#39;iterations&#39;)</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>lapply(out.md1$U.est,round,digits=2)</code></pre>
+<pre><code>$PCA_1
+     [,1]  [,2]  [,3]  [,4]  [,5]
+[1,] 0.00  0.00  0.04  0.04  0.04
+[2,] 0.00  0.00 -0.08 -0.07 -0.07
+[3,] 0.04 -0.08  3.38  3.25  3.31
+[4,] 0.04 -0.07  3.25  3.11  3.18
+[5,] 0.04 -0.07  3.31  3.18  3.25
+
+$PCA_2
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  3.56  3.59 -0.05 -0.01 -0.24
+[2,]  3.59  3.61 -0.05 -0.01 -0.24
+[3,] -0.05 -0.05  0.00  0.00  0.00
+[4,] -0.01 -0.01  0.00  0.00  0.00
+[5,] -0.24 -0.24  0.00  0.00  0.02
+
+$PCA_3
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  1.77 -0.39 -0.88 -0.34  1.67
+[2,] -0.39  0.08  0.19  0.07 -0.37
+[3,] -0.88  0.19  0.44  0.17 -0.84
+[4,] -0.34  0.07  0.17  0.06 -0.32
+[5,]  1.67 -0.37 -0.84 -0.32  1.58
+
+$PCA_4
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  1.12  1.24  1.04 -0.01 -0.75
+[2,]  1.24  1.38  1.16 -0.02 -0.83
+[3,]  1.04  1.16  0.97 -0.01 -0.70
+[4,] -0.01 -0.02 -0.01  0.00  0.01
+[5,] -0.75 -0.83 -0.70  0.01  0.50</code></pre>
+<pre class="r"><code>round(out.md1$pi,2)</code></pre>
+<pre><code>PCA_1 PCA_2 PCA_3 PCA_4 
+ 0.46  0.44  0.05  0.05 </code></pre>
+<pre class="r"><code>out.maskedmash = masked.mash(data,U.canon = U.c,U.data = out.md1$U.est.adj,
+                             U.update = &#39;none&#39;,fixg = F,
+                             usepointmass = TRUE,verbose = TRUE,printevery = 50)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglikelihood at -2189.95&quot;
+[1] &quot;Done 100 iterations, loglikelihood at -2188.10&quot;
+[1] &quot;Done 150 iterations, loglikelihood at -2187.81&quot;
+[1] &quot;Done 200 iterations, loglikelihood at -2187.72&quot;</code></pre>
+<pre class="r"><code>#out_mash_use_masked.md = mash(data, c(U.c,out.md$U.est),verbose = F,outputlevel = 3)
+#fdp_power(out_mash_use_masked.md$result$lfsr,simdata$B)
+power_maskedmash = c()
+fdp_maskedmash = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.maskedmash$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l] = temp$power
+ fdp_maskedmash[l] = temp$fdp
+}
+plot(lfsr_list,fdp_maskedmash,type=&#39;l&#39;,ylab=&quot;fdp&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,fdp_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(lfsr_list,power_maskedmash,type=&#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,power_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fdp_maskedmash,power_maskedmash,type = &#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;fdp&quot;)
+lines(fdp_mash,power_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-4-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>look at posterior weights</p>
+<pre class="r"><code>cor(c(out.maskedmash$lfsr),c(out_mash$result$lfsr))</code></pre>
+<pre><code>[1] 0.771935</code></pre>
+<pre class="r"><code>out.maskedmash$lfsr[15,]</code></pre>
+<pre><code>[1] 0.38827626 0.40008987 0.09062862 0.12563583 0.13029239</code></pre>
+<pre class="r"><code>out_mash$result$lfsr[15,]</code></pre>
+<pre><code>[1] 0.5990814 0.6009307 0.6313290 0.6129696 0.5356051</code></pre>
+<pre class="r"><code>simdata$B[15,]</code></pre>
+<pre><code>[1] -0.8941051 -0.8941052  0.0000000  0.0000000  0.0000000</code></pre>
+<pre class="r"><code>simdata$Bhat[15,]</code></pre>
+<pre><code>[1]  0.87462921 -0.87470803 -0.02112681 -0.20600366 -1.02953158</code></pre>
+<pre class="r"><code>round(rowSums(out.maskedmash$PosteriorWeights[[15]]),2)</code></pre>
+<pre><code> [1] 0.01 0.01 0.01 0.01 0.04 0.03 0.03 0.03 0.01 0.01 0.01 0.01 0.11 0.10 0.10
+[16] 0.10 0.01 0.01 0.01 0.01 0.02 0.02 0.02 0.02 0.01 0.01 0.01 0.01 0.06 0.05
+[31] 0.05 0.05</code></pre>
+<pre class="r"><code>enumerate.z(simdata$Bhat[15,],0)$z.comb[which(round(rowSums(out.maskedmash$PosteriorWeights[[15]]),2)&gt;=0.1),]</code></pre>
+<pre><code>            V1         V2        V3       V4        V5
+[1,] 0.8746292 -0.8747080 -2.389845 -1.39435 -1.029532
+[2,] 0.4983685 -0.8747080 -2.389845 -1.39435 -1.029532
+[3,] 0.8746292 -0.4983077 -2.389845 -1.39435 -1.029532
+[4,] 0.4983685 -0.4983077 -2.389845 -1.39435 -1.029532</code></pre>
+<pre class="r"><code>out.md1$post_weights[[15]][which(round(rowSums(out.maskedmash$PosteriorWeights[[15]]),2)&gt;=0.1),]</code></pre>
+<pre><code>         PCA_1       PCA_2        PCA_3        PCA_4
+[1,] 0.1061014 0.003630653 0.0007760491 0.0007629431
+[2,] 0.1068788 0.003684424 0.0006457732 0.0008889745
+[3,] 0.1074265 0.003807079 0.0007422146 0.0006684715
+[4,] 0.1082149 0.003631129 0.0006245065 0.0007517419</code></pre>
+</div>
+<div id="mask-partial-z-scores" class="section level2">
+<h2>mask partial z scores</h2>
+<pre class="r"><code>out.md.partial = masked.md.rank1info(data,U.data = U.pca,printevery = 50,thresh = 1)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglik at -2795.36&quot;</code></pre>
+<pre class="r"><code>plot(out.md.partial$loglik,type=&#39;l&#39;,ylab = &#39;loglik&#39;,xlab=&#39;iterations&#39;)</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>lapply(out.md.partial$U.est,round,digits=2)</code></pre>
+<pre><code>$PCA_1
+     [,1]  [,2]  [,3]  [,4]  [,5]
+[1,] 0.00  0.00  0.02  0.02  0.02
+[2,] 0.00  0.00 -0.07 -0.06 -0.06
+[3,] 0.02 -0.07  3.39  3.24  3.32
+[4,] 0.02 -0.06  3.24  3.11  3.18
+[5,] 0.02 -0.06  3.32  3.18  3.26
+
+$PCA_2
+      [,1]  [,2]  [,3] [,4]  [,5]
+[1,]  3.65  3.67 -0.08 0.01 -0.20
+[2,]  3.67  3.70 -0.08 0.01 -0.20
+[3,] -0.08 -0.08  0.00 0.00  0.00
+[4,]  0.01  0.01  0.00 0.00  0.00
+[5,] -0.20 -0.20  0.00 0.00  0.01
+
+$PCA_3
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  1.98 -0.30 -0.96 -0.34  1.76
+[2,] -0.30  0.05  0.15  0.05 -0.27
+[3,] -0.96  0.15  0.46  0.17 -0.85
+[4,] -0.34  0.05  0.17  0.06 -0.31
+[5,]  1.76 -0.27 -0.85 -0.31  1.56
+
+$PCA_4
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  1.19  1.26  0.92  0.05 -0.72
+[2,]  1.26  1.33  0.98  0.05 -0.76
+[3,]  0.92  0.98  0.72  0.04 -0.56
+[4,]  0.05  0.05  0.04  0.00 -0.03
+[5,] -0.72 -0.76 -0.56 -0.03  0.44</code></pre>
+<pre class="r"><code>round(out.md.partial$pi,2)</code></pre>
+<pre><code>PCA_1 PCA_2 PCA_3 PCA_4 
+ 0.46  0.42  0.04  0.08 </code></pre>
+<pre class="r"><code>out.maskedmash.partial = masked.mash(data,U.canon = U.c,U.data = out.md.partial$U.est.adj,thresh = 1,
+                             U.update = &#39;none&#39;,fixg = F,
+                             usepointmass = TRUE,verbose = TRUE,printevery = 50)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglikelihood at -2814.82&quot;
+[1] &quot;Done 100 iterations, loglikelihood at -2813.10&quot;
+[1] &quot;Done 150 iterations, loglikelihood at -2812.82&quot;
+[1] &quot;Done 200 iterations, loglikelihood at -2812.73&quot;</code></pre>
+<pre class="r"><code>#out_mash_use_masked.md = mash(data, c(U.c,out.md$U.est),verbose = F,outputlevel = 3)
+#fdp_power(out_mash_use_masked.md$result$lfsr,simdata$B)
+out.maskedmash.partial$maskedProp</code></pre>
+<pre><code>[1] 0.6996667</code></pre>
+<pre class="r"><code>power_maskedmash.partial = c()
+fdp_maskedmash.partial = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.maskedmash.partial$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash.partial[l] = temp$power
+ fdp_maskedmash.partial[l] = temp$fdp
+}
+plot(lfsr_list,fdp_maskedmash,type=&#39;l&#39;,ylab=&quot;fdp&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,fdp_mash,col=3)
+lines(lfsr_list,fdp_maskedmash.partial,col=4)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;,&quot;maskedmash0.7&quot;),lty=c(1,1,1),col=c(1,3,4))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(lfsr_list,power_maskedmash,type=&#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,power_mash,col=3)
+lines(lfsr_list,power_maskedmash.partial,col=4)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;,&quot;maskedmash0.7&quot;),lty=c(1,1,1),col=c(1,3,4))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-6-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fdp_maskedmash,power_maskedmash,type = &#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;fdp&quot;)
+lines(fdp_mash,power_mash,col=3)
+lines(fdp_maskedmash.partial,power_maskedmash.partial,col=4)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;,&quot;maskedmash0.7&quot;),lty=c(1,1,1),col=c(1,3,4))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-6-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>out.md.partial2 = masked.md.rank1info(data,U.data = U.pca,printevery = 50,thresh = 2)
+lapply(out.md.partial2$U.est,round,digits=2)</code></pre>
+<pre><code>$PCA_1
+     [,1]  [,2]  [,3]  [,4]  [,5]
+[1,] 0.00  0.00  0.04  0.04  0.04
+[2,] 0.00  0.00 -0.08 -0.08 -0.08
+[3,] 0.04 -0.08  3.33  3.18  3.27
+[4,] 0.04 -0.08  3.18  3.05  3.13
+[5,] 0.04 -0.08  3.27  3.13  3.22
+
+$PCA_2
+      [,1]  [,2] [,3] [,4]  [,5]
+[1,]  3.90  3.86 0.12 -0.1 -0.13
+[2,]  3.86  3.83 0.12 -0.1 -0.13
+[3,]  0.12  0.12 0.00  0.0  0.00
+[4,] -0.10 -0.10 0.00  0.0  0.00
+[5,] -0.13 -0.13 0.00  0.0  0.00
+
+$PCA_3
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  1.81 -0.92 -0.75 -0.45  1.87
+[2,] -0.92  0.46  0.38  0.23 -0.95
+[3,] -0.75  0.38  0.31  0.19 -0.78
+[4,] -0.45  0.23  0.19  0.11 -0.47
+[5,]  1.87 -0.95 -0.78 -0.47  1.93
+
+$PCA_4
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  1.35  1.42  0.09  0.64 -0.63
+[2,]  1.42  1.51  0.09  0.68 -0.67
+[3,]  0.09  0.09  0.01  0.04 -0.04
+[4,]  0.64  0.68  0.04  0.31 -0.30
+[5,] -0.63 -0.67 -0.04 -0.30  0.30</code></pre>
+<pre class="r"><code>round(out.md.partial2$pi,2)</code></pre>
+<pre><code>PCA_1 PCA_2 PCA_3 PCA_4 
+ 0.47  0.40  0.03  0.10 </code></pre>
+<pre class="r"><code>out.maskedmash.partial2 = masked.mash(data,U.canon = U.c,U.data = out.md.partial2$U.est.adj,thresh = 2,
+                             U.update = &#39;none&#39;,fixg = F,
+                             usepointmass = TRUE,verbose = TRUE,printevery = 50)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglikelihood at -3918.33&quot;
+[1] &quot;Done 100 iterations, loglikelihood at -3916.92&quot;
+[1] &quot;Done 150 iterations, loglikelihood at -3916.69&quot;
+[1] &quot;Done 200 iterations, loglikelihood at -3916.61&quot;</code></pre>
+<pre class="r"><code>#out_mash_use_masked.md = mash(data, c(U.c,out.md$U.est),verbose = F,outputlevel = 3)
+#fdp_power(out_mash_use_masked.md$result$lfsr,simdata$B)
+out.maskedmash.partial2$maskedProp</code></pre>
+<pre><code>[1] 0.222</code></pre>
+<pre class="r"><code>power_maskedmash.partial2 = c()
+fdp_maskedmash.partial2 = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.maskedmash.partial2$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash.partial2[l] = temp$power
+ fdp_maskedmash.partial2[l] = temp$fdp
+}
+plot(lfsr_list,fdp_maskedmash,type=&#39;l&#39;,ylab=&quot;fdp&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,fdp_mash,col=3)
+lines(lfsr_list,fdp_maskedmash.partial,col=4)
+lines(lfsr_list,fdp_maskedmash.partial2,col=2)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;,&quot;maskedmash0.7&quot;,&quot;maskedmash0.2&quot;),lty=c(1,1,1,1),col=c(1,3,4,2))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(lfsr_list,power_maskedmash,type=&#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,power_mash,col=3)
+lines(lfsr_list,power_maskedmash.partial,col=4)
+lines(lfsr_list,power_maskedmash.partial2,col=2)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;,&quot;maskedmash0.7&quot;,&quot;maskedmash0.2&quot;),lty=c(1,1,1,1),col=c(1,3,4,2))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fdp_maskedmash,power_maskedmash,type = &#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;fdp&quot;)
+lines(fdp_mash,power_mash,col=3)
+lines(fdp_maskedmash.partial,power_maskedmash.partial,col=4)
+lines(fdp_maskedmash.partial2,power_maskedmash.partial2,col=2)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;,&quot;maskedmash0.7&quot;,&quot;maskedmash0.2&quot;),lty=c(1,1,1,1),col=c(1,3,4,2))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="decrease-signal-strength" class="section level1">
+<h1>decrease signal strength</h1>
+<p>Reduce SNR from 3 to 1.</p>
+<pre class="r"><code>signal_sd = 1
+
+set.seed(12345)
+simdata = genData(300,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.pca = cov_pca(data,5)
+U.pca = U.pca[1:4]
+out.md0 = masked.md.rank1info(data,thresh = 1e10,U.data = U.pca,printevery = 50)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglik at -4719.41&quot;
+[1] &quot;Done 100 iterations, loglik at -4718.73&quot;</code></pre>
+<pre class="r"><code>round(out.md0$pi,2)</code></pre>
+<pre><code>PCA_1 PCA_2 PCA_3 PCA_4 
+ 0.40  0.49  0.05  0.05 </code></pre>
+<pre class="r"><code>lapply(out.md0$U.est,round,digits=2)</code></pre>
+<pre><code>$PCA_1
+     [,1] [,2] [,3] [,4] [,5]
+[1,] 0.01    0 0.11 0.10 0.10
+[2,] 0.00    0 0.00 0.00 0.00
+[3,] 0.11    0 1.27 1.11 1.21
+[4,] 0.10    0 1.11 0.98 1.06
+[5,] 0.10    0 1.21 1.06 1.15
+
+$PCA_2
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  1.22  1.16  0.04 -0.07 -0.17
+[2,]  1.16  1.10  0.04 -0.07 -0.16
+[3,]  0.04  0.04  0.00  0.00 -0.01
+[4,] -0.07 -0.07  0.00  0.00  0.01
+[5,] -0.17 -0.16 -0.01  0.01  0.02
+
+$PCA_3
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  0.27 -0.30 -0.36 -0.19  0.44
+[2,] -0.30  0.32  0.39  0.21 -0.48
+[3,] -0.36  0.39  0.48  0.26 -0.58
+[4,] -0.19  0.21  0.26  0.14 -0.31
+[5,]  0.44 -0.48 -0.58 -0.31  0.71
+
+$PCA_4
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  0.47  0.18 -0.29  0.57 -0.05
+[2,]  0.18  0.07 -0.11  0.22 -0.02
+[3,] -0.29 -0.11  0.18 -0.36  0.03
+[4,]  0.57  0.22 -0.36  0.69 -0.06
+[5,] -0.05 -0.02  0.03 -0.06  0.01</code></pre>
+<p>first run mash</p>
+<pre class="r"><code>U.c = cov_canonical(data)
+out_mash = mash(data, c(U.c,out.md0$U.est.adj),verbose = F)
+lfsr_list = seq(0.01,0.5,length.out = 100)
+power_mash = c()
+fdp_mash = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out_mash$result$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_mash[l] = temp$power
+ fdp_mash[l] = temp$fdp
+}</code></pre>
+<div id="mask-all-z-scores-1" class="section level2">
+<h2>Mask all z scores</h2>
+<p>Now run “masked deconvolution”.</p>
+<pre class="r"><code>out.md1 = masked.md.rank1info(data,U.data = U.pca,printevery = 50)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglik at -2324.38&quot;</code></pre>
+<pre class="r"><code>plot(out.md1$loglik,type=&#39;l&#39;,ylab = &#39;loglik&#39;,xlab=&#39;iterations&#39;)</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>lapply(out.md1$U.est,round,digits=2)</code></pre>
+<pre><code>$PCA_1
+     [,1] [,2] [,3] [,4] [,5]
+[1,] 0.01 0.01 0.10 0.08 0.09
+[2,] 0.01 0.01 0.11 0.09 0.10
+[3,] 0.10 0.11 1.70 1.34 1.48
+[4,] 0.08 0.09 1.34 1.05 1.17
+[5,] 0.09 0.10 1.48 1.17 1.30
+
+$PCA_2
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  1.24  1.18  0.13 -0.03 -0.20
+[2,]  1.18  1.12  0.13 -0.03 -0.19
+[3,]  0.13  0.13  0.01  0.00 -0.02
+[4,] -0.03 -0.03  0.00  0.00  0.01
+[5,] -0.20 -0.19 -0.02  0.01  0.03
+
+$PCA_3
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  0.43 -0.33 -0.47 -0.13  0.64
+[2,] -0.33  0.25  0.36  0.10 -0.49
+[3,] -0.47  0.36  0.52  0.15 -0.71
+[4,] -0.13  0.10  0.15  0.04 -0.20
+[5,]  0.64 -0.49 -0.71 -0.20  0.96
+
+$PCA_4
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  0.00 -0.04  0.03  0.04  0.06
+[2,] -0.04  0.54 -0.42 -0.44 -0.69
+[3,]  0.03 -0.42  0.33  0.34  0.54
+[4,]  0.04 -0.44  0.34  0.36  0.57
+[5,]  0.06 -0.69  0.54  0.57  0.89</code></pre>
+<pre class="r"><code>round(out.md1$pi,2)</code></pre>
+<pre><code>PCA_1 PCA_2 PCA_3 PCA_4 
+ 0.27  0.45  0.13  0.15 </code></pre>
+<pre class="r"><code>out.maskedmash = masked.mash(data,U.canon = U.c,U.data = out.md1$U.est.adj,
+                             U.update = &#39;none&#39;,fixg = F,
+                             usepointmass = TRUE,verbose = TRUE,printevery = 50)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglikelihood at -2334.43&quot;
+[1] &quot;Done 100 iterations, loglikelihood at -2330.04&quot;
+[1] &quot;Done 150 iterations, loglikelihood at -2328.69&quot;
+[1] &quot;Done 200 iterations, loglikelihood at -2328.00&quot;
+[1] &quot;Done 250 iterations, loglikelihood at -2327.62&quot;
+[1] &quot;Done 300 iterations, loglikelihood at -2327.40&quot;
+[1] &quot;Done 350 iterations, loglikelihood at -2327.28&quot;
+[1] &quot;Done 400 iterations, loglikelihood at -2327.20&quot;</code></pre>
+<pre class="r"><code>#out_mash_use_masked.md = mash(data, c(U.c,out.md$U.est),verbose = F,outputlevel = 3)
+#fdp_power(out_mash_use_masked.md$result$lfsr,simdata$B)
+power_maskedmash = c()
+fdp_maskedmash = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.maskedmash$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash[l] = temp$power
+ fdp_maskedmash[l] = temp$fdp
+}
+plot(lfsr_list,fdp_maskedmash,type=&#39;l&#39;,ylab=&quot;fdp&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,fdp_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(lfsr_list,power_maskedmash,type=&#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,power_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fdp_maskedmash,power_maskedmash,type = &#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;fdp&quot;)
+lines(fdp_mash,power_mash,col=3)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;),lty=c(1,1),col=c(1,3))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-10-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>look at posterior weights</p>
+<pre class="r"><code>cor(c(out.maskedmash$lfsr),c(out_mash$result$lfsr))</code></pre>
+<pre><code>[1] 0.6992974</code></pre>
+<pre class="r"><code>out.maskedmash$lfsr[15,]</code></pre>
+<pre><code>[1] 0.4539209 0.4055236 0.1610105 0.1846478 0.2136805</code></pre>
+<pre class="r"><code>out_mash$result$lfsr[15,]</code></pre>
+<pre><code>[1] 0.6050789 0.6585103 0.6595904 0.6332866 0.5891286</code></pre>
+<pre class="r"><code>simdata$B[15,]</code></pre>
+<pre><code>[1] -0.5162118 -0.5162119  0.0000000  0.0000000  0.0000000</code></pre>
+<pre class="r"><code>simdata$Bhat[15,]</code></pre>
+<pre><code>[1]  1.25252251 -0.49681472 -0.02112681 -0.20600366 -1.02953158</code></pre>
+<pre class="r"><code>round(rowSums(out.maskedmash$PosteriorWeights[[15]]),2)</code></pre>
+<pre><code> [1] 0.01 0.01 0.01 0.01 0.04 0.03 0.04 0.03 0.02 0.02 0.02 0.02 0.08 0.08 0.09
+[16] 0.08 0.01 0.01 0.01 0.01 0.03 0.02 0.03 0.03 0.02 0.01 0.02 0.01 0.05 0.05
+[31] 0.05 0.05</code></pre>
+<pre class="r"><code>enumerate.z(simdata$Bhat[15,],0)$z.comb[which(round(rowSums(out.maskedmash$PosteriorWeights[[15]]),2)&gt;=0.1),]</code></pre>
+<pre><code>     V1 V2 V3 V4 V5</code></pre>
+<pre class="r"><code>out.md1$post_weights[[15]][which(round(rowSums(out.maskedmash$PosteriorWeights[[15]]),2)&gt;=0.1),]</code></pre>
+<pre><code>     PCA_1 PCA_2 PCA_3 PCA_4</code></pre>
+</div>
+<div id="mask-partial-z-scores-1" class="section level2">
+<h2>mask partial z scores</h2>
+<pre class="r"><code>out.md.partial = masked.md.rank1info(data,U.data = U.pca,printevery = 50,thresh = 1)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglik at -3041.76&quot;</code></pre>
+<pre class="r"><code>plot(out.md.partial$loglik,type=&#39;l&#39;,ylab = &#39;loglik&#39;,xlab=&#39;iterations&#39;)</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>lapply(out.md.partial$U.est,round,digits=2)</code></pre>
+<pre><code>$PCA_1
+     [,1] [,2] [,3] [,4] [,5]
+[1,] 0.01 0.01 0.11 0.08 0.09
+[2,] 0.01 0.01 0.12 0.09 0.11
+[3,] 0.11 0.12 1.73 1.36 1.52
+[4,] 0.08 0.09 1.36 1.07 1.19
+[5,] 0.09 0.11 1.52 1.19 1.34
+
+$PCA_2
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  1.24  1.18  0.12 -0.01 -0.21
+[2,]  1.18  1.12  0.11 -0.01 -0.20
+[3,]  0.12  0.11  0.01  0.00 -0.02
+[4,] -0.01 -0.01  0.00  0.00  0.00
+[5,] -0.21 -0.20 -0.02  0.00  0.03
+
+$PCA_3
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  0.41 -0.30 -0.46 -0.15  0.63
+[2,] -0.30  0.22  0.34  0.11 -0.46
+[3,] -0.46  0.34  0.52  0.17 -0.71
+[4,] -0.15  0.11  0.17  0.06 -0.23
+[5,]  0.63 -0.46 -0.71 -0.23  0.97
+
+$PCA_4
+     [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]    0  0.00  0.00  0.00  0.00
+[2,]    0  0.51 -0.40 -0.43 -0.66
+[3,]    0 -0.40  0.31  0.34  0.52
+[4,]    0 -0.43  0.34  0.36  0.56
+[5,]    0 -0.66  0.52  0.56  0.87</code></pre>
+<pre class="r"><code>round(out.md.partial$pi,2)</code></pre>
+<pre><code>PCA_1 PCA_2 PCA_3 PCA_4 
+ 0.26  0.45  0.12  0.16 </code></pre>
+<pre class="r"><code>out.maskedmash.partial = masked.mash(data,U.canon = U.c,U.data = out.md.partial$U.est.adj,thresh = 1,
+                             U.update = &#39;none&#39;,fixg = F,
+                             usepointmass = TRUE,verbose = TRUE,printevery = 50)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglikelihood at -3052.02&quot;
+[1] &quot;Done 100 iterations, loglikelihood at -3047.74&quot;
+[1] &quot;Done 150 iterations, loglikelihood at -3046.47&quot;
+[1] &quot;Done 200 iterations, loglikelihood at -3045.82&quot;
+[1] &quot;Done 250 iterations, loglikelihood at -3045.44&quot;
+[1] &quot;Done 300 iterations, loglikelihood at -3045.22&quot;
+[1] &quot;Done 350 iterations, loglikelihood at -3045.08&quot;
+[1] &quot;Done 400 iterations, loglikelihood at -3045.01&quot;</code></pre>
+<pre class="r"><code>#out_mash_use_masked.md = mash(data, c(U.c,out.md$U.est),verbose = F,outputlevel = 3)
+#fdp_power(out_mash_use_masked.md$result$lfsr,simdata$B)
+out.maskedmash.partial$maskedProp</code></pre>
+<pre><code>[1] 0.656</code></pre>
+<pre class="r"><code>power_maskedmash.partial = c()
+fdp_maskedmash.partial = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.maskedmash.partial$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash.partial[l] = temp$power
+ fdp_maskedmash.partial[l] = temp$fdp
+}
+plot(lfsr_list,fdp_maskedmash,type=&#39;l&#39;,ylab=&quot;fdp&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,fdp_mash,col=3)
+lines(lfsr_list,fdp_maskedmash.partial,col=4)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;,&quot;maskedmash0.7&quot;),lty=c(1,1,1),col=c(1,3,4))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(lfsr_list,power_maskedmash,type=&#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,power_mash,col=3)
+lines(lfsr_list,power_maskedmash.partial,col=4)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;,&quot;maskedmash0.7&quot;),lty=c(1,1,1),col=c(1,3,4))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-12-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fdp_maskedmash,power_maskedmash,type = &#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;fdp&quot;)
+lines(fdp_mash,power_mash,col=3)
+lines(fdp_maskedmash.partial,power_maskedmash.partial,col=4)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;,&quot;maskedmash0.7&quot;),lty=c(1,1,1),col=c(1,3,4))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-12-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>out.md.partial2 = masked.md.rank1info(data,U.data = U.pca,printevery = 50,thresh = 2)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglik at -4218.30&quot;</code></pre>
+<pre class="r"><code>lapply(out.md.partial2$U.est,round,digits=2)</code></pre>
+<pre><code>$PCA_1
+     [,1] [,2] [,3] [,4] [,5]
+[1,] 0.01 0.01 0.12 0.09 0.10
+[2,] 0.01 0.01 0.10 0.08 0.09
+[3,] 0.12 0.10 1.67 1.34 1.46
+[4,] 0.09 0.08 1.34 1.07 1.18
+[5,] 0.10 0.09 1.46 1.18 1.29
+
+$PCA_2
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  1.29  1.19  0.09 -0.01 -0.16
+[2,]  1.19  1.09  0.09 -0.01 -0.14
+[3,]  0.09  0.09  0.01  0.00 -0.01
+[4,] -0.01 -0.01  0.00  0.00  0.00
+[5,] -0.16 -0.14 -0.01  0.00  0.02
+
+$PCA_3
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  0.32 -0.33 -0.47 -0.20  0.60
+[2,] -0.33  0.34  0.48  0.21 -0.61
+[3,] -0.47  0.48  0.69  0.30 -0.87
+[4,] -0.20  0.21  0.30  0.13 -0.38
+[5,]  0.60 -0.61 -0.87 -0.38  1.11
+
+$PCA_4
+      [,1]  [,2]  [,3]  [,4]  [,5]
+[1,]  0.00 -0.03  0.02  0.03  0.04
+[2,] -0.03  0.35 -0.29 -0.44 -0.58
+[3,]  0.02 -0.29  0.24  0.36  0.48
+[4,]  0.03 -0.44  0.36  0.55  0.72
+[5,]  0.04 -0.58  0.48  0.72  0.96</code></pre>
+<pre class="r"><code>round(out.md.partial2$pi,2)</code></pre>
+<pre><code>PCA_1 PCA_2 PCA_3 PCA_4 
+ 0.27  0.47  0.07  0.18 </code></pre>
+<pre class="r"><code>out.maskedmash.partial2 = masked.mash(data,U.canon = U.c,U.data = out.md.partial2$U.est.adj,thresh = 2,
+                             U.update = &#39;none&#39;,fixg = F,
+                             usepointmass = TRUE,verbose = TRUE,printevery = 50)</code></pre>
+<pre><code>[1] &quot;Done 50 iterations, loglikelihood at -4229.98&quot;
+[1] &quot;Done 100 iterations, loglikelihood at -4225.69&quot;
+[1] &quot;Done 150 iterations, loglikelihood at -4224.55&quot;
+[1] &quot;Done 200 iterations, loglikelihood at -4224.05&quot;
+[1] &quot;Done 250 iterations, loglikelihood at -4223.80&quot;
+[1] &quot;Done 300 iterations, loglikelihood at -4223.66&quot;
+[1] &quot;Done 350 iterations, loglikelihood at -4223.58&quot;</code></pre>
+<pre class="r"><code>#out_mash_use_masked.md = mash(data, c(U.c,out.md$U.est),verbose = F,outputlevel = 3)
+#fdp_power(out_mash_use_masked.md$result$lfsr,simdata$B)
+out.maskedmash.partial2$maskedProp</code></pre>
+<pre><code>[1] 0.1423333</code></pre>
+<pre class="r"><code>power_maskedmash.partial2 = c()
+fdp_maskedmash.partial2 = c()
+for(l in 1:length(lfsr_list)){
+ temp = fdp_power(out.maskedmash.partial2$lfsr,simdata$B,alpha = lfsr_list[l])
+ power_maskedmash.partial2[l] = temp$power
+ fdp_maskedmash.partial2[l] = temp$fdp
+}
+plot(lfsr_list,fdp_maskedmash,type=&#39;l&#39;,ylab=&quot;fdp&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,fdp_mash,col=3)
+lines(lfsr_list,fdp_maskedmash.partial,col=4)
+lines(lfsr_list,fdp_maskedmash.partial2,col=2)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;,&quot;maskedmash0.7&quot;,&quot;maskedmash0.2&quot;),lty=c(1,1,1,1),col=c(1,3,4,2))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(lfsr_list,power_maskedmash,type=&#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;lfsr&quot;)
+lines(lfsr_list,power_mash,col=3)
+lines(lfsr_list,power_maskedmash.partial,col=4)
+lines(lfsr_list,power_maskedmash.partial2,col=2)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;,&quot;maskedmash0.7&quot;,&quot;maskedmash0.2&quot;),lty=c(1,1,1,1),col=c(1,3,4,2))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fdp_maskedmash,power_maskedmash,type = &#39;l&#39;,ylab=&quot;power&quot;,xlab=&quot;fdp&quot;)
+lines(fdp_mash,power_mash,col=3)
+lines(fdp_maskedmash.partial,power_maskedmash.partial,col=4)
+lines(fdp_maskedmash.partial2,power_maskedmash.partial2,col=2)
+legend(&quot;bottomright&quot;,c(&quot;maskedmash&quot;,&quot;mash&quot;,&quot;maskedmash0.7&quot;,&quot;maskedmash0.2&quot;),lty=c(1,1,1,1),col=c(1,3,4,2))</code></pre>
+<p><img src="figure/estimatePriorrank1.Rmd/unnamed-chunk-13-3.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.3 (2020-10-10)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS High Sierra 10.13.6
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] mashr_0.2.40    testthat_3.0.0  ashr_2.2-47     devtools_2.3.2 
+[5] usethis_1.6.3   workflowr_1.6.2
+
+loaded via a namespace (and not attached):
+ [1] xfun_0.18         remotes_2.2.0     lattice_0.20-41   vctrs_0.3.4      
+ [5] htmltools_0.5.0   yaml_2.2.1        rlang_0.4.8       pkgbuild_1.1.0   
+ [9] mixsqp_0.3-43     later_1.1.0.1     pillar_1.4.6      glue_1.4.2       
+[13] withr_2.3.0       sessioninfo_1.1.1 plyr_1.8.6        lifecycle_0.2.0  
+[17] stringr_1.4.0     mvtnorm_1.1-1     memoise_1.1.0     evaluate_0.14    
+[21] knitr_1.30        callr_3.5.1       httpuv_1.5.4      ps_1.4.0         
+[25] invgamma_1.1      irlba_2.3.3       fansi_0.4.1       Rcpp_1.0.5       
+[29] promises_1.1.1    backports_1.1.10  rmeta_3.0         desc_1.2.0       
+[33] pkgload_1.1.0     abind_1.4-5       truncnorm_1.0-8   fs_1.5.0         
+[37] digest_0.6.27     stringi_1.5.3     processx_3.4.4    rprojroot_1.3-2  
+[41] grid_4.0.3        cli_2.1.0         tools_4.0.3       magrittr_1.5     
+[45] tibble_3.0.4      crayon_1.3.4      whisker_0.4       pkgconfig_2.0.3  
+[49] ellipsis_0.3.1    Matrix_1.2-18     SQUAREM_2020.5    prettyunits_1.1.1
+[53] assertthat_0.2.1  rmarkdown_2.5     rstudioapi_0.11   R6_2.4.1         
+[57] git2r_0.27.1      compiler_4.0.3   </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
