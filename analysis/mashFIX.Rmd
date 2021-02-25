@@ -1,0 +1,66 @@
+---
+title: "Fix the mash issue with low rank matrix"
+author: "Dongyue Xie"
+date: "2021-02-25"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(devtools)
+load_all('code/mashr/')
+library(mvtnorm)
+source('code/genData.R')
+source('code/utils.R')
+```
+
+```{r}
+signal_sd = sqrt(3)
+u1 = c(1,1,1,0,0,0,0,0)
+u2 = 1-u1
+R = length(u1)
+cov1 = tcrossprod(u1)
+#cov1[1,1] = 1
+cov2 = tcrossprod(u2)
+#cov2[5,5] = 1
+#cov2[4,4] = 1
+
+U = list(U1=cov1,U2=cov2)
+#U = list(U1=cov1)
+U
+set.seed(12345)
+n=500
+simdata = genData(n,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+U.pca  = cov_pca(data,3)
+# U.init = list(U1 = rWishart(1,5,diag(5))[,,1], 
+#               U2 = rWishart(1,5,diag(5))[,,1],
+#               U3 = rWishart(1,5,diag(5))[,,1],
+#               U4 = rWishart(1,5,diag(5))[,,1])
+
+U.ed   = cov_ed(data,U.pca)
+
+#U.teem = cov_ed(data,U.pca,strong,algorithm = 'teem')
+#U.teem = list(U1 = U.teem[,,1],U2 = U.teem[,,2])
+out_mash = mash(data, c(U.c,U.ed),verbose = T)
+fdp_power(out_mash$result$lfsr,simdata$B)
+```
+
+
+adjust cov matrices
+
+```{r}
+nu = R+1
+U.ed.eb = lapply(U.ed,function(x){
+  s2 = R*nu/(n+nu)/sum(diag(solve(n*(x+diag(R)))))
+  x + s2/n*diag(R)
+})
+
+out_mash2 = mash(data, c(U.c,U.ed.eb),verbose = T)
+fdp_power(out_mash2$result$lfsr,simdata$B)
+```
+
