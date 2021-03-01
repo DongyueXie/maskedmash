@@ -1,0 +1,69 @@
+---
+title: "masked deconvolution"
+author: "Dongyue Xie"
+date: "2021-02-23"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Explore the effect of initialization on masked deconvolution.
+
+A. use all samples:  Initialize at random; add point mass and canonical covariance matrices.
+
+B. use strong samples found by ash: Initializae at random; initialize using PCA.
+
+```{r}
+library(devtools)
+load_all('code/mashr/')
+files.sources = list.files('code/maskedmashr/')
+sapply(files.sources, function(x){source(paste('code/maskedmashr/',x,sep=''))})
+source('code/misc/simData.R')
+
+signal_sd = sqrt(3)
+err_sd = 1
+R = 5
+Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
+             U3 = tcrossprod(c(1,1,0,0,0)),
+             U4 = tcrossprod(c(0,0,1,1,1)))
+Ulist = lapply(Ulist,function(x){x*signal_sd^2})
+set.seed(12345)
+simdata = simData(900,Ulist)
+
+## use all samples, init at random
+data = mash_set_data(simdata$Bhat)
+U.c = cov_canonical(data)
+U.init.random  = list(U1 = rWishart(1,R,diag(R))[,,1],
+                      U2 = rWishart(1,R,diag(R))[,,1],
+                      U3 = rWishart(1,R,diag(R))[,,1])
+out.full = masked.md(data,U.canon = U.c,U.data = U.init.random,usepointmass = TRUE)
+
+## find strong samples
+
+m.1by1 = mash_1by1(data)
+strong = get_significant_results(m.1by1)
+
+### init at random
+out.strong.random = masked.md(data,strong=strong,U.canon = NULL,U.data = U.init.random,usepointmass = FALSE)
+
+### init using PCA
+
+U.pca = cov_pca(data,2,strong)
+out.strong.pca = masked.md(data,strong=strong,U.canon = NULL,U.data = U.pca,usepointmass = FALSE)
+```
+
+
+```{r}
+lapply(normalize_Ulist(out.full$U.est),round,digits=2)
+round(out.full$pi[out.full$pi>0.01],2)
+
+
+lapply(normalize_Ulist(out.strong.random$U.est),round,digits=2)
+round(out.strong.random$pi,2)
+
+
+lapply(normalize_Ulist(out.strong.pca$U.est),round,digits=2)
+round(out.strong.pca$pi,2)
+```
