@@ -9,14 +9,14 @@ editor_options:
 
 ## Introduction
 
-Fit masked mash to the dataset, with all z-scores masked, then run an iterative procedure see if it controls FDR.
+Fit masked mash, with z-scores masked, then run an iterative procedure see if it controls FDR.
 
 Generate 2000 samples from 4 Normal mixtures with covariance matrix: null, identity, equal effects in first 2 conditions, equal effects in the last 3 conditions. Repeat the process 30 times.  
 
-$$x_i\sim 0.25N(0,0)+0.25N(0,3\times I) + 0.25N(0,3\times U_1) = 0.25N(0,3\times U_2).$$
+$$\mu_i\sim 0.25N(0,0)+0.25N(0,3\times I) + 0.25N(0,3\times U_1) + 0.25N(0,3\times U_2).$$
 
 
-```{r,message=FALSE,echo=FALSE}
+```{r,message=FALSE,results=FALSE}
 library(parallel)
 library(devtools)
 load_all('code/mashr/')
@@ -25,7 +25,7 @@ sapply(files.sources, function(x){source(paste('code/maskedmashr/',x,sep=''))})
 ```
 
 ```{r}
-out = readRDS('output/maskedmashFDR/MN_K4N2000.rds')
+out = readRDS('output/maskedmashFDR/MN_SNR3K4N2000.rds')
 
 #'@title get summary from simu study
 #'@description given a sequence of
