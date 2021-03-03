@@ -1,0 +1,96 @@
+---
+title: "masked mash on FDR control"
+author: "Dongyue Xie"
+date: "2021-02-17"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Fit masked mash to the dataset, with all z-scores masked, then run an iterative procedure see if it controls FDR.
+
+Generate 2000 samples from 4 Normal mixtures with covariance matrix: null, identity, equal effects in first 2 conditions, equal effects in the last 3 conditions. Repeat the process 30 times.  
+
+$$x_i\sim 0.25N(0,0)+0.25N(0,3\times I) + 0.25N(0,3\times U_1) = 0.25N(0,3\times U_2).$$
+
+
+```{r,message=FALSE,echo=FALSE}
+library(parallel)
+library(devtools)
+load_all('code/mashr/')
+files.sources = list.files('code/maskedmashr/')
+sapply(files.sources, function(x){source(paste('code/maskedmashr/',x,sep=''))})
+```
+
+```{r}
+out = readRDS('output/maskedmashFDR/MN_K4N2000.rds')
+
+#'@title get summary from simu study
+#'@description given a sequence of
+get.simu.result = function(out,alpha){
+
+  fdr_result = mclapply(out,function(x){
+    #print(length(x))
+    non_null_idx = which(x$data$B!=0)
+    #print(non_null_idx)
+    fp = lapply(x[-1],function(z){
+      rej = mashFDR(x$data$Bhat,z,alpha)$rej.set
+      fdps = fdp(rej,non_null_idx)
+      powers = powr(rej,non_null_idx)
+      c(fdps,powers)
+    })
+
+    do.call(cbind,fp)
+  },mc.cores = 4)
+
+  temp = do.call(rbind,fdr_result)
+  fdr.idx = seq(1,2*length(out),2)
+  list(FDP = temp[fdr.idx,],POWER = temp[-fdr.idx,])
+}
+
+
+alpha_list = seq(0,0.5,length.out = 50)
+fdr = c()
+powers = c()
+for(i in 1:length(alpha_list)){
+  temp = get.simu.result(out,alpha_list[i])
+  fdr = rbind(fdr,colMeans(temp$FDP))
+  powers = rbind(powers,colMeans(temp$POWER))
+}
+
+#########
+
+plot(alpha_list,fdr[,1],type='l',lwd=2,ylim = range(fdr),xlab = 'Target FDR Level', ylab = 'FDR')
+for(i in 2:ncol(fdr)){
+  lines(alpha_list,fdr[,i],lwd=2,col=i,lty=i)
+}
+abline(a=0,b=1,lty=1,col='grey80')
+legend('bottomright',c("mash","mash.on.maskedZ.all","mash.on.maskedZ.40%","masked.mash.all","masked.mash.40%"),
+       lty = 1:5,col=1:5,lwd=rep(2,5))
+
+#########
+
+plot(alpha_list,powers[,1],type='l',lwd=2,ylim = range(powers),xlab = 'Target FDR Level', ylab = 'Power')
+for(i in 2:ncol(powers)){
+  lines(alpha_list,powers[,i],lwd=2,col=i,lty=i)
+}
+legend('bottomright',c("mash","mash.on.maskedZ.all","mash.on.maskedZ.40%","masked.mash.all","masked.mash.40%"),
+       lty = 1:5,col=1:5,lwd=rep(2,5))
+
+#########
+
+plot(fdr[,1],powers[,1],type='l',lwd=2,xlim = range(fdr),ylim = range(powers),xlab = 'FDR', ylab = 'Power')
+for(i in 2:ncol(powers)){
+  lines(fdr[,i],powers[,i],lwd=2,col=i,lty=i)
+}
+legend('bottomright',c("mash","mash.on.maskedZ.all","mash.on.maskedZ.40%","masked.mash.all","masked.mash.40%"),
+       lty = 1:5,col=1:5,lwd=rep(2,5))
+
+
+```
+
+
+
+
