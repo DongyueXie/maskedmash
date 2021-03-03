@@ -515,16 +515,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreebdc76cd924d505b70699b758976d3a3f7420c9bftargetblankbdc76cda"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/bdc76cd924d505b70699b758976d3a3f7420c9bf" target="_blank">bdc76cd</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree6c7e5183fd91993515b6e0bb16c719a50b0663c6targetblank6c7e518a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/6c7e5183fd91993515b6e0bb16c719a50b0663c6" target="_blank">6c7e518</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreebdc76cd924d505b70699b758976d3a3f7420c9bftargetblankbdc76cda" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree6c7e5183fd91993515b6e0bb16c719a50b0663c6targetblank6c7e518a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/bdc76cd924d505b70699b758976d3a3f7420c9bf" target="_blank">bdc76cd</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/6c7e5183fd91993515b6e0bb16c719a50b0663c6" target="_blank">6c7e518</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -598,6 +598,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/6c7e5183fd91993515b6e0bb16c719a50b0663c6/analysis/maskedmashFDR.Rmd" target="_blank">6c7e518</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-03
+</td>
+<td>
+wflow_publish(“analysis/maskedmashFDR.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/maskedmash/4fac045fa87d26e1e8628fd45ccb0cfdaf283aa6/docs/maskedmashFDR.html" target="_blank">4fac045</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/maskedmash/blob/bdc76cd924d505b70699b758976d3a3f7420c9bf/analysis/maskedmashFDR.Rmd" target="_blank">bdc76cd</a>
 </td>
 <td>
@@ -619,16 +653,15 @@ wflow_publish(“analysis/maskedmashFDR.Rmd”)
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Fit masked mash to the dataset, with all z-scores masked, then run an iterative procedure see if it controls FDR.</p>
+<p>Fit masked mash, with z-scores masked, then run an iterative procedure see if it controls FDR.</p>
 <p>Generate 2000 samples from 4 Normal mixtures with covariance matrix: null, identity, equal effects in first 2 conditions, equal effects in the last 3 conditions. Repeat the process 30 times.</p>
-<p><span class="math display">\[x_i\sim 0.25N(0,0)+0.25N(0,3\times I) + 0.25N(0,3\times U_1) = 0.25N(0,3\times U_2).\]</span></p>
-<pre><code>        calc_post.R estimate_pi.R mash_on_maskedZ.R mash_wrapper.R mashFDR.R
-value   ?           ?             ?                 ?              ?        
-visible FALSE       FALSE         FALSE             FALSE          FALSE    
-        maskedmash_wrapper.R maskedmash.R maskedmd.R utils.R
-value   ?                    ?            ?          ?      
-visible FALSE                FALSE        FALSE      FALSE  </code></pre>
-<pre class="r"><code>out = readRDS(&#39;output/maskedmashFDR/MN_K4N2000.rds&#39;)
+<p><span class="math display">\[\mu_i\sim 0.25N(0,0)+0.25N(0,3\times I) + 0.25N(0,3\times U_1) + 0.25N(0,3\times U_2).\]</span></p>
+<pre class="r"><code>library(parallel)
+library(devtools)
+load_all(&#39;code/mashr/&#39;)
+files.sources = list.files(&#39;code/maskedmashr/&#39;)
+sapply(files.sources, function(x){source(paste(&#39;code/maskedmashr/&#39;,x,sep=&#39;&#39;))})</code></pre>
+<pre class="r"><code>out = readRDS(&#39;output/maskedmashFDR/MN_SNR3K4N2000.rds&#39;)
 
 #&#39;@title get summary from simu study
 #&#39;@description given a sequence of
@@ -673,6 +706,43 @@ abline(a=0,b=1,lty=1,col=&#39;grey80&#39;)
 legend(&#39;bottomright&#39;,c(&quot;mash&quot;,&quot;mash.on.maskedZ.all&quot;,&quot;mash.on.maskedZ.40%&quot;,&quot;masked.mash.all&quot;,&quot;masked.mash.40%&quot;),
        lty = 1:5,col=1:5,lwd=rep(2,5))</code></pre>
 <p><img src="figure/maskedmashFDR.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/4fac045fa87d26e1e8628fd45ccb0cfdaf283aa6/docs/figure/maskedmashFDR.Rmd/unnamed-chunk-2-1.png" target="_blank">4fac045</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#########
 
 plot(alpha_list,powers[,1],type=&#39;l&#39;,lwd=2,ylim = range(powers),xlab = &#39;Target FDR Level&#39;, ylab = &#39;Power&#39;)
@@ -682,6 +752,43 @@ for(i in 2:ncol(powers)){
 legend(&#39;bottomright&#39;,c(&quot;mash&quot;,&quot;mash.on.maskedZ.all&quot;,&quot;mash.on.maskedZ.40%&quot;,&quot;masked.mash.all&quot;,&quot;masked.mash.40%&quot;),
        lty = 1:5,col=1:5,lwd=rep(2,5))</code></pre>
 <p><img src="figure/maskedmashFDR.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-2">
+Past versions of unnamed-chunk-2-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/4fac045fa87d26e1e8628fd45ccb0cfdaf283aa6/docs/figure/maskedmashFDR.Rmd/unnamed-chunk-2-2.png" target="_blank">4fac045</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#########
 
 plot(fdr[,1],powers[,1],type=&#39;l&#39;,lwd=2,xlim = range(fdr),ylim = range(powers),xlab = &#39;FDR&#39;, ylab = &#39;Power&#39;)
@@ -691,6 +798,43 @@ for(i in 2:ncol(powers)){
 legend(&#39;bottomright&#39;,c(&quot;mash&quot;,&quot;mash.on.maskedZ.all&quot;,&quot;mash.on.maskedZ.40%&quot;,&quot;masked.mash.all&quot;,&quot;masked.mash.40%&quot;),
        lty = 1:5,col=1:5,lwd=rep(2,5))</code></pre>
 <p><img src="figure/maskedmashFDR.Rmd/unnamed-chunk-2-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-3">
+Past versions of unnamed-chunk-2-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/4fac045fa87d26e1e8628fd45ccb0cfdaf283aa6/docs/figure/maskedmashFDR.Rmd/unnamed-chunk-2-3.png" target="_blank">4fac045</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
