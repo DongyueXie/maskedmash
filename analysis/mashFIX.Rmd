@@ -9,13 +9,19 @@ editor_options:
 
 ## Introduction
 
+This analysis shows the effect of introducing inverse Wishart on the covariance matrix.
+
 ```{r}
 library(devtools)
 load_all('code/mashr/')
 library(mvtnorm)
-source('code/genData.R')
-source('code/utils.R')
+source('code/misc/genData.R')
+files.sources = list.files('code/maskedmashr/')
+sapply(files.sources, function(x){source(paste('code/maskedmashr/',x,sep=''))})
+source('code/misc/simData.R')
 ```
+
+## An Example
 
 ```{r}
 signal_sd = sqrt(3)
@@ -50,17 +56,51 @@ out_mash = mash(data, c(U.c,U.ed),verbose = T)
 fdp_power(out_mash$result$lfsr,simdata$B)
 ```
 
+The threshold of lfsr is 0.05 and the FDR should be smaller than 0.05. 
 
-adjust cov matrices
+We now adjust the estimated covariance matrices by using the EB procedure.
 
 ```{r}
-nu = R+1
-U.ed.eb = lapply(U.ed,function(x){
-  s2 = R*nu/(n+nu)/sum(diag(solve(n*(x+diag(R)))))
-  x + s2/n*diag(R)
-})
+# nu = R+1
+# U.ed.eb = lapply(U.ed,function(x){
+#   s2 = R*nu/(n+nu)/sum(diag(solve(n*(x+diag(R)))))
+#   x + s2/n*diag(R)
+# })
 
-out_mash2 = mash(data, c(U.c,U.ed.eb),verbose = T)
+out_mash2 = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = T)
 fdp_power(out_mash2$result$lfsr,simdata$B)
 ```
+
+## More examples 
+
+Generate 2000 samples from 4 Normal mixtures with covariance matrix: null, identity, equal effects in first 2 conditions, equal effects in the last 3 conditions. Repeat the process 30 times.  
+
+$$x_i\sim 0.25N(0,0)+0.25N(0,3\times I) + 0.25N(0,3\times U_1) = 0.25N(0,3\times U_2).$$
+
+```{r}
+signal_sd = sqrt(3)
+err_sd = 1
+R = 5
+Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
+             U2 = diag(R),
+             U3 = tcrossprod(c(1,1,0,0,0)),
+             U4 = tcrossprod(c(0,0,1,1,1)))
+Ulist = lapply(Ulist,function(x){x*signal_sd^2})
+set.seed(12345)
+simdata = simData(2000,Ulist,pi=rep(1/4,4),err_sd)
+
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+U.pca  = cov_pca(data,3)
+U.ed   = cov_ed(data,U.pca)
+out_mash = mash(data, c(U.c,U.ed),verbose = T)
+fdp_power(out_mash$result$lfsr,simdata$B)
+```
+
+```{r}
+out_mash2 = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = T)
+fdp_power(out_mash2$result$lfsr,simdata$B)
+```
+
+
 
