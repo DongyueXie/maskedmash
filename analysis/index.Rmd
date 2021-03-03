@@ -15,6 +15,10 @@ This project explores `masking` in multiple testing.
 ## Analysis
 
 0. [Try AdaPT](tryAdaPT.html)
+1. [masked mash on FDR control, z scores](maskedmashFDR.html)
+2. [masked mash on FDR control, t stattistics](maskedmashFDR_simu_t.html)
 
-1. [effect of masking, known priors](effectOfMasking.html)
-2. [Estimate priors using masked z scores](estimatePrior.html)
+
+## Others
+
+1. [Fix the issue of using low rank matrix, by an EB procedure](mashFIX.html)
