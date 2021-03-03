@@ -24,6 +24,8 @@
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
 <script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -301,7 +303,13 @@ $(document).ready(function () {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/DongyueXie/maskedmash">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -336,7 +344,7 @@ $(document).ready(function () {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-02-08
+<strong>Last updated:</strong> 2021-03-03
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -367,16 +375,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong99bfe5d"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> 99bfe5d </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree4359555c6466dadd72f9cfa0ac612aef9285eb5ftargetblank4359555a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/4359555c6466dadd72f9cfa0ac612aef9285eb5f" target="_blank">4359555</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong99bfe5d" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree4359555c6466dadd72f9cfa0ac612aef9285eb5ftargetblank4359555a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 99bfe5d. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/4359555c6466dadd72f9cfa0ac612aef9285eb5f" target="_blank">4359555</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -389,19 +397,23 @@ Ignored files:
     Ignored:    code/.DS_Store
 
 Untracked files:
-    Untracked:  code/calc_post.R
-    Untracked:  code/ebupdate.R
-    Untracked:  code/genData.R
-    Untracked:  code/genData2rank1.R
+    Untracked:  analysis/mashdiagnostics.Rmd
     Untracked:  code/mashr/
-    Untracked:  code/maskedmash.R
-    Untracked:  code/maskedmd.R
-    Untracked:  code/plot_ztilde.R
-    Untracked:  code/utils.R
-    Untracked:  data/ztilde.png
+    Untracked:  code/maskedmashr/
+    Untracked:  code/misc/
+    Untracked:  code/simulation/
+    Untracked:  output/maskedmashFDR/
 
 Unstaged changes:
     Modified:   analysis/estimatePrior.Rmd
+    Deleted:    code/calc_post.R
+    Deleted:    code/ebupdate.R
+    Deleted:    code/genData.R
+    Deleted:    code/genData2rank1.R
+    Deleted:    code/maskedmash.R
+    Deleted:    code/maskedmd.R
+    Deleted:    code/plot_ztilde.R
+    Deleted:    code/utils.R
 
 </code></pre>
 <p>
@@ -445,13 +457,13 @@ Message
 Rmd
 </td>
 <td>
-99bfe5d
+<a href="https://github.com/DongyueXie/maskedmash/blob/4359555c6466dadd72f9cfa0ac612aef9285eb5f/analysis/index.Rmd" target="_blank">4359555</a>
 </td>
 <td>
 Dongyue Xie
 </td>
 <td>
-2021-02-08
+2021-03-03
 </td>
 <td>
 wflow_publish(“analysis/index.Rmd”)
@@ -462,7 +474,7 @@ wflow_publish(“analysis/index.Rmd”)
 html
 </td>
 <td>
-f841e91
+<a href="https://rawcdn.githack.com/DongyueXie/maskedmash/d1b73ece8390ffa56866c8e495b41b17afed390d/docs/index.html" target="_blank">d1b73ec</a>
 </td>
 <td>
 Dongyue Xie
@@ -479,7 +491,41 @@ Build site.
 Rmd
 </td>
 <td>
-af92eff
+<a href="https://github.com/DongyueXie/maskedmash/blob/99bfe5d29e26729ea314a620ede0a49f4313955f/analysis/index.Rmd" target="_blank">99bfe5d</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-02-08
+</td>
+<td>
+wflow_publish(“analysis/index.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/maskedmash/f841e91cc68e732770a4e7dee2288c8252c75622/docs/index.html" target="_blank">f841e91</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-02-08
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/af92effef393b0d9e18b4498f8e667ff625028a0/analysis/index.Rmd" target="_blank">af92eff</a>
 </td>
 <td>
 Dongyue Xie
@@ -496,7 +542,7 @@ wflow_publish(c(“analysis/index.Rmd”, “analysis/about.Rmd”, “analysis/
 Rmd
 </td>
 <td>
-4bd16fa
+<a href="https://github.com/DongyueXie/maskedmash/blob/4bd16fa6d072e801537a53e7ac3ff335c1d9eab3/analysis/index.Rmd" target="_blank">4bd16fa</a>
 </td>
 <td>
 Dongyue Xie
@@ -522,9 +568,15 @@ Start workflowr project.
 <div id="analysis" class="section level2">
 <h2>Analysis</h2>
 <ol start="0" style="list-style-type: decimal">
-<li><p><a href="tryAdaPT.html">Try AdaPT</a></p></li>
-<li><p><a href="effectOfMasking.html">effect of masking, known priors</a></p></li>
-<li><p><a href="estimatePrior.html">Estimate priors using masked z scores</a></p></li>
+<li><a href="tryAdaPT.html">Try AdaPT</a></li>
+<li><a href="maskedmashFDR.html">masked mash on FDR control, z scores</a></li>
+<li><a href="maskedmashFDR_simu_t.html">masked mash on FDR control, t stattistics</a></li>
+</ol>
+</div>
+<div id="others" class="section level2">
+<h2>Others</h2>
+<ol style="list-style-type: decimal">
+<li><a href="mashFIX.html">Fix the issue of using low rank matrix, by an EB procedure</a></li>
 </ol>
 </div>
 
