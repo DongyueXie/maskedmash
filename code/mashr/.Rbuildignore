@@ -1,0 +1,11 @@
+^mashr.Rproj$
+^docs$
+^LICENSE\.md$
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.travis\.yml$
+^\.appveyor\.yml$
+^_pkgdown\.yaml$
+^R/todo\.R
+^tests/testthat/estimate_null_cor\.rds
+^tests/testthat/estimate_null_cor_alpha\.rds

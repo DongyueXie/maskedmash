@@ -40,6 +40,14 @@ fdp = function(dis.idx, true.idx){
   }
 }
 
+fsp = function(bhat,b){
+  if(length(bhat)==0){
+    0
+  }else{
+    sum(sign(bhat)!=sign(b))/length(bhat)
+  }
+}
+
 
 auc = function(pred,true.label){
   auc=pROC::roc(response = true.label, predictor = pred,direction = '<',levels = c(0,1))
@@ -58,7 +66,18 @@ fdp_power = function(lfsr,B,alpha=0.05){
   non_null_idx = which(B!=0)
   ff = fdp(which(lfsr<alpha),non_null_idx)
   pp = powr(which(lfsr<alpha),non_null_idx)
+  #fdp.hat = mean(lfsr[which(lfsr<alpha)])
   list(fdp=ff,power=pp)
+}
+
+
+fsp_power = function(lfsr,Bhat,B,alpha=0.05){
+  non_null_idx = which(B!=0)
+  dis.idx = which(lfsr<alpha)
+  ff = fsp(Bhat[dis.idx],B[dis.idx])
+  pp = powr(dis.idx,non_null_idx)
+  fsp.hat = mean(lfsr[dis.idx])
+  list(fsp=ff,power=pp,fsp.hat=fsp.hat)
 }
 
 rmse = function(x,y){sqrt(mean((x-y)^2))}

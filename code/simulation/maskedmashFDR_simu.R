@@ -84,7 +84,7 @@ Ulist = lapply(Ulist,function(x){x*signal_sd^2})
 out = sim_study(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
                 N = 2000,err_sd = 1,
                 nreps=30,mc.cores = 4)
-saveRDS(out,file = 'output/maskedmashFDR/MN_K4N2000.rds')
+saveRDS(out,file = 'output/maskedmashFDR/MN_K4N2000lb.rds')
 
 ####################
 ####################

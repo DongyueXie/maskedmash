@@ -3,7 +3,8 @@
 #'@param Bhat matrix of test statistics
 #'@param P matrix of p values
 
-maskedmash_wrapper = function(Bhat,P=NULL,thresh=NULL,npc=5,Shat=NULL,nu = ncol(Bhat)+1,verbose=FALSE){
+maskedmash_wrapper = function(Bhat,P=NULL,thresh=NULL,npc=5,Shat=NULL,adjust = 'lb',
+                              nu = ncol(Bhat)+1,verbose=FALSE){
 
   R = ncol(Bhat)
   N = nrow(Bhat)
@@ -20,7 +21,7 @@ maskedmash_wrapper = function(Bhat,P=NULL,thresh=NULL,npc=5,Shat=NULL,nu = ncol(
     strong=NULL
   }
   U.pca = cov_pca(data,npc,strong)
-  U.est = masked.md(data,strong=strong,thresh=thresh,U.data=U.pca,verbose=verbose)$U.eb
+  U.est = masked.md(data,strong=strong,thresh=thresh,U.data=U.pca,adjust=adjust,verbose=verbose)$U.eb
   out = masked.mash(data,thresh=thresh,U.canon = U.c,U.data = U.est,verbose=verbose)
   out
 

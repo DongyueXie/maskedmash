@@ -12,6 +12,7 @@ masked.md = function(data,strong=NULL,thresh=NULL,
                      pi=NULL,U.canon=NULL,U.data,
                      usepointmass=FALSE,
                      algorithm.version = 'Rcpp',
+                     adjust = 'lb',
                      nu = NULL,
                      pi_thresh = 1e-8,
                      max_iter=1000,
@@ -118,20 +119,40 @@ masked.md = function(data,strong=NULL,thresh=NULL,
   U.est = Ulist[(usepointmass+length(U.canon)+1):K]
   pi.est = pi[(usepointmass+length(U.canon)+1):K]
 
-  # add eb step to adjust estimated U
-  if(is.null(nu)){
-    nu = R+1
-  }
-  U.eb = lapply(1:length(U.est),function(k){
-    nk = N*pi.est[k]
-    if(nk>R){
-      s2.hat = R*nu/(nk+nu)/sum(diag(solve(nk*(U.est[[k]]+I_R))))
-      (nk/(nk+nu-R-1))*U.est[[k]] + ((R+1-nu+s2.hat)/(nk+nu-R-1))*I_R
-    }else{
-      NULL
+  if(!is.null(adjust)){
+    if(adjust == 'prior'){
+      if(is.null(nu)){
+        nu = R+1
+      }
+      U.eb = lapply(1:length(U.est),function(k){
+        nk = N*pi.est[k]
+        if(nk>R){
+          s2.hat = R*nu/(nk+nu)/sum(diag(solve(nk*(U.est[[k]]+I_R))))
+          (nk/(nk+nu-R-1))*U.est[[k]] + ((R+1-nu+s2.hat)/(nk+nu-R-1))*I_R
+        }else{
+          NULL
+        }
+      })
+
     }
-  })
+
+    if(adjust == "lb"){
+      U.eb = lapply(1:length(U.est),function(k){
+        nk = N*pi.est[k]
+        if(nk>R){
+          temp = eigen(U.est[[k]])
+          temp$vectors%*%(diag(pmax(2/sqrt(nk),temp$values)))%*%t(temp$vectors)
+        }else{
+          NULL
+        }
+      })
+    }
+  }
+
   U.eb = U.eb[lengths(U.eb) != 0]
+
+  # add eb step to adjust estimated U
+
 
   result = list()
   result$U.est = U.est
