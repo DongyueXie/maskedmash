@@ -7,21 +7,18 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Introduction
 
-This analysis shows the effect of introducing inverse Wishart on the covariance matrix.
-
-```{r}
+```{r,message=FALSE,results=FALSE}
 library(devtools)
 load_all('code/mashr/')
 library(mvtnorm)
 source('code/misc/genData.R')
 files.sources = list.files('code/maskedmashr/')
 sapply(files.sources, function(x){source(paste('code/maskedmashr/',x,sep=''))})
-source('code/misc/simData.R')
 ```
 
-## An Example
+
+### nk = 100
 
 ```{r}
 signal_sd = sqrt(3)
@@ -38,69 +35,160 @@ U = list(U1=cov1,U2=cov2)
 #U = list(U1=cov1)
 U
 set.seed(12345)
+n=100
+simdata = genData(n,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+out_mash_true = mash(data, c(U.c,U),verbose = F)
+
+m.1by1 = mash_1by1(data)
+strong = get_significant_results(m.1by1)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = 'NULL',U.ed = U.ed,n.ed=length(strong))
+#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash_prior = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = 'prior',U.ed = U.ed,n.ed=length(strong))
+
+out_mash_lb = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = 'lb',U.ed = U.ed,n.ed=length(strong))
+
+fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_prior$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.prior","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05")
+
+cm = cbind(c(cor(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr))))
+
+rownames(cm) = c("cor","rmse")
+colnames(cm) = c("U.ed","U.ed.prior","U.ed.lb")
+
+knitr::kable(round(cm,3),caption = "correlation and rmse between lfsr from model with true U and model with estimated U")
+
+```
+
+
+### nk = 500
+
+```{r}
 n=500
 simdata = genData(n,U,signal_sd)
 data = mash_set_data(simdata$Bhat,simdata$Shat)
 U.c = cov_canonical(data)
-U.pca  = cov_pca(data,3)
-# U.init = list(U1 = rWishart(1,5,diag(5))[,,1], 
-#               U2 = rWishart(1,5,diag(5))[,,1],
-#               U3 = rWishart(1,5,diag(5))[,,1],
-#               U4 = rWishart(1,5,diag(5))[,,1])
+out_mash_true = mash(data, c(U.c,U),verbose = F)
 
-U.ed   = cov_ed(data,U.pca)
+m.1by1 = mash_1by1(data)
+strong = get_significant_results(m.1by1)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = 'NULL',U.ed = U.ed,n.ed=length(strong))
+#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash_prior = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = 'prior',U.ed = U.ed,n.ed=length(strong))
 
-#U.teem = cov_ed(data,U.pca,strong,algorithm = 'teem')
-#U.teem = list(U1 = U.teem[,,1],U2 = U.teem[,,2])
-out_mash = mash(data, c(U.c,U.ed),verbose = T)
-fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash_lb = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = 'lb',U.ed = U.ed,n.ed=length(strong))
+
+fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_prior$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.prior","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05")
+
+cm = cbind(c(cor(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr))))
+
+rownames(cm) = c("cor","rmse")
+colnames(cm) = c("U.ed","U.ed.prior","U.ed.lb")
+
+knitr::kable(round(cm,3),caption = "correlation and rmse between lfsr from model with true U and model with estimated U")
+
 ```
 
-The threshold of lfsr is 0.05 and the FDR should be smaller than 0.05. 
-
-We now adjust the estimated covariance matrices by using the EB procedure.
+### nk = 1000
 
 ```{r}
-# nu = R+1
-# U.ed.eb = lapply(U.ed,function(x){
-#   s2 = R*nu/(n+nu)/sum(diag(solve(n*(x+diag(R)))))
-#   x + s2/n*diag(R)
-# })
-
-out_mash2 = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = T)
-fdp_power(out_mash2$result$lfsr,simdata$B)
-```
-
-## More examples 
-
-Generate 2000 samples from 4 Normal mixtures with covariance matrix: null, identity, equal effects in first 2 conditions, equal effects in the last 3 conditions. Repeat the process 30 times.  
-
-$$x_i\sim 0.25N(0,0)+0.25N(0,3\times I) + 0.25N(0,3\times U_1) = 0.25N(0,3\times U_2).$$
-
-```{r}
-signal_sd = sqrt(3)
-err_sd = 1
-R = 5
-Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
-             U2 = diag(R),
-             U3 = tcrossprod(c(1,1,0,0,0)),
-             U4 = tcrossprod(c(0,0,1,1,1)))
-Ulist = lapply(Ulist,function(x){x*signal_sd^2})
-set.seed(12345)
-simdata = simData(2000,Ulist,pi=rep(1/4,4),err_sd)
-
+n=1000
+simdata = genData(n,U,signal_sd)
 data = mash_set_data(simdata$Bhat,simdata$Shat)
 U.c = cov_canonical(data)
-U.pca  = cov_pca(data,3)
-U.ed   = cov_ed(data,U.pca)
-out_mash = mash(data, c(U.c,U.ed),verbose = T)
-fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash_true = mash(data, c(U.c,U),verbose = F)
+
+m.1by1 = mash_1by1(data)
+strong = get_significant_results(m.1by1)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = 'NULL',U.ed = U.ed,n.ed=length(strong))
+#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash_prior = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = 'prior',U.ed = U.ed,n.ed=length(strong))
+
+out_mash_lb = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = 'lb',U.ed = U.ed,n.ed=length(strong))
+
+fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_prior$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.prior","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05")
+
+cm = cbind(c(cor(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr))))
+
+rownames(cm) = c("cor","rmse")
+colnames(cm) = c("U.ed","U.ed.prior","U.ed.lb")
+
+knitr::kable(round(cm,3),caption = "correlation and rmse between lfsr from model with true U and model with estimated U")
+
 ```
+
+### nk = 5000
 
 ```{r}
-out_mash2 = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = T)
-fdp_power(out_mash2$result$lfsr,simdata$B)
-```
+n=5000
+simdata = genData(n,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+out_mash_true = mash(data, c(U.c,U),verbose = F)
 
+m.1by1 = mash_1by1(data)
+strong = get_significant_results(m.1by1)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = 'NULL',U.ed = U.ed,n.ed=length(strong))
+#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash_prior = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = 'prior',U.ed = U.ed,n.ed=length(strong))
+
+out_mash_lb = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = 'lb',U.ed = U.ed,n.ed=length(strong))
+
+fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_prior$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.prior","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05")
+
+cm = cbind(c(cor(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr))))
+
+rownames(cm) = c("cor","rmse")
+colnames(cm) = c("U.ed","U.ed.prior","U.ed.lb")
+
+knitr::kable(round(cm,3),caption = "correlation and rmse between lfsr from model with true U and model with estimated U")
+```
 
 
