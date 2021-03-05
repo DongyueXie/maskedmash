@@ -7,6 +7,56 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r,eval=FALSE}
+library(devtools)
+
+library(mashr)
+library(mvtnorm)
+source('code/misc/genData.R')
+files.sources = list.files('code/maskedmashr/')
+sapply(files.sources, function(x){source(paste('code/maskedmashr/',x,sep=''))})
+
+signal_sd = sqrt(3)
+u1 = c(1,1,0,0,0)
+u2 = 1-u1
+R = length(u1)
+cov1 = tcrossprod(u1)
+#cov1[1,1] = 1
+cov2 = tcrossprod(u2)
+#cov2[5,5] = 1
+#cov2[4,4] = 1
+
+U = list(U1=cov1,U2=cov2)
+#U = list(U1=cov1)
+U
+set.seed(12345)
+n=1e5
+simdata = genData(n,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+out_mash_true = mash(data, c(U.c,U),verbose = T)
+
+
+strong = 1:nrow(simdata$Bhat)
+U.pca = cov_pca(data,2,strong)
+U.pca = U.pca[1:2]
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = T,adjust = 'NULL',U.ed = U.ed,n.ed=length(strong))
+#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash_prior = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = T,adjust = 'prior',U.ed = U.ed,n.ed=length(strong))
+
+out_mash_lb = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = T,adjust = 'lb',U.ed = U.ed,n.ed=length(strong))
+
+
+
+mashfixN1e5 = list(simdata=simdata,U.ed=U.ed,out_mash=out_mash,out_mash_true=out_mash_true,
+                   out_mash_prior=out_mash_prior,out_mash_lb=out_mash_lb)
+
+saveRDS(mashfixN1e5,file = 'output/mashfixN1e5.rds')
+```
+
 set $n_1=n_2=10^5$
 
 ```{r,message=FALSE,results=FALSE}
