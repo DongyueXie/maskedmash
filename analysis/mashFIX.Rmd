@@ -7,6 +7,9 @@ editor_options:
   chunk_output_type: console
 ---
 
+## Introduction
+
+Illustrate methods to fix the issue of lfsr in mash, when using rank 1 matrix. See [here](rank1Fix.pdf) for a description of solutions.
 
 ```{r,message=FALSE,results=FALSE}
 library(devtools)
@@ -59,7 +62,15 @@ fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
       unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
 
 colnames(fp) = c("True.U","U.ed","U.ed.prior","U.ed.lb")
-knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05, output fdp")
+
+fp = cbind(unlist(fsp_power(out_mash_true$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash_prior$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash_lb$result$lfsr,simdata$Bhat,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.prior","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05, output fsp")
 
 cm = cbind(c(cor(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr))),
       c(cor(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr))),
@@ -102,6 +113,14 @@ fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
 colnames(fp) = c("True.U","U.ed","U.ed.prior","U.ed.lb")
 knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05")
 
+fp = cbind(unlist(fsp_power(out_mash_true$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash_prior$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash_lb$result$lfsr,simdata$Bhat,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.prior","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05, output fsp")
+
 cm = cbind(c(cor(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr))),
       c(cor(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr))),
       c(cor(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr))))
@@ -142,6 +161,14 @@ fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
 colnames(fp) = c("True.U","U.ed","U.ed.prior","U.ed.lb")
 knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05")
 
+fp = cbind(unlist(fsp_power(out_mash_true$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash_prior$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash_lb$result$lfsr,simdata$Bhat,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.prior","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05, output fsp")
+
 cm = cbind(c(cor(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr))),
       c(cor(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr))),
       c(cor(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr))))
@@ -180,6 +207,14 @@ fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
 
 colnames(fp) = c("True.U","U.ed","U.ed.prior","U.ed.lb")
 knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05")
+
+fp = cbind(unlist(fsp_power(out_mash_true$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash_prior$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash_lb$result$lfsr,simdata$Bhat,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.prior","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05, output fsp")
 
 cm = cbind(c(cor(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr))),
       c(cor(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr))),
