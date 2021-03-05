@@ -104,7 +104,7 @@ knitr::kable(round(cm,3),caption = "correlation and rmse between lfsr from model
 cat("Prior adjustment:")
 
 
-round(unlist(lapply(1:length(U.est),function(k){
+unlist(lapply(1:length(U.est),function(k){
   nk = 200000*mashfixN1e5$U.ed$pi[k]
   if(nk>R){
     s2.hat = R*nu/(nk+nu)/sum(diag(solve(nk*(U.est[[k]]+diag(R)))))
@@ -113,7 +113,7 @@ round(unlist(lapply(1:length(U.est),function(k){
     NULL
   }
   
-})),4)
+}))
 
 
 cat("Lower bound adjustment:")
