@@ -515,16 +515,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree860d40355a185e0152efb0eae3b541b4fd7dd33etargetblank860d403a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/860d40355a185e0152efb0eae3b541b4fd7dd33e" target="_blank">860d403</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree184d688bc281598e1d19674c23c81b3f5be7c7b5targetblank184d688a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/184d688bc281598e1d19674c23c81b3f5be7c7b5" target="_blank">184d688</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree860d40355a185e0152efb0eae3b541b4fd7dd33etargetblank860d403a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree184d688bc281598e1d19674c23c81b3f5be7c7b5targetblank184d688a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/860d40355a185e0152efb0eae3b541b4fd7dd33e" target="_blank">860d403</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/184d688bc281598e1d19674c23c81b3f5be7c7b5" target="_blank">184d688</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -575,6 +575,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/184d688bc281598e1d19674c23c81b3f5be7c7b5/analysis/mashfixLargeN.Rmd" target="_blank">184d688</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-03-05
+</td>
+<td>
+wflow_publish(“analysis/mashfixLargeN.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/maskedmash/d00ef343584f098b44e5cfd06984ed6e257a530b/docs/mashfixLargeN.html" target="_blank">d00ef34</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-03-05
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -801,7 +835,7 @@ knitr::kable(round(cm,3),caption = &quot;correlation and rmse between lfsr from 
 </table>
 <pre class="r"><code>cat(&quot;Prior adjustment:&quot;)</code></pre>
 <pre><code>Prior adjustment:</code></pre>
-<pre class="r"><code>round(unlist(lapply(1:length(U.est),function(k){
+<pre class="r"><code>unlist(lapply(1:length(U.est),function(k){
   nk = 200000*mashfixN1e5$U.ed$pi[k]
   if(nk&gt;R){
     s2.hat = R*nu/(nk+nu)/sum(diag(solve(nk*(U.est[[k]]+diag(R)))))
@@ -810,8 +844,8 @@ knitr::kable(round(cm,3),caption = &quot;correlation and rmse between lfsr from 
     NULL
   }
   
-})),4)</code></pre>
-<pre><code>[1] 1e-04 1e-04</code></pre>
+}))</code></pre>
+<pre><code>[1] 7.309857e-05 7.250351e-05</code></pre>
 <pre class="r"><code>cat(&quot;Lower bound adjustment:&quot;)</code></pre>
 <pre><code>Lower bound adjustment:</code></pre>
 <pre class="r"><code>round(unlist(lapply(1:length(U.est),function(k){
