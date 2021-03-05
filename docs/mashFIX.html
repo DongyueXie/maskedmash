@@ -424,7 +424,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-03-02
+<strong>Last updated:</strong> 2021-03-04
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -515,16 +515,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreece026fee17b99917c2f0f529ef50ba06f1312f38targetblankce026fea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/ce026fee17b99917c2f0f529ef50ba06f1312f38" target="_blank">ce026fe</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreee562867dd7685d1fd2eafd61879e56cf5ba685a9targetblanke562867a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/e562867dd7685d1fd2eafd61879e56cf5ba685a9" target="_blank">e562867</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreece026fee17b99917c2f0f529ef50ba06f1312f38targetblankce026fea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreee562867dd7685d1fd2eafd61879e56cf5ba685a9targetblanke562867a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/ce026fee17b99917c2f0f529ef50ba06f1312f38" target="_blank">ce026fe</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/e562867dd7685d1fd2eafd61879e56cf5ba685a9" target="_blank">e562867</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -538,24 +538,13 @@ Ignored files:
 
 Untracked files:
     Untracked:  analysis/mashdiagnostics.Rmd
-    Untracked:  analysis/maskedmashFDR.Rmd
     Untracked:  code/mashr/
-    Untracked:  code/maskedmashr/
-    Untracked:  code/misc/
-    Untracked:  code/simulation/
     Untracked:  output/maskedmashFDR/
 
 Unstaged changes:
     Modified:   analysis/estimatePrior.Rmd
-    Modified:   analysis/index.Rmd
-    Deleted:    code/calc_post.R
-    Deleted:    code/ebupdate.R
-    Deleted:    code/genData.R
-    Deleted:    code/genData2rank1.R
-    Deleted:    code/maskedmash.R
-    Deleted:    code/maskedmd.R
-    Deleted:    code/plot_ztilde.R
-    Deleted:    code/utils.R
+    Modified:   code/maskedmashr/mash_wrapper.R
+    Modified:   code/maskedmashr/utils.R
 
 </code></pre>
 <p>
@@ -594,6 +583,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e562867dd7685d1fd2eafd61879e56cf5ba685a9/analysis/mashFIX.Rmd" target="_blank">e562867</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-04
+</td>
+<td>
+wflow_publish(“analysis/mashFIX.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/maskedmash/ba24ea3b6241a69df63bb352396679740255a2a5/docs/mashFIX.html" target="_blank">ba24ea3</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -652,33 +675,14 @@ wflow_publish(“analysis/mashFIX.Rmd”)
 </div>
 </div>
 </div>
-<div id="introduction" class="section level2">
-<h2>Introduction</h2>
-<p>This analysis shows the effect of introducing inverse Wishart on the covariance matrix.</p>
-<pre class="r"><code>library(devtools)</code></pre>
-<pre><code>Loading required package: usethis</code></pre>
-<pre class="r"><code>load_all(&#39;code/mashr/&#39;)</code></pre>
-<pre><code>Loading mashr</code></pre>
-<pre><code>Loading required package: ashr</code></pre>
-<pre><code>
-Attaching package: &#39;testthat&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:devtools&#39;:
-
-    test_file</code></pre>
-<pre class="r"><code>library(mvtnorm)
+<pre class="r"><code>library(devtools)
+load_all(&#39;code/mashr/&#39;)
+library(mvtnorm)
 source(&#39;code/misc/genData.R&#39;)
 files.sources = list.files(&#39;code/maskedmashr/&#39;)
 sapply(files.sources, function(x){source(paste(&#39;code/maskedmashr/&#39;,x,sep=&#39;&#39;))})</code></pre>
-<pre><code>        calc_post.R estimate_pi.R mash_on_maskedZ.R mash_wrapper.R mashFDR.R
-value   ?           ?             ?                 ?              ?        
-visible FALSE       FALSE         FALSE             FALSE          FALSE    
-        maskedmash_wrapper.R maskedmash.R maskedmd.R utils.R
-value   ?                    ?            ?          ?      
-visible FALSE                FALSE        FALSE      FALSE  </code></pre>
-<pre class="r"><code>source(&#39;code/misc/simData.R&#39;)</code></pre>
-</div>
-<div id="an-example" class="section level2">
-<h2>An Example</h2>
+<div id="nk-100" class="section level3">
+<h3>nk = 100</h3>
 <pre class="r"><code>signal_sd = sqrt(3)
 u1 = c(1,1,1,0,0,0,0,0)
 u2 = 1-u1
@@ -714,100 +718,386 @@ $U2
 [7,]    0    0    0    1    1    1    1    1
 [8,]    0    0    0    1    1    1    1    1</code></pre>
 <pre class="r"><code>set.seed(12345)
-n=500
+n=100
 simdata = genData(n,U,signal_sd)
 data = mash_set_data(simdata$Bhat,simdata$Shat)
 U.c = cov_canonical(data)
-U.pca  = cov_pca(data,3)
-# U.init = list(U1 = rWishart(1,5,diag(5))[,,1], 
-#               U2 = rWishart(1,5,diag(5))[,,1],
-#               U3 = rWishart(1,5,diag(5))[,,1],
-#               U4 = rWishart(1,5,diag(5))[,,1])
+out_mash_true = mash(data, c(U.c,U),verbose = F)
 
-U.ed   = cov_ed(data,U.pca)
+m.1by1 = mash_1by1(data)
+strong = get_significant_results(m.1by1)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = &#39;NULL&#39;,U.ed = U.ed,n.ed=length(strong))
+#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash_prior = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = &#39;prior&#39;,U.ed = U.ed,n.ed=length(strong))
 
-#U.teem = cov_ed(data,U.pca,strong,algorithm = &#39;teem&#39;)
-#U.teem = list(U1 = U.teem[,,1],U2 = U.teem[,,2])
-out_mash = mash(data, c(U.c,U.ed),verbose = T)</code></pre>
-<pre><code> - Computing 1000 x 273 likelihood matrix.
- - Likelihood calculations took 0.13 seconds.
- - Fitting model with 273 mixture components.
- - Model fitting took 1.87 seconds.
- - Computing posterior matrices.
- - Computation allocated took 0.02 seconds.</code></pre>
-<pre class="r"><code>fdp_power(out_mash$result$lfsr,simdata$B)</code></pre>
-<pre><code>$fdp
-[1] 0.4467698
+out_mash_lb = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = &#39;lb&#39;,U.ed = U.ed,n.ed=length(strong))
 
-$power
-[1] 0.456</code></pre>
-<p>The threshold of lfsr is 0.05 and the FDR should be smaller than 0.05.</p>
-<p>We now adjust the estimated covariance matrices by using the EB procedure.</p>
-<pre class="r"><code># nu = R+1
-# U.ed.eb = lapply(U.ed,function(x){
-#   s2 = R*nu/(n+nu)/sum(diag(solve(n*(x+diag(R)))))
-#   x + s2/n*diag(R)
-# })
+fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_prior$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
 
-out_mash2 = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = T)</code></pre>
-<pre><code> - Computing 1000 x 241 likelihood matrix.
- - Likelihood calculations took 0.13 seconds.
- - Fitting model with 241 mixture components.
- - Model fitting took 1.25 seconds.
- - Computing posterior matrices.
- - Computation allocated took 0.05 seconds.</code></pre>
-<pre class="r"><code>fdp_power(out_mash2$result$lfsr,simdata$B)</code></pre>
-<pre><code>$fdp
-[1] 0.01385809
+colnames(fp) = c(&quot;True.U&quot;,&quot;U.ed&quot;,&quot;U.ed.prior&quot;,&quot;U.ed.lb&quot;)
+knitr::kable(round(fp,3),caption = &quot;Set lfsr level at 0.05&quot;)</code></pre>
+<table>
+<caption>Set lfsr level at 0.05</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">True.U</th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.prior</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fdp</td>
+<td align="right">0.000</td>
+<td align="right">0.252</td>
+<td align="right">0.043</td>
+<td align="right">0.035</td>
+</tr>
+<tr class="even">
+<td align="left">power</td>
+<td align="right">0.435</td>
+<td align="right">0.441</td>
+<td align="right">0.421</td>
+<td align="right">0.419</td>
+</tr>
+<tr class="odd">
+<td align="left">fdp.hat</td>
+<td align="right">0.006</td>
+<td align="right">0.010</td>
+<td align="right">0.007</td>
+<td align="right">0.007</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>cm = cbind(c(cor(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr))))
 
-$power
-[1] 0.44475</code></pre>
+rownames(cm) = c(&quot;cor&quot;,&quot;rmse&quot;)
+colnames(cm) = c(&quot;U.ed&quot;,&quot;U.ed.prior&quot;,&quot;U.ed.lb&quot;)
+
+knitr::kable(round(cm,3),caption = &quot;correlation and rmse between lfsr from model with true U and model with estimated U&quot;)</code></pre>
+<table>
+<caption>correlation and rmse between lfsr from model with true U and model with estimated U</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.prior</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">cor</td>
+<td align="right">0.476</td>
+<td align="right">0.914</td>
+<td align="right">0.907</td>
+</tr>
+<tr class="even">
+<td align="left">rmse</td>
+<td align="right">0.478</td>
+<td align="right">0.116</td>
+<td align="right">0.120</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="more-examples" class="section level2">
-<h2>More examples</h2>
-<p>Generate 2000 samples from 4 Normal mixtures with covariance matrix: null, identity, equal effects in first 2 conditions, equal effects in the last 3 conditions. Repeat the process 30 times.</p>
-<p><span class="math display">\[x_i\sim 0.25N(0,0)+0.25N(0,3\times I) + 0.25N(0,3\times U_1) = 0.25N(0,3\times U_2).\]</span></p>
-<pre class="r"><code>signal_sd = sqrt(3)
-err_sd = 1
-R = 5
-Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
-             U2 = diag(R),
-             U3 = tcrossprod(c(1,1,0,0,0)),
-             U4 = tcrossprod(c(0,0,1,1,1)))
-Ulist = lapply(Ulist,function(x){x*signal_sd^2})
-set.seed(12345)
-simdata = simData(2000,Ulist,pi=rep(1/4,4),err_sd)
-
+<div id="nk-500" class="section level3">
+<h3>nk = 500</h3>
+<pre class="r"><code>n=500
+simdata = genData(n,U,signal_sd)
 data = mash_set_data(simdata$Bhat,simdata$Shat)
 U.c = cov_canonical(data)
-U.pca  = cov_pca(data,3)
-U.ed   = cov_ed(data,U.pca)
-out_mash = mash(data, c(U.c,U.ed),verbose = T)</code></pre>
-<pre><code> - Computing 2000 x 225 likelihood matrix.
- - Likelihood calculations took 0.16 seconds.
- - Fitting model with 225 mixture components.
- - Model fitting took 1.29 seconds.
- - Computing posterior matrices.
- - Computation allocated took 0.03 seconds.</code></pre>
-<pre class="r"><code>fdp_power(out_mash$result$lfsr,simdata$B)</code></pre>
-<pre><code>$fdp
-[1] 0.2545455
+out_mash_true = mash(data, c(U.c,U),verbose = F)
 
-$power
-[1] 0.246</code></pre>
-<pre class="r"><code>out_mash2 = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = T)</code></pre>
-<pre><code> - Computing 2000 x 209 likelihood matrix.
- - Likelihood calculations took 0.16 seconds.
- - Fitting model with 209 mixture components.
- - Model fitting took 1.19 seconds.
- - Computing posterior matrices.
- - Computation allocated took 0.05 seconds.</code></pre>
-<pre class="r"><code>fdp_power(out_mash2$result$lfsr,simdata$B)</code></pre>
-<pre><code>$fdp
-[1] 0.03533279
+m.1by1 = mash_1by1(data)
+strong = get_significant_results(m.1by1)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = &#39;NULL&#39;,U.ed = U.ed,n.ed=length(strong))
+#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash_prior = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = &#39;prior&#39;,U.ed = U.ed,n.ed=length(strong))
 
-$power
-[1] 0.2348</code></pre>
+out_mash_lb = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = &#39;lb&#39;,U.ed = U.ed,n.ed=length(strong))
+
+fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_prior$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
+
+colnames(fp) = c(&quot;True.U&quot;,&quot;U.ed&quot;,&quot;U.ed.prior&quot;,&quot;U.ed.lb&quot;)
+knitr::kable(round(fp,3),caption = &quot;Set lfsr level at 0.05&quot;)</code></pre>
+<table>
+<caption>Set lfsr level at 0.05</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">True.U</th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.prior</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fdp</td>
+<td align="right">0.005</td>
+<td align="right">0.374</td>
+<td align="right">0.026</td>
+<td align="right">0.012</td>
+</tr>
+<tr class="even">
+<td align="left">power</td>
+<td align="right">0.406</td>
+<td align="right">0.439</td>
+<td align="right">0.429</td>
+<td align="right">0.426</td>
+</tr>
+<tr class="odd">
+<td align="left">fdp.hat</td>
+<td align="right">0.006</td>
+<td align="right">0.009</td>
+<td align="right">0.007</td>
+<td align="right">0.007</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>cm = cbind(c(cor(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr))))
+
+rownames(cm) = c(&quot;cor&quot;,&quot;rmse&quot;)
+colnames(cm) = c(&quot;U.ed&quot;,&quot;U.ed.prior&quot;,&quot;U.ed.lb&quot;)
+
+knitr::kable(round(cm,3),caption = &quot;correlation and rmse between lfsr from model with true U and model with estimated U&quot;)</code></pre>
+<table>
+<caption>correlation and rmse between lfsr from model with true U and model with estimated U</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.prior</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">cor</td>
+<td align="right">0.326</td>
+<td align="right">0.734</td>
+<td align="right">0.712</td>
+</tr>
+<tr class="even">
+<td align="left">rmse</td>
+<td align="right">0.513</td>
+<td align="right">0.181</td>
+<td align="right">0.187</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="nk-1000" class="section level3">
+<h3>nk = 1000</h3>
+<pre class="r"><code>n=1000
+simdata = genData(n,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+out_mash_true = mash(data, c(U.c,U),verbose = F)
+
+m.1by1 = mash_1by1(data)
+strong = get_significant_results(m.1by1)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = &#39;NULL&#39;,U.ed = U.ed,n.ed=length(strong))
+#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash_prior = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = &#39;prior&#39;,U.ed = U.ed,n.ed=length(strong))
+
+out_mash_lb = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = &#39;lb&#39;,U.ed = U.ed,n.ed=length(strong))
+
+fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_prior$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
+
+colnames(fp) = c(&quot;True.U&quot;,&quot;U.ed&quot;,&quot;U.ed.prior&quot;,&quot;U.ed.lb&quot;)
+knitr::kable(round(fp,3),caption = &quot;Set lfsr level at 0.05&quot;)</code></pre>
+<table>
+<caption>Set lfsr level at 0.05</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">True.U</th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.prior</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fdp</td>
+<td align="right">0.005</td>
+<td align="right">0.306</td>
+<td align="right">0.008</td>
+<td align="right">0.007</td>
+</tr>
+<tr class="even">
+<td align="left">power</td>
+<td align="right">0.432</td>
+<td align="right">0.462</td>
+<td align="right">0.454</td>
+<td align="right">0.451</td>
+</tr>
+<tr class="odd">
+<td align="left">fdp.hat</td>
+<td align="right">0.006</td>
+<td align="right">0.007</td>
+<td align="right">0.006</td>
+<td align="right">0.006</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>cm = cbind(c(cor(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr))))
+
+rownames(cm) = c(&quot;cor&quot;,&quot;rmse&quot;)
+colnames(cm) = c(&quot;U.ed&quot;,&quot;U.ed.prior&quot;,&quot;U.ed.lb&quot;)
+
+knitr::kable(round(cm,3),caption = &quot;correlation and rmse between lfsr from model with true U and model with estimated U&quot;)</code></pre>
+<table>
+<caption>correlation and rmse between lfsr from model with true U and model with estimated U</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.prior</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">cor</td>
+<td align="right">0.363</td>
+<td align="right">0.703</td>
+<td align="right">0.691</td>
+</tr>
+<tr class="even">
+<td align="left">rmse</td>
+<td align="right">0.517</td>
+<td align="right">0.194</td>
+<td align="right">0.196</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="nk-5000" class="section level3">
+<h3>nk = 5000</h3>
+<pre class="r"><code>n=5000
+simdata = genData(n,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+out_mash_true = mash(data, c(U.c,U),verbose = F)
+
+m.1by1 = mash_1by1(data)
+strong = get_significant_results(m.1by1)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = &#39;NULL&#39;,U.ed = U.ed,n.ed=length(strong))
+#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash_prior = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = &#39;prior&#39;,U.ed = U.ed,n.ed=length(strong))
+
+out_mash_lb = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = F,adjust = &#39;lb&#39;,U.ed = U.ed,n.ed=length(strong))
+
+fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_prior$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
+
+colnames(fp) = c(&quot;True.U&quot;,&quot;U.ed&quot;,&quot;U.ed.prior&quot;,&quot;U.ed.lb&quot;)
+knitr::kable(round(fp,3),caption = &quot;Set lfsr level at 0.05&quot;)</code></pre>
+<table>
+<caption>Set lfsr level at 0.05</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">True.U</th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.prior</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fdp</td>
+<td align="right">0.006</td>
+<td align="right">0.294</td>
+<td align="right">0.012</td>
+<td align="right">0.012</td>
+</tr>
+<tr class="even">
+<td align="left">power</td>
+<td align="right">0.436</td>
+<td align="right">0.488</td>
+<td align="right">0.476</td>
+<td align="right">0.473</td>
+</tr>
+<tr class="odd">
+<td align="left">fdp.hat</td>
+<td align="right">0.006</td>
+<td align="right">0.007</td>
+<td align="right">0.007</td>
+<td align="right">0.007</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>cm = cbind(c(cor(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_true$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_prior$result$lfsr),c(out_mash$result$lfsr))),
+      c(cor(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr)),rmse(c(out_mash_lb$result$lfsr),c(out_mash$result$lfsr))))
+
+rownames(cm) = c(&quot;cor&quot;,&quot;rmse&quot;)
+colnames(cm) = c(&quot;U.ed&quot;,&quot;U.ed.prior&quot;,&quot;U.ed.lb&quot;)
+
+knitr::kable(round(cm,3),caption = &quot;correlation and rmse between lfsr from model with true U and model with estimated U&quot;)</code></pre>
+<table>
+<caption>correlation and rmse between lfsr from model with true U and model with estimated U</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.prior</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">cor</td>
+<td align="right">0.351</td>
+<td align="right">0.595</td>
+<td align="right">0.562</td>
+</tr>
+<tr class="even">
+<td align="left">rmse</td>
+<td align="right">0.525</td>
+<td align="right">0.195</td>
+<td align="right">0.203</td>
+</tr>
+</tbody>
+</table>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -841,15 +1131,15 @@ loaded via a namespace (and not attached):
 [13] withr_2.3.0       sessioninfo_1.1.1 plyr_1.8.6        lifecycle_0.2.0  
 [17] stringr_1.4.0     memoise_1.1.0     evaluate_0.14     knitr_1.30       
 [21] callr_3.5.1       httpuv_1.5.4      ps_1.4.0          invgamma_1.1     
-[25] irlba_2.3.3       fansi_0.4.1       Rcpp_1.0.5        promises_1.1.1   
-[29] backports_1.1.10  rmeta_3.0         desc_1.2.0        pkgload_1.1.0    
-[33] abind_1.4-5       truncnorm_1.0-8   fs_1.5.0          digest_0.6.27    
-[37] stringi_1.5.3     processx_3.4.4    rprojroot_1.3-2   grid_4.0.3       
-[41] cli_2.1.0         tools_4.0.3       magrittr_1.5      tibble_3.0.4     
-[45] crayon_1.3.4      whisker_0.4       pkgconfig_2.0.3   ellipsis_0.3.1   
-[49] Matrix_1.2-18     SQUAREM_2020.5    prettyunits_1.1.1 assertthat_0.2.1 
-[53] rmarkdown_2.5     rstudioapi_0.11   R6_2.4.1          git2r_0.27.1     
-[57] compiler_4.0.3   </code></pre>
+[25] irlba_2.3.3       fansi_0.4.1       highr_0.8         Rcpp_1.0.5       
+[29] promises_1.1.1    backports_1.1.10  rmeta_3.0         desc_1.2.0       
+[33] pkgload_1.1.0     abind_1.4-5       truncnorm_1.0-8   fs_1.5.0         
+[37] digest_0.6.27     stringi_1.5.3     processx_3.4.4    rprojroot_1.3-2  
+[41] grid_4.0.3        cli_2.1.0         tools_4.0.3       magrittr_1.5     
+[45] tibble_3.0.4      crayon_1.3.4      whisker_0.4       pkgconfig_2.0.3  
+[49] ellipsis_0.3.1    Matrix_1.2-18     SQUAREM_2020.5    prettyunits_1.1.1
+[53] assertthat_0.2.1  rmarkdown_2.5     rstudioapi_0.11   R6_2.4.1         
+[57] git2r_0.27.1      compiler_4.0.3   </code></pre>
 </div>
 </div>
 
