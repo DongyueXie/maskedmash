@@ -515,16 +515,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree65191ae517d9ec77b1df115b028cebec3825644etargetblank65191aea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/65191ae517d9ec77b1df115b028cebec3825644e" target="_blank">65191ae</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree860d40355a185e0152efb0eae3b541b4fd7dd33etargetblank860d403a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/860d40355a185e0152efb0eae3b541b4fd7dd33e" target="_blank">860d403</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree65191ae517d9ec77b1df115b028cebec3825644etargetblank65191aea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree860d40355a185e0152efb0eae3b541b4fd7dd33etargetblank860d403a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/65191ae517d9ec77b1df115b028cebec3825644e" target="_blank">65191ae</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/860d40355a185e0152efb0eae3b541b4fd7dd33e" target="_blank">860d403</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -580,6 +580,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/860d40355a185e0152efb0eae3b541b4fd7dd33e/analysis/mashfixLargeN.Rmd" target="_blank">860d403</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-03-05
+</td>
+<td>
+wflow_publish(“analysis/mashfixLargeN.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/maskedmash/0d5bf8b7f46c4814dca671012c296b0e86753110/docs/mashfixLargeN.html" target="_blank">0d5bf8b</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-03-05
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/maskedmash/blob/65191ae517d9ec77b1df115b028cebec3825644e/analysis/mashfixLargeN.Rmd" target="_blank">65191ae</a>
 </td>
 <td>
@@ -599,6 +633,53 @@ wflow_publish(“analysis/mashfixLargeN.Rmd”)
 </div>
 </div>
 </div>
+<pre class="r"><code>library(devtools)
+
+library(mashr)
+library(mvtnorm)
+source(&#39;code/misc/genData.R&#39;)
+files.sources = list.files(&#39;code/maskedmashr/&#39;)
+sapply(files.sources, function(x){source(paste(&#39;code/maskedmashr/&#39;,x,sep=&#39;&#39;))})
+
+signal_sd = sqrt(3)
+u1 = c(1,1,0,0,0)
+u2 = 1-u1
+R = length(u1)
+cov1 = tcrossprod(u1)
+#cov1[1,1] = 1
+cov2 = tcrossprod(u2)
+#cov2[5,5] = 1
+#cov2[4,4] = 1
+
+U = list(U1=cov1,U2=cov2)
+#U = list(U1=cov1)
+U
+set.seed(12345)
+n=1e5
+simdata = genData(n,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+out_mash_true = mash(data, c(U.c,U),verbose = T)
+
+
+strong = 1:nrow(simdata$Bhat)
+U.pca = cov_pca(data,2,strong)
+U.pca = U.pca[1:2]
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = T,adjust = &#39;NULL&#39;,U.ed = U.ed,n.ed=length(strong))
+#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash_prior = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = T,adjust = &#39;prior&#39;,U.ed = U.ed,n.ed=length(strong))
+
+out_mash_lb = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = T,adjust = &#39;lb&#39;,U.ed = U.ed,n.ed=length(strong))
+
+
+
+mashfixN1e5 = list(simdata=simdata,U.ed=U.ed,out_mash=out_mash,out_mash_true=out_mash_true,
+                   out_mash_prior=out_mash_prior,out_mash_lb=out_mash_lb)
+
+saveRDS(mashfixN1e5,file = &#39;output/mashfixN1e5.rds&#39;)</code></pre>
 <p>set <span class="math inline">\(n_1=n_2=10^5\)</span></p>
 <pre class="r"><code>library(mvtnorm)
 source(&#39;code/misc/genData.R&#39;)
@@ -629,17 +710,17 @@ knitr::kable(round(fp,3),caption = &quot;Set lfsr level at 0.05, output fdp&quot
 <tbody>
 <tr class="odd">
 <td align="left">fdp</td>
-<td align="right">0.006</td>
-<td align="right">0.478</td>
-<td align="right">0.012</td>
-<td align="right">0.011</td>
+<td align="right">0.007</td>
+<td align="right">0.489</td>
+<td align="right">0.021</td>
+<td align="right">0.015</td>
 </tr>
 <tr class="even">
 <td align="left">power</td>
-<td align="right">0.449</td>
-<td align="right">0.521</td>
-<td align="right">0.495</td>
-<td align="right">0.497</td>
+<td align="right">0.339</td>
+<td align="right">0.414</td>
+<td align="right">0.385</td>
+<td align="right">0.389</td>
 </tr>
 </tbody>
 </table>
@@ -664,24 +745,24 @@ knitr::kable(round(fp,3),caption = &quot;Set lfsr level at 0.05, output fsp&quot
 <tbody>
 <tr class="odd">
 <td align="left">fsp</td>
-<td align="right">0.022</td>
-<td align="right">0.494</td>
-<td align="right">0.033</td>
-<td align="right">0.032</td>
+<td align="right">0.011</td>
+<td align="right">0.497</td>
+<td align="right">0.027</td>
+<td align="right">0.021</td>
 </tr>
 <tr class="even">
 <td align="left">power</td>
-<td align="right">0.449</td>
-<td align="right">0.521</td>
-<td align="right">0.495</td>
-<td align="right">0.497</td>
+<td align="right">0.339</td>
+<td align="right">0.414</td>
+<td align="right">0.385</td>
+<td align="right">0.389</td>
 </tr>
 <tr class="odd">
 <td align="left">fsp.hat</td>
-<td align="right">0.006</td>
-<td align="right">0.011</td>
-<td align="right">0.007</td>
-<td align="right">0.007</td>
+<td align="right">0.008</td>
+<td align="right">0.009</td>
+<td align="right">0.009</td>
+<td align="right">0.009</td>
 </tr>
 </tbody>
 </table>
@@ -706,15 +787,15 @@ knitr::kable(round(cm,3),caption = &quot;correlation and rmse between lfsr from 
 <tbody>
 <tr class="odd">
 <td align="left">cor</td>
-<td align="right">0.187</td>
-<td align="right">0.513</td>
-<td align="right">0.345</td>
+<td align="right">0.180</td>
+<td align="right">0.658</td>
+<td align="right">0.365</td>
 </tr>
 <tr class="even">
 <td align="left">rmse</td>
-<td align="right">0.567</td>
-<td align="right">0.210</td>
-<td align="right">0.254</td>
+<td align="right">0.539</td>
+<td align="right">0.171</td>
+<td align="right">0.241</td>
 </tr>
 </tbody>
 </table>
@@ -730,7 +811,7 @@ knitr::kable(round(cm,3),caption = &quot;correlation and rmse between lfsr from 
   }
   
 })),4)</code></pre>
-<pre><code>[1] 0.0001 0.0001 0.0081 0.0005</code></pre>
+<pre><code>[1] 1e-04 1e-04</code></pre>
 <pre class="r"><code>cat(&quot;Lower bound adjustment:&quot;)</code></pre>
 <pre><code>Lower bound adjustment:</code></pre>
 <pre class="r"><code>round(unlist(lapply(1:length(U.est),function(k){
@@ -742,7 +823,7 @@ knitr::kable(round(cm,3),caption = &quot;correlation and rmse between lfsr from 
     NULL
   }
 })),4)</code></pre>
-<pre><code>[1] 0.0072 0.0063 0.0598 0.0132</code></pre>
+<pre><code>[1] 0.0063 0.0063</code></pre>
 <pre class="r"><code>cat(&#39;nk:&#39;)</code></pre>
 <pre><code>nk:</code></pre>
 <pre class="r"><code>round(unlist(lapply(1:length(U.est),function(k){
@@ -753,7 +834,7 @@ knitr::kable(round(cm,3),caption = &quot;correlation and rmse between lfsr from 
     NULL
   }
 })))</code></pre>
-<pre><code>[1] 76832 99222  1118 22829</code></pre>
+<pre><code>[1] 100102  99898</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
