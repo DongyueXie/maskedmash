@@ -30,6 +30,8 @@ bovy_wrapper = function(data, Ulist_init, subset=NULL, ...){
   D = ncol(data$V)
   if(!is.null(data$L)){
     ycovar = lapply(subset, function(i) data$L %*% (data$Shat_orig[i,] * t(data$V * data$Shat_orig[i,])) %*% t(data$L) )
+  }else if(!data$commonV){
+    ycovar = lapply(subset, function(i) data$Shat[i,] * t(data$V[,,i] * data$Shat[i,]) )
   }else if(!all(data$V==diag(D))){
     ycovar = lapply(subset, function(i) data$Shat[i,] * t(data$V * data$Shat[i,]) )
   }else{
@@ -42,7 +44,11 @@ bovy_wrapper = function(data, Ulist_init, subset=NULL, ...){
                                  xcovar = Ulist_init,
                                  fixmean = TRUE,
                                  ...)
-  return(list(pi = ed.res$xamp, Ulist = ed.res$xcovar, av_loglik = ed.res$avgloglikedata))
+  # issue https://github.com/stephenslab/mashr/issues/91
+  epsilon = diag(rep(1/sqrt(n_effects(data)), n_conditions(data)))
+  Ulist = lapply(1:length(ed.res$xcovar), function(i) ed.res$xcovar[[i]] + epsilon)
+  names(Ulist) = names(ed.res$xcovar)
+  return(list(pi = ed.res$xamp, Ulist = Ulist, av_loglik = ed.res$avgloglikedata))
 }
 
 #' @title Fit extreme deconvolution to mash data using TEEM method

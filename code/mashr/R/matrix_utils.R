@@ -1,5 +1,5 @@
 ## @title A wrapper function to `stop` call
-labelled_stop = function(x, msg) 
+labelled_stop = function(x, msg)
   stop(paste(gsub("\\s+", " ", paste0(deparse(x))), msg), call.=F)
 
 ## @title Basic sanity check for covariance matrices
@@ -32,3 +32,11 @@ check_positive_definite = function(x) {
                                       "must be positive definite"))
   return(TRUE)
 }
+
+## @title check for positive semi-definite of covariance matrices
+## @param X input matrix
+issemidef = function (X, minval = -1e-8){
+  all(eigen(X)$values > minval)
+}
+
+
