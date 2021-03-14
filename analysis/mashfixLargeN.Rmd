@@ -1,0 +1,143 @@
+---
+title: "Fix the mash issue with low rank matrix, Large N"
+author: "DongyueXie"
+date: "2021-03-05"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r,eval=FALSE}
+library(devtools)
+
+library(mashr)
+library(mvtnorm)
+source('code/misc/genData.R')
+files.sources = list.files('code/maskedmashr/')
+sapply(files.sources, function(x){source(paste('code/maskedmashr/',x,sep=''))})
+
+signal_sd = sqrt(3)
+u1 = c(1,1,0,0,0)
+u2 = 1-u1
+R = length(u1)
+cov1 = tcrossprod(u1)
+#cov1[1,1] = 1
+cov2 = tcrossprod(u2)
+#cov2[5,5] = 1
+#cov2[4,4] = 1
+
+U = list(U1=cov1,U2=cov2)
+#U = list(U1=cov1)
+U
+set.seed(12345)
+n=1e5
+simdata = genData(n,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+out_mash_true = mash(data, c(U.c,U),verbose = T)
+
+
+strong = 1:nrow(simdata$Bhat)
+U.pca = cov_pca(data,2,strong)
+U.pca = U.pca[1:2]
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = T,adjust = 'NULL',U.ed = U.ed,n.ed=length(strong))
+#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash_prior = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = T,adjust = 'prior',U.ed = U.ed,n.ed=length(strong))
+
+out_mash_lb = mash_wrapper(data$Bhat, Shat = data$Shat,verbose = T,adjust = 'lb',U.ed = U.ed,n.ed=length(strong))
+
+
+
+mashfixN1e5 = list(simdata=simdata,U.ed=U.ed,out_mash=out_mash,out_mash_true=out_mash_true,
+                   out_mash_prior=out_mash_prior,out_mash_lb=out_mash_lb)
+
+saveRDS(mashfixN1e5,file = 'output/mashfixN1e5.rds')
+```
+
+set $n_1=n_2=10^5$
+
+```{r,message=FALSE,results=FALSE}
+library(mvtnorm)
+source('code/misc/genData.R')
+files.sources = list.files('code/maskedmashr/')
+sapply(files.sources, function(x){source(paste('code/maskedmashr/',x,sep=''))})
+```
+
+
+
+```{r}
+mashfixN1e5 = readRDS('output/mashfixN1e5.rds')
+R = ncol(mashfixN1e5$simdata$B)
+nu = R+1
+```
+
+```{r}
+U.est = mashfixN1e5$U.ed$Ulist
+fp = cbind(unlist(fdp_power(mashfixN1e5$out_mash_true$result$lfsr,mashfixN1e5$simdata$B)),
+           unlist(fdp_power(mashfixN1e5$out_mash$result$lfsr,mashfixN1e5$simdata$B)),
+           unlist(fdp_power(mashfixN1e5$out_mash_prior$result$lfsr,mashfixN1e5$simdata$B)),
+           unlist(fdp_power(mashfixN1e5$out_mash_lb$result$lfsr,mashfixN1e5$simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.prior","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05, output fdp")
+
+fp = cbind(unlist(fsp_power(mashfixN1e5$out_mash_true$result$lfsr,mashfixN1e5$simdata$Bhat,mashfixN1e5$simdata$B)),
+           unlist(fsp_power(mashfixN1e5$out_mash$result$lfsr,mashfixN1e5$simdata$Bhat,mashfixN1e5$simdata$B)),
+           unlist(fsp_power(mashfixN1e5$out_mash_prior$result$lfsr,mashfixN1e5$simdata$Bhat,mashfixN1e5$simdata$B)),
+           unlist(fsp_power(mashfixN1e5$out_mash_lb$result$lfsr,mashfixN1e5$simdata$Bhat,mashfixN1e5$simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.prior","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05, output fsp")
+
+cm = cbind(c(cor(c(mashfixN1e5$out_mash_true$result$lfsr),c(mashfixN1e5$out_mash$result$lfsr)),rmse(c(mashfixN1e5$out_mash_true$result$lfsr),c(mashfixN1e5$out_mash$result$lfsr))),
+           c(cor(c(mashfixN1e5$out_mash_prior$result$lfsr),c(mashfixN1e5$out_mash$result$lfsr)),rmse(c(mashfixN1e5$out_mash_prior$result$lfsr),c(mashfixN1e5$out_mash$result$lfsr))),
+           c(cor(c(mashfixN1e5$out_mash_lb$result$lfsr),c(mashfixN1e5$out_mash$result$lfsr)),rmse(c(mashfixN1e5$out_mash_lb$result$lfsr),c(mashfixN1e5$out_mash$result$lfsr))))
+
+rownames(cm) = c("cor","rmse")
+colnames(cm) = c("U.ed","U.ed.prior","U.ed.lb")
+
+knitr::kable(round(cm,3),caption = "correlation and rmse between lfsr from model with true U and model with estimated U")
+
+cat("Prior adjustment:")
+
+
+unlist(lapply(1:length(U.est),function(k){
+  nk = 200000*mashfixN1e5$U.ed$pi[k]
+  if(nk>R){
+    s2.hat = R*nu/(nk+nu)/sum(diag(solve(nk*(U.est[[k]]+diag(R)))))
+    ((R+1-nu+s2.hat)/(nk+nu-R-1))
+  }else{
+    NULL
+  }
+  
+}))
+
+
+cat("Lower bound adjustment:")
+
+round(unlist(lapply(1:length(U.est),function(k){
+  nk = 200000*mashfixN1e5$U.ed$pi[k]
+  if(nk>R){
+    
+    2/sqrt(nk)
+  }else{
+    NULL
+  }
+})),4)
+
+cat('nk:')
+
+round(unlist(lapply(1:length(U.est),function(k){
+  nk = 200000*mashfixN1e5$U.ed$pi[k]
+  if(nk>R){
+    nk
+  }else{
+    NULL
+  }
+})))
+
+```
+
