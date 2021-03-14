@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Dongyue Xie" />
+
+<meta name="date" content="2021-03-13" />
+
+<title>Fix the mash issue with low rank matrix, a general approach</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/simplex.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">maskedmash</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/DongyueXie/maskedmash">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Fix the mash issue with low rank matrix, a general approach</h1>
+<h4 class="author">Dongyue Xie</h4>
+<h4 class="date">2021-03-13</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-03-13
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>maskedmash/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210205code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210205)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210205code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210205)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree5f3f4955d08800011a19ddcfe1975584ca700624targetblank5f3f495a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/5f3f4955d08800011a19ddcfe1975584ca700624" target="_blank">5f3f495</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree5f3f4955d08800011a19ddcfe1975584ca700624targetblank5f3f495a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/5f3f4955d08800011a19ddcfe1975584ca700624" target="_blank">5f3f495</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    code/.DS_Store
+    Ignored:    code/mashr/src/Makevars
+    Ignored:    code/mashr/src/RcppExports.o
+    Ignored:    code/mashr/src/extreme_deconvolution.o
+    Ignored:    code/mashr/src/mash.o
+    Ignored:    code/mashr/src/mashr.so
+
+Untracked files:
+    Untracked:  ExDeconDemo_c.log
+    Untracked:  ExDeconDemo_loglike.log
+    Untracked:  analysis/mashdiagnostics.Rmd
+    Untracked:  code/misc/fisherInfo.R
+    Untracked:  output/maskedmashFDR/
+
+Unstaged changes:
+    Modified:   analysis/estimatePrior.Rmd
+    Modified:   code/maskedmashr/simData.R
+    Modified:   code/misc/genData.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/mashFIXv_i.Rmd</code>) and HTML (<code>docs/mashFIXv_i.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/5f3f4955d08800011a19ddcfe1975584ca700624/analysis/mashFIXv_i.Rmd" target="_blank">5f3f495</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-13
+</td>
+<td>
+wflow_publish(“analysis/mashFIXv_i.Rmd”)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Illustrate methods to fix the issue of lfsr in mash, when using rank 1 matrix. The methods are based on a lower bound derived from inverse Fisher information matrix. See <a href="mashFIXv_i.pdf">here</a> for a description of solutions.</p>
+<pre class="r"><code>library(devtools)
+load_all(&#39;code/mashr/&#39;)
+library(mvtnorm)
+source(&#39;code/misc/genData.R&#39;)
+files.sources = list.files(&#39;code/maskedmashr/&#39;)
+sapply(files.sources, function(x){source(paste(&#39;code/maskedmashr/&#39;,x,sep=&#39;&#39;))})</code></pre>
+<pre class="r"><code>u1 = c(1,1,0,0,0)
+u2 = 1-u1
+R = length(u1)
+cov1 = tcrossprod(u1)
+#cov1[1,1] = 1
+cov2 = tcrossprod(u2)
+#cov2[5,5] = 1
+#cov2[4,4] = 1
+
+U = list(U1=cov1,U2=cov2)
+#U = list(U1=cov1)
+U</code></pre>
+<pre><code>$U1
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    1    1    0    0    0
+[2,]    1    1    0    0    0
+[3,]    0    0    0    0    0
+[4,]    0    0    0    0    0
+[5,]    0    0    0    0    0
+
+$U2
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    0    0    0    0    0
+[2,]    0    0    0    0    0
+[3,]    0    0    1    1    1
+[4,]    0    0    1    1    1
+[5,]    0    0    1    1    1</code></pre>
+<pre class="r"><code>bovy_wrapper = function(data, Ulist_init, subset=NULL, ...){
+  if(is.null(subset)){subset = 1:n_effects(data)}
+  K = length(Ulist_init)
+  R = n_conditions(data)
+  pi_init = rep(1/K, K) # initial mix proportions
+  D = ncol(data$V)
+  if(!is.null(data$L)){
+    ycovar = lapply(subset, function(i) data$L %*% (data$Shat_orig[i,] * t(data$V * data$Shat_orig[i,])) %*% t(data$L) )
+  }else if(!data$commonV){
+    ycovar = lapply(subset, function(i) data$Shat[i,] * t(data$V[,,i] * data$Shat[i,]) )
+  }else if(!all(data$V==diag(D))){
+    ycovar = lapply(subset, function(i) data$Shat[i,] * t(data$V * data$Shat[i,]) )
+  }else{
+    ycovar = data$Shat[subset,]^2
+  }
+  ed.res = extreme_deconvolution(data$Bhat[subset,],
+                                 ycovar,
+                                 xamp = pi_init,
+                                 xmean = matrix(0,nrow=K,ncol=R),
+                                 xcovar = Ulist_init,
+                                 fixmean = TRUE,
+                                 ...)
+  # issue https://github.com/stephenslab/mashr/issues/91
+  epsilon = 0
+  Ulist = lapply(1:length(ed.res$xcovar), function(i) ed.res$xcovar[[i]] + epsilon)
+  names(Ulist) = names(ed.res$xcovar)
+  return(list(pi = ed.res$xamp, Ulist = Ulist, av_loglik = ed.res$avgloglikedata))
+}</code></pre>
+</div>
+<div id="v_i-ci" class="section level2">
+<h2><span class="math inline">\(V_i = cI\)</span></h2>
+<pre class="r"><code>signal_sd = sqrt(3)
+error_sd = 1
+set.seed(12345)
+n=500
+simdata = genData(n,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+out_mash_true = mash(data, c(U.c,U),verbose = F)
+
+#m.1by1 = mash_1by1(data)
+#strong = get_significant_results(m.1by1)
+strong = 1:nrow(simdata$B)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist
+U.est.adj = lapply(1:length(U.est),function(k){
+  U.k = U.est[[k]]
+  U.k + 2*diag(sqrt(2/n*1/diag(solve(U.k+error_sd^2*diag(R)))^2))
+})
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash_lb = mash(data,c(U.c,U.est.adj))</code></pre>
+<pre><code> - Computing 1000 x 225 likelihood matrix.
+ - Likelihood calculations took 0.11 seconds.
+ - Fitting model with 225 mixture components.
+ - Model fitting took 0.64 seconds.
+ - Computing posterior matrices.
+ - Computation allocated took 0.05 seconds.</code></pre>
+<pre class="r"><code>#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash = mash(data,c(U.c,U.est))</code></pre>
+<pre><code> - Computing 1000 x 225 likelihood matrix.
+ - Likelihood calculations took 0.08 seconds.
+ - Fitting model with 225 mixture components.
+ - Model fitting took 0.89 seconds.
+ - Computing posterior matrices.
+ - Computation allocated took 0.01 seconds.</code></pre>
+<pre class="r"><code>fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
+
+colnames(fp) = c(&quot;True.U&quot;,&quot;U.ed&quot;,&quot;U.ed.lb&quot;)
+knitr::kable(round(fp,3),caption = &quot;Set lfsr level at 0.05, output fdp&quot;)</code></pre>
+<table>
+<caption>Set lfsr level at 0.05, output fdp</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">True.U</th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fdp</td>
+<td align="right">0.014</td>
+<td align="right">0.333</td>
+<td align="right">0.020</td>
+</tr>
+<tr class="even">
+<td align="left">power</td>
+<td align="right">0.304</td>
+<td align="right">0.365</td>
+<td align="right">0.334</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>fp = cbind(unlist(fsp_power(out_mash_true$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash$result$lfsr,simdata$Bhat,simdata$B)),
+           
+           unlist(fsp_power(out_mash_lb$result$lfsr,simdata$Bhat,simdata$B)))
+
+colnames(fp) = c(&quot;True.U&quot;,&quot;U.ed&quot;,&quot;U.ed.lb&quot;)
+knitr::kable(round(fp,3),caption = &quot;Set lfsr level at 0.05, output fsp&quot;)</code></pre>
+<table>
+<caption>Set lfsr level at 0.05, output fsp</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">True.U</th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fsp</td>
+<td align="right">0.018</td>
+<td align="right">0.340</td>
+<td align="right">0.025</td>
+</tr>
+<tr class="even">
+<td align="left">power</td>
+<td align="right">0.304</td>
+<td align="right">0.365</td>
+<td align="right">0.334</td>
+</tr>
+<tr class="odd">
+<td align="left">fsp.hat</td>
+<td align="right">0.008</td>
+<td align="right">0.010</td>
+<td align="right">0.010</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>set.seed(12345)
+signal_sd = 1
+error_sd = 0.5
+simdata = genData(n,U,signal_sd=signal_sd,error_sd = error_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+out_mash_true = mash(data, c(U.c,U),verbose = F)
+
+#m.1by1 = mash_1by1(data)
+#strong = get_significant_results(m.1by1)
+strong = 1:nrow(simdata$B)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist
+U.est.adj = lapply(1:length(U.est),function(k){
+  U.k = U.est[[k]]
+  U.k + 2*diag(sqrt(2/n*1/diag(solve(U.k+error_sd^2*diag(R)))^2))
+})
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash_lb = mash(data,c(U.c,U.est.adj))</code></pre>
+<pre><code> - Computing 1000 x 225 likelihood matrix.
+ - Likelihood calculations took 0.08 seconds.
+ - Fitting model with 225 mixture components.
+ - Model fitting took 0.63 seconds.
+ - Computing posterior matrices.
+ - Computation allocated took 0.01 seconds.</code></pre>
+<pre class="r"><code>#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash = mash(data,c(U.c,U.est))</code></pre>
+<pre><code> - Computing 1000 x 225 likelihood matrix.
+ - Likelihood calculations took 0.08 seconds.
+ - Fitting model with 225 mixture components.
+ - Model fitting took 0.65 seconds.
+ - Computing posterior matrices.
+ - Computation allocated took 0.01 seconds.</code></pre>
+<pre class="r"><code>fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
+
+colnames(fp) = c(&quot;True.U&quot;,&quot;U.ed&quot;,&quot;U.ed.lb&quot;)
+knitr::kable(round(fp,3),caption = &quot;Set lfsr level at 0.05, output fdp&quot;)</code></pre>
+<table>
+<caption>Set lfsr level at 0.05, output fdp</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">True.U</th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fdp</td>
+<td align="right">0.011</td>
+<td align="right">0.343</td>
+<td align="right">0.021</td>
+</tr>
+<tr class="even">
+<td align="left">power</td>
+<td align="right">0.391</td>
+<td align="right">0.448</td>
+<td align="right">0.419</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>fp = cbind(unlist(fsp_power(out_mash_true$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash$result$lfsr,simdata$Bhat,simdata$B)),
+           
+           unlist(fsp_power(out_mash_lb$result$lfsr,simdata$Bhat,simdata$B)))
+
+colnames(fp) = c(&quot;True.U&quot;,&quot;U.ed&quot;,&quot;U.ed.lb&quot;)
+knitr::kable(round(fp,3),caption = &quot;Set lfsr level at 0.05, output fsp&quot;)</code></pre>
+<table>
+<caption>Set lfsr level at 0.05, output fsp</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">True.U</th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fsp</td>
+<td align="right">0.013</td>
+<td align="right">0.349</td>
+<td align="right">0.024</td>
+</tr>
+<tr class="even">
+<td align="left">power</td>
+<td align="right">0.391</td>
+<td align="right">0.448</td>
+<td align="right">0.419</td>
+</tr>
+<tr class="odd">
+<td align="left">fsp.hat</td>
+<td align="right">0.008</td>
+<td align="right">0.009</td>
+<td align="right">0.009</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>set.seed(12345)
+signal_sd = 0.1
+error_sd = 0.01
+simdata = genData(n,U,signal_sd=signal_sd,error_sd = error_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+out_mash_true = mash(data, c(U.c,U),verbose = F)
+
+#m.1by1 = mash_1by1(data)
+#strong = get_significant_results(m.1by1)
+strong = 1:nrow(simdata$B)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist
+U.est.adj = lapply(1:length(U.est),function(k){
+  U.k = U.est[[k]]
+  U.k + 2*diag(sqrt(2/n*1/diag(solve(U.k+error_sd^2*diag(R)))^2))
+})
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash_lb = mash(data,c(U.c,U.est.adj))</code></pre>
+<pre><code> - Computing 1000 x 295 likelihood matrix.
+ - Likelihood calculations took 0.11 seconds.
+ - Fitting model with 295 mixture components.
+ - Model fitting took 1.47 seconds.
+ - Computing posterior matrices.
+ - Computation allocated took 0.01 seconds.</code></pre>
+<pre class="r"><code>#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash = mash(data,c(U.c,U.est))</code></pre>
+<pre><code> - Computing 1000 x 295 likelihood matrix.
+ - Likelihood calculations took 0.11 seconds.
+ - Fitting model with 295 mixture components.
+ - Model fitting took 1.58 seconds.
+ - Computing posterior matrices.
+ - Computation allocated took 0.01 seconds.</code></pre>
+<pre class="r"><code>fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
+
+colnames(fp) = c(&quot;True.U&quot;,&quot;U.ed&quot;,&quot;U.ed.lb&quot;)
+knitr::kable(round(fp,3),caption = &quot;Set lfsr level at 0.05, output fdp&quot;)</code></pre>
+<table>
+<caption>Set lfsr level at 0.05, output fdp</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">True.U</th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fdp</td>
+<td align="right">0.001</td>
+<td align="right">0.377</td>
+<td align="right">0.002</td>
+</tr>
+<tr class="even">
+<td align="left">power</td>
+<td align="right">0.856</td>
+<td align="right">0.870</td>
+<td align="right">0.863</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>fp = cbind(unlist(fsp_power(out_mash_true$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash$result$lfsr,simdata$Bhat,simdata$B)),
+           
+           unlist(fsp_power(out_mash_lb$result$lfsr,simdata$Bhat,simdata$B)))
+
+colnames(fp) = c(&quot;True.U&quot;,&quot;U.ed&quot;,&quot;U.ed.lb&quot;)
+knitr::kable(round(fp,3),caption = &quot;Set lfsr level at 0.05, output fsp&quot;)</code></pre>
+<table>
+<caption>Set lfsr level at 0.05, output fsp</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">True.U</th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fsp</td>
+<td align="right">0.001</td>
+<td align="right">0.378</td>
+<td align="right">0.002</td>
+</tr>
+<tr class="even">
+<td align="left">power</td>
+<td align="right">0.856</td>
+<td align="right">0.870</td>
+<td align="right">0.863</td>
+</tr>
+<tr class="odd">
+<td align="left">fsp.hat</td>
+<td align="right">0.001</td>
+<td align="right">0.001</td>
+<td align="right">0.001</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="general-v_i" class="section level2">
+<h2>general <span class="math inline">\(V_i\)</span></h2>
+<pre class="r"><code>set.seed(123)
+signal_sd = 3
+error_sd = 1
+N = 200*length(U)
+V = rWishart(N,10,diag(5))
+for(i in 1:dim(V)[3]){
+  V[,,i] = cov2cor(V[,,i])
+}
+simdata = simData(N,U,V,signal_sd=signal_sd,error_sd=error_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat,V=simdata$V)
+U.c = cov_canonical(data)
+out_mash_true = mash(data, c(U.c,U),verbose = T,algorithm.version = &#39;R&#39;)</code></pre>
+<pre><code> - Computing 400 x 205 likelihood matrix.
+ - Likelihood calculations took 10.04 seconds.
+ - Fitting model with 205 mixture components.
+ - Model fitting took 0.31 seconds.
+ - Computing posterior matrices.
+ - Computation allocated took 0.23 seconds.</code></pre>
+<pre class="r"><code>#m.1by1 = mash_1by1(data)
+#strong = get_significant_results(m.1by1)
+strong = 1:nrow(simdata$B)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist[c(2,4)]
+k.idx = list(k1 = 1:200,k2 = 201:400)
+
+U.est.adj = lapply(1:length(U.est),function(k){
+  U.k = U.est[[k]]
+  
+  temp = 0
+ for(i in k.idx[[k]]){
+   temp = temp+diag(solve(U.k+error_sd^2*V[,,i]))^2
+ }
+  
+  U.k + 2*diag(sqrt(2/(temp)))
+})
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash_lb = mash(data,c(U.c,U.est.adj),algorithm.version = &#39;R&#39;)</code></pre>
+<pre><code> - Computing 400 x 205 likelihood matrix.
+ - Likelihood calculations took 9.86 seconds.
+ - Fitting model with 205 mixture components.
+ - Model fitting took 0.27 seconds.
+ - Computing posterior matrices.
+ - Computation allocated took 0.25 seconds.</code></pre>
+<pre class="r"><code>#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash = mash(data,c(U.c,U.est),algorithm.version = &#39;R&#39;)</code></pre>
+<pre><code> - Computing 400 x 205 likelihood matrix.
+ - Likelihood calculations took 10.01 seconds.
+ - Fitting model with 205 mixture components.
+ - Model fitting took 0.31 seconds.
+ - Computing posterior matrices.
+ - Computation allocated took 0.19 seconds.</code></pre>
+<pre class="r"><code>fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
+
+colnames(fp) = c(&quot;True.U&quot;,&quot;U.ed&quot;,&quot;U.ed.lb&quot;)
+knitr::kable(round(fp,3),caption = &quot;Set lfsr level at 0.05, output fdp&quot;)</code></pre>
+<table>
+<caption>Set lfsr level at 0.05, output fdp</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">True.U</th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fdp</td>
+<td align="right">0.000</td>
+<td align="right">0.363</td>
+<td align="right">0.005</td>
+</tr>
+<tr class="even">
+<td align="left">power</td>
+<td align="right">0.539</td>
+<td align="right">0.568</td>
+<td align="right">0.553</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>fp = cbind(unlist(fsp_power(out_mash_true$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash$result$lfsr,simdata$Bhat,simdata$B)),
+           
+           unlist(fsp_power(out_mash_lb$result$lfsr,simdata$Bhat,simdata$B)))
+
+colnames(fp) = c(&quot;True.U&quot;,&quot;U.ed&quot;,&quot;U.ed.lb&quot;)
+knitr::kable(round(fp,3),caption = &quot;Set lfsr level at 0.05, output fsp&quot;)</code></pre>
+<table>
+<caption>Set lfsr level at 0.05, output fsp</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">True.U</th>
+<th align="right">U.ed</th>
+<th align="right">U.ed.lb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fsp</td>
+<td align="right">0.002</td>
+<td align="right">0.367</td>
+<td align="right">0.007</td>
+</tr>
+<tr class="even">
+<td align="left">power</td>
+<td align="right">0.539</td>
+<td align="right">0.568</td>
+<td align="right">0.553</td>
+</tr>
+<tr class="odd">
+<td align="left">fsp.hat</td>
+<td align="right">0.003</td>
+<td align="right">0.004</td>
+<td align="right">0.004</td>
+</tr>
+</tbody>
+</table>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.3 (2020-10-10)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS High Sierra 10.13.6
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] mvtnorm_1.1-1   mashr_0.2.41    testthat_3.0.0  ashr_2.2-47    
+[5] devtools_2.3.2  usethis_1.6.3   workflowr_1.6.2
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.5        invgamma_1.1      lattice_0.20-41   prettyunits_1.1.1
+ [5] ps_1.4.0          assertthat_0.2.1  rprojroot_1.3-2   digest_0.6.27    
+ [9] truncnorm_1.0-8   R6_2.4.1          plyr_1.8.6        backports_1.1.10 
+[13] evaluate_0.14     highr_0.8         ggplot2_3.3.2     pillar_1.4.6     
+[17] rlang_0.4.8       rstudioapi_0.11   irlba_2.3.3       whisker_0.4      
+[21] callr_3.5.1       Matrix_1.2-18     rmarkdown_2.5     desc_1.2.0       
+[25] stringr_1.4.0     munsell_0.5.0     mixsqp_0.3-43     compiler_4.0.3   
+[29] httpuv_1.5.4      xfun_0.18         pkgconfig_2.0.3   pkgbuild_1.1.0   
+[33] SQUAREM_2020.5    htmltools_0.5.0   tidyselect_1.1.0  tibble_3.0.4     
+[37] flashr_0.6-7      fansi_0.4.1       dplyr_1.0.2       crayon_1.3.4     
+[41] withr_2.3.0       later_1.1.0.1     grid_4.0.3        gtable_0.3.0     
+[45] lifecycle_0.2.0   git2r_0.27.1      magrittr_1.5      scales_1.1.1     
+[49] cli_2.1.0         stringi_1.5.3     reshape2_1.4.4    fs_1.5.0         
+[53] promises_1.1.1    remotes_2.2.0     generics_0.1.0    ellipsis_0.3.1   
+[57] vctrs_0.3.4       rmeta_3.0         tools_4.0.3       softImpute_1.4   
+[61] glue_1.4.2        purrr_0.3.4       processx_3.4.4    abind_1.4-5      
+[65] pkgload_1.1.0     yaml_2.2.1        colorspace_1.4-1  sessioninfo_1.1.1
+[69] memoise_1.1.0     knitr_1.30       </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
