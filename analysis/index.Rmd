@@ -23,3 +23,4 @@ This project explores `masking` in multiple testing.
 
 1. [Fix the issue of using low rank matrix, by an EB procedure](mashFIX.html)
 2. [Fix the issue of using low rank matrix, large N](mashfixLargeN.html)
+3. [Fix the issue of using low rank matrix, general case](mashFIXv_i.html)
