@@ -1,0 +1,255 @@
+---
+title: "Fix the mash issue with low rank matrix, a general approach"
+author: "Dongyue Xie"
+date: "2021-03-13"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Illustrate methods to fix the issue of lfsr in mash, when using rank 1 matrix. The methods are based on a lower bound derived from inverse Fisher information matrix. See [here](mashFIXv_i.pdf) for a description of solutions.
+
+```{r,message=FALSE,results=FALSE}
+library(devtools)
+load_all('code/mashr/')
+library(mvtnorm)
+source('code/misc/genData.R')
+files.sources = list.files('code/maskedmashr/')
+sapply(files.sources, function(x){source(paste('code/maskedmashr/',x,sep=''))})
+```
+
+```{r}
+u1 = c(1,1,0,0,0)
+u2 = 1-u1
+R = length(u1)
+cov1 = tcrossprod(u1)
+#cov1[1,1] = 1
+cov2 = tcrossprod(u2)
+#cov2[5,5] = 1
+#cov2[4,4] = 1
+
+U = list(U1=cov1,U2=cov2)
+#U = list(U1=cov1)
+U
+```
+
+
+```{r}
+bovy_wrapper = function(data, Ulist_init, subset=NULL, ...){
+  if(is.null(subset)){subset = 1:n_effects(data)}
+  K = length(Ulist_init)
+  R = n_conditions(data)
+  pi_init = rep(1/K, K) # initial mix proportions
+  D = ncol(data$V)
+  if(!is.null(data$L)){
+    ycovar = lapply(subset, function(i) data$L %*% (data$Shat_orig[i,] * t(data$V * data$Shat_orig[i,])) %*% t(data$L) )
+  }else if(!data$commonV){
+    ycovar = lapply(subset, function(i) data$Shat[i,] * t(data$V[,,i] * data$Shat[i,]) )
+  }else if(!all(data$V==diag(D))){
+    ycovar = lapply(subset, function(i) data$Shat[i,] * t(data$V * data$Shat[i,]) )
+  }else{
+    ycovar = data$Shat[subset,]^2
+  }
+  ed.res = extreme_deconvolution(data$Bhat[subset,],
+                                 ycovar,
+                                 xamp = pi_init,
+                                 xmean = matrix(0,nrow=K,ncol=R),
+                                 xcovar = Ulist_init,
+                                 fixmean = TRUE,
+                                 ...)
+  # issue https://github.com/stephenslab/mashr/issues/91
+  epsilon = 0
+  Ulist = lapply(1:length(ed.res$xcovar), function(i) ed.res$xcovar[[i]] + epsilon)
+  names(Ulist) = names(ed.res$xcovar)
+  return(list(pi = ed.res$xamp, Ulist = Ulist, av_loglik = ed.res$avgloglikedata))
+}
+
+```
+
+## $V_i = cI$
+
+```{r}
+signal_sd = sqrt(3)
+error_sd = 1
+set.seed(12345)
+n=500
+simdata = genData(n,U,signal_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+out_mash_true = mash(data, c(U.c,U),verbose = F)
+
+#m.1by1 = mash_1by1(data)
+#strong = get_significant_results(m.1by1)
+strong = 1:nrow(simdata$B)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist
+U.est.adj = lapply(1:length(U.est),function(k){
+  U.k = U.est[[k]]
+  U.k + 2*diag(sqrt(2/n*1/diag(solve(U.k+error_sd^2*diag(R)))^2))
+})
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash_lb = mash(data,c(U.c,U.est.adj))
+#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash = mash(data,c(U.c,U.est))
+
+fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05, output fdp")
+
+fp = cbind(unlist(fsp_power(out_mash_true$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash$result$lfsr,simdata$Bhat,simdata$B)),
+           
+           unlist(fsp_power(out_mash_lb$result$lfsr,simdata$Bhat,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05, output fsp")
+```
+
+
+
+```{r}
+set.seed(12345)
+signal_sd = 1
+error_sd = 0.5
+simdata = genData(n,U,signal_sd=signal_sd,error_sd = error_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+out_mash_true = mash(data, c(U.c,U),verbose = F)
+
+#m.1by1 = mash_1by1(data)
+#strong = get_significant_results(m.1by1)
+strong = 1:nrow(simdata$B)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist
+U.est.adj = lapply(1:length(U.est),function(k){
+  U.k = U.est[[k]]
+  U.k + 2*diag(sqrt(2/n*1/diag(solve(U.k+error_sd^2*diag(R)))^2))
+})
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash_lb = mash(data,c(U.c,U.est.adj))
+#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash = mash(data,c(U.c,U.est))
+
+fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05, output fdp")
+
+fp = cbind(unlist(fsp_power(out_mash_true$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash$result$lfsr,simdata$Bhat,simdata$B)),
+           
+           unlist(fsp_power(out_mash_lb$result$lfsr,simdata$Bhat,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05, output fsp")
+```
+
+
+
+```{r}
+set.seed(12345)
+signal_sd = 0.1
+error_sd = 0.01
+simdata = genData(n,U,signal_sd=signal_sd,error_sd = error_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+out_mash_true = mash(data, c(U.c,U),verbose = F)
+
+#m.1by1 = mash_1by1(data)
+#strong = get_significant_results(m.1by1)
+strong = 1:nrow(simdata$B)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist
+U.est.adj = lapply(1:length(U.est),function(k){
+  U.k = U.est[[k]]
+  U.k + 2*diag(sqrt(2/n*1/diag(solve(U.k+error_sd^2*diag(R)))^2))
+})
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash_lb = mash(data,c(U.c,U.est.adj))
+#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash = mash(data,c(U.c,U.est))
+
+fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05, output fdp")
+
+fp = cbind(unlist(fsp_power(out_mash_true$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash$result$lfsr,simdata$Bhat,simdata$B)),
+           
+           unlist(fsp_power(out_mash_lb$result$lfsr,simdata$Bhat,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05, output fsp")
+```
+
+
+## general $V_i$
+
+
+```{r}
+set.seed(123)
+signal_sd = 3
+error_sd = 1
+N = 200*length(U)
+V = rWishart(N,10,diag(5))
+for(i in 1:dim(V)[3]){
+  V[,,i] = cov2cor(V[,,i])
+}
+simdata = simData(N,U,V,signal_sd=signal_sd,error_sd=error_sd)
+data = mash_set_data(simdata$Bhat,simdata$Shat,V=simdata$V)
+U.c = cov_canonical(data)
+out_mash_true = mash(data, c(U.c,U),verbose = T,algorithm.version = 'R')
+
+#m.1by1 = mash_1by1(data)
+#strong = get_significant_results(m.1by1)
+strong = 1:nrow(simdata$B)
+U.pca = cov_pca(data,3,strong)
+U.ed = bovy_wrapper(data,U.pca,subset=strong)
+U.est = U.ed$Ulist[c(2,4)]
+k.idx = list(k1 = 1:200,k2 = 201:400)
+
+U.est.adj = lapply(1:length(U.est),function(k){
+  U.k = U.est[[k]]
+  
+  temp = 0
+ for(i in k.idx[[k]]){
+   temp = temp+diag(solve(U.k+error_sd^2*V[,,i]))^2
+ }
+  
+  U.k + 2*diag(sqrt(2/(temp)))
+})
+#fdp_power(out_mash_true$result$lfsr,simdata$B)
+out_mash_lb = mash(data,c(U.c,U.est.adj),algorithm.version = 'R')
+#fdp_power(out_mash$result$lfsr,simdata$B)
+out_mash = mash(data,c(U.c,U.est),algorithm.version = 'R')
+
+fp = cbind(unlist(fdp_power(out_mash_true$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash$result$lfsr,simdata$B)),
+      unlist(fdp_power(out_mash_lb$result$lfsr,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05, output fdp")
+
+fp = cbind(unlist(fsp_power(out_mash_true$result$lfsr,simdata$Bhat,simdata$B)),
+           unlist(fsp_power(out_mash$result$lfsr,simdata$Bhat,simdata$B)),
+           
+           unlist(fsp_power(out_mash_lb$result$lfsr,simdata$Bhat,simdata$B)))
+
+colnames(fp) = c("True.U","U.ed","U.ed.lb")
+knitr::kable(round(fp,3),caption = "Set lfsr level at 0.05, output fsp")
+```
+
+
