@@ -1,0 +1,253 @@
+---
+title: "Check the calibration of FSR of mash."
+author: "Dongyue Xie"
+date: "2021-03-10"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Check the calibration of FSR of mash.
+
+```{r}
+source('code/simulation/check_mash_lfsr.R')
+```
+
+
+
+```{r}
+signal_sd = sqrt(3)
+R = 5
+n = 500
+seed = 12345
+# Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
+#              U2 = diag(R),
+#              U3 = tcrossprod(c(1,1,0,0,0)),
+#              U4 = tcrossprod(c(0,0,1,1,1)))
+# 
+# out1.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+#                 N = n*length(Ulist),signal_sd=signal_sd,
+#                 nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+# 
+# plot.fsr(out1.ed,titles = "Using estimated covaraince matrices")
+# 
+# 
+# out1.true = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+#                 N = n*length(Ulist),signal_sd=signal_sd,
+#                 nreps=30,mc.cores = 4,use.U.true = TRUE,seed=seed)
+# 
+# plot.fsr(out1.true,titles = "Using true covaraince matrices")
+```
+
+
+## When $U$ is rank 1 but dense
+
+```{r}
+Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
+             U2 = diag(R),
+             U3 = tcrossprod(c(1,-1,1,-1,1)))
+
+out2.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.fsr(out2.ed,titles = "Using estimated covaraince matrices")
+
+out2.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,adjust = NULL,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.fsr(out2.ed0,titles = "Using estimated covaraince matrices")
+```
+
+## When $U$ is dense and full rank
+
+
+```{r}
+u = toeplitz(c(1,0.4,0.3,0.2,0.1))
+Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
+             U2 = diag(R),
+             U3 = u)
+
+out4.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.fsr(out4.ed,titles = "Using estimated covaraince matrices")
+```
+
+## When $U$ is dense and rank-2
+
+```{r}
+u = toeplitz(c(1,0.4,0.3,0.2,0.1))
+u.eigen = eigen(u)
+u = u.eigen$vectors[,1:2]%*%diag(u.eigen$values[1:2])%*%t(u.eigen$vectors[,1:2])
+Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
+             U2 = diag(R),
+             U3 = u)
+
+out5.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.fsr(out5.ed,titles = "Using estimated covaraince matrices")
+```
+
+
+
+## When $U$ is diag-3-sparse and rank 2
+
+
+```{r}
+u = toeplitz(c(1,0.4,0.3,0.2,0.1))
+u[3:5,] = 0
+u[,3:5] = 0
+u
+Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
+             U2 = diag(R),
+             U3 = u)
+
+out6.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.fsr(out6.ed,titles = "Using estimated covaraince matrices")
+
+out6.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,adjust = NULL,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.fsr(out6.ed0,titles = "Using estimated covaraince matrices")
+
+
+
+```
+
+## When $U$ is diag-2-sparse and rank 3
+
+```{r}
+u = toeplitz(c(1,0.4,0.3,0.2,0.1))
+u[4:5,] = 0
+u[,4:5] = 0
+u
+Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
+             U2 = diag(R),
+             U3 = u)
+
+out7.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.fsr(out7.ed,titles = "Using estimated covaraince matrices")
+
+out7.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,adjust = NULL,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.fsr(out7.ed0,titles = "Using estimated covaraince matrices")
+
+
+```
+
+## When $U$ is diag-1-sparse and rank 4
+
+```{r}
+u = toeplitz(c(1,0.4,0.3,0.2,0.1))
+u[5:5,] = 0
+u[,5:5] = 0
+u
+Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
+             U2 = diag(R),
+             U3 = u)
+
+out8.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.fsr(out8.ed,titles = "Using estimated covaraince matrices")
+
+
+out8.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,adjust = NULL,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.fsr(out8.ed0,titles = "Using estimated covaraince matrices")
+
+
+```
+
+## When $U$ is diag-3-sparse and rank 1
+
+
+```{r}
+u = tcrossprod(c(1,-1,1,-1,1))
+u[3:5,] = 0
+u[,3:5] = 0
+u
+Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
+             U2 = diag(R),
+             U3 = u)
+
+out9.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.fsr(out9.ed,titles = "Using estimated covaraince matrices")
+
+out9.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,adjust = NULL,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.fsr(out9.ed0,titles = "Using estimated covaraince matrices")
+
+
+```
+
+## When $U$ is diag-2-sparse and rank 1
+
+```{r}
+u = tcrossprod(c(1,-1,1,-1,1))
+u[4:5,] = 0
+u[,4:5] = 0
+u
+Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
+             U2 = diag(R),
+             U3 = u)
+
+out10.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.fsr(out10.ed,titles = "Using estimated covaraince matrices")
+
+
+```
+
+
+## When $U$ is diag-1-sparse and rank 1
+
+```{r}
+u = tcrossprod(c(1,-1,1,-1,1))
+u[5:5,] = 0
+u[,5:5] = 0
+u
+Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
+             U2 = diag(R),
+             U3 = u)
+
+out11.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.fsr(out11.ed,titles = "Using estimated covaraince matrices")
+
+out11.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,adjust = NULL,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.fsr(out11.ed0,titles = "Using estimated covaraince matrices")
+
+
+```
