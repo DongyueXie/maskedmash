@@ -103,7 +103,7 @@ u2
 Repeat the process 20 times.  
 
 
-```{r}
+```{r,fig.width=6,fig.height=4}
 out = readRDS('output/maskedmashFDR/t_prior_SNR2K4N2000df5.rds')
 plot.fdr(out)
 ```
@@ -112,7 +112,7 @@ plot.fdr(out)
 
 Generate 2000 samples from 4 multivariate uniform distribution(marginally [-a,a], obtained from transforming multivariate normals)
 
-```{r}
+```{r,fig.width=7,fig.height=4}
 out = readRDS('output/maskedmashFDR/uniform_prior_SNR2K4N2000.rds')
 plot.fdr(out)
 ```
@@ -122,7 +122,7 @@ plot.fdr(out)
 
 Generate 2000 samples from 4 multivariate uniform distribution(marginally [0,a]).
 
-```{r}
+```{r,fig.width=8,fig.height=5}
 out = readRDS('output/maskedmashFDR/halfuniform_prior_SNR2K4N2000.rds')
 plot.fdr(out)
 ```
