@@ -17,6 +17,7 @@ This project explores `masking` in multiple testing.
 0. [Try AdaPT](tryAdaPT.html)
 1. [masked mash on FDR control, z scores](maskedmashFDR.html)
 2. [masked mash on FDR control, t stattistics](maskedmashFDR_simu_t.html)
+3. [masked mash on FDR control, t and uniform prios](maskedmashFDR_prior.html)
 
 
 ## Others
@@ -24,3 +25,4 @@ This project explores `masking` in multiple testing.
 1. [Fix the issue of using low rank matrix, by an EB procedure](mashFIX.html)
 2. [Fix the issue of using low rank matrix, large N](mashfixLargeN.html)
 3. [Fix the issue of using low rank matrix, general case](mashFIXv_i.html)
+
