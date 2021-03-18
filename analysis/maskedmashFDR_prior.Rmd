@@ -110,19 +110,19 @@ plot.fdr(out)
 
 ## uniform distribution
 
-Generate 2000 samples from 4 multivariate uniform distribution(marginally [-a,a], obtained from transforming multivariate normals)
+Generate 2000 samples from 4 multivariate uniform distribution(marginally [-3,3], obtained from transforming multivariate normals)
 
 ```{r,fig.width=9,fig.height=7}
-out = readRDS('output/maskedmashFDR/uniform_prior_SNR2K4N2000.rds')
+out = readRDS('output/maskedmashFDR/uniform_prior_range3K4N2000.rds')
 plot.fdr(out)
 ```
 
 
 ## half uniform distribution
 
-Generate 2000 samples from 4 multivariate uniform distribution(marginally [0,a]).
+Generate 2000 samples from 4 multivariate uniform distribution(marginally [0,3]).
 
 ```{r,fig.width=9,fig.height=7}
-out = readRDS('output/maskedmashFDR/halfuniform_prior_SNR2K4N2000.rds')
+out = readRDS('output/maskedmashFDR/halfuniform_prior_range3K4N2000.rds')
 plot.fdr(out)
 ```
