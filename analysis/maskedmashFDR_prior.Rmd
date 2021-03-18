@@ -1,0 +1,128 @@
+---
+title: "masked mash on FDR control, t and uniform prior"
+author: "Dongyue Xie"
+date: "2021-03-10"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(devtools)
+library(parallel)
+load_all('code/mashr/')
+files.sources = list.files('code/maskedmashr/')
+sapply(files.sources, function(x){source(paste('code/maskedmashr/',x,sep=''))})
+#'@title get summary from simu study
+#'@description given a sequence of
+get.simu.result = function(out,alpha){
+
+  fdr_result = mclapply(out,function(x){
+    
+    non_null_idx = which(x$data$B!=0)
+    rej.mash = mashFDR(x$mash.out,alpha)
+    #fp.mash = c(fsp(x$data$Bhat[rej.mash],x$data$B[rej.mash]),
+    #            powr(rej.mash,non_null_idx))
+    fp.mash = c(fdp(rej.mash,non_null_idx),powr(rej.mash,non_null_idx))
+    fp = lapply(x[-c(1:2)],function(z){
+      rej = maskedmashFDR(x$data$Bhat,z,alpha)$rej.set
+      fdps = fdp(rej,non_null_idx)
+      powers = powr(rej,non_null_idx)
+      c(fdps,powers)
+    })
+
+    cbind(fp.mash,do.call(cbind,fp))
+  },mc.cores = 4)
+
+  temp = do.call(rbind,fdr_result)
+  fdr.idx = seq(1,2*length(out),2)
+  list(FDP = temp[fdr.idx,],POWER = temp[-fdr.idx,])
+}
+
+plot.fdr = function(out,
+                    alpha_list = seq(0,0.3,length.out = 30),
+                    method_list = c("mash","mash.on.maskedZ.all",
+                                    "masked.mash.all","masked.mash.70%",
+                                    "masked.mash.40%","masked.mash.20%")){
+  n_method = length(method_list)
+  fdr = c()
+  powers = c()
+  for(i in 1:length(alpha_list)){
+    temp = get.simu.result(out,alpha_list[i])
+    fdr = rbind(fdr,colMeans(temp$FDP))
+    powers = rbind(powers,colMeans(temp$POWER))
+  }
+  
+  plot(alpha_list,fdr[,1],type='l',lwd=2,ylim = range(fdr),xlab = 'Target FDR Level', ylab = 'FDR')
+  for(i in 2:ncol(fdr)){
+    lines(alpha_list,fdr[,i],lwd=2,col=i,lty=i)
+  }
+  abline(a=0,b=1,lty=1,col='grey80')
+  legend('bottomright',method_list,
+         lty = 1:n_method,col=1:n_method,lwd=rep(2,n_method))
+  
+  plot(alpha_list,powers[,1],type='l',lwd=2,ylim = range(powers),xlab = 'Target FDR Level', ylab = 'Power')
+  for(i in 2:ncol(powers)){
+    lines(alpha_list,powers[,i],lwd=2,col=i,lty=i)
+  }
+  legend('bottomright',method_list,
+         lty = 1:n_method,col=1:n_method,lwd=rep(2,n_method))
+  
+  
+  plot(fdr[,1],powers[,1],type='l',lwd=2,xlim = range(fdr),ylim = range(powers),xlab = 'FDR', ylab = 'Power')
+  for(i in 2:ncol(powers)){
+    lines(fdr[,i],powers[,i],lwd=2,col=i,lty=i)
+  }
+  legend('bottomright',method_list,
+         lty = 1:n_method,col=1:n_method,lwd=rep(2,n_method))
+  
+  
+}
+
+
+```
+
+## t-prior
+
+Generate 2000 samples from 4 multivariate t mixtures with df = 5, and covariance matrix: null, identity,
+```{r}
+u = toeplitz(c(1,0.4,0.3,0.2,0.1))
+u[3:5,] = 0
+u[,3:5] = 0
+u
+
+u2 = toeplitz(c(1,-0.4,0.3,0.2,0.1))
+u2[1:3,] = 0
+u2[,1:3] = 0
+u2
+```
+
+
+Repeat the process 20 times.  
+
+
+```{r}
+out = readRDS('output/maskedmashFDR/t_prior_SNR2K4N2000df5.rds')
+plot.fdr(out)
+```
+
+## uniform distribution
+
+Generate 2000 samples from 4 multivariate uniform distribution(marginally [-a,a], obtained from transforming multivariate normals)
+
+```{r}
+out = readRDS('output/maskedmashFDR/uniform_prior_SNR2K4N2000.rds')
+plot.fdr(out)
+```
+
+
+## half uniform distribution
+
+Generate 2000 samples from 4 multivariate uniform distribution(marginally [0,a]).
+
+```{r}
+out = readRDS('output/maskedmashFDR/halfuniform_prior_SNR2K4N2000.rds')
+plot.fdr(out)
+```
