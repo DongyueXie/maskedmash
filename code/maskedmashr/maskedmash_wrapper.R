@@ -21,7 +21,8 @@ maskedmash_wrapper = function(Bhat,P=NULL,thresh=NULL,npc=5,Shat=NULL,adjust = '
     strong=NULL
   }
   U.pca = cov_pca(data,npc,strong)
-  U.est = masked.md(data,strong=strong,thresh=thresh,U.data=U.pca,adjust=adjust,verbose=verbose)$U.eb
+  #browser()
+  U.est = masked.md(data,strong=strong,thresh=thresh,U.data=U.pca,adjust=adjust,verbose=verbose)$U.est.adj
   out = masked.mash(data,thresh=thresh,U.canon = U.c,U.data = U.est,verbose=verbose)
   out
 

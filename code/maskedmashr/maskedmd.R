@@ -62,6 +62,7 @@ masked.md = function(data,strong=NULL,thresh=NULL,
     loglik.obj[iter+1] = calc_obj(lik.list,Z.comb,pi,N,R)
 
 
+    #browser()
     ## check convergence
     if(abs(loglik.obj[iter+1]-loglik.obj[iter])<tol){
       break
@@ -84,6 +85,7 @@ masked.md = function(data,strong=NULL,thresh=NULL,
         crossprod(sqrt(post_weights[[i]][,k])*Z.comb[[i]]$z.comb)
       })
 
+      #browser()
       S.tilde.k = Reduce("+",S.tilde.k)/(N*pi[k])
 
       # S.tilde_k = 0
@@ -124,7 +126,7 @@ masked.md = function(data,strong=NULL,thresh=NULL,
       if(is.null(nu)){
         nu = R+1
       }
-      U.eb = lapply(1:length(U.est),function(k){
+      U.est.adj = lapply(1:length(U.est),function(k){
         nk = N*pi.est[k]
         if(nk>R){
           s2.hat = R*nu/(nk+nu)/sum(diag(solve(nk*(U.est[[k]]+I_R))))
@@ -137,11 +139,13 @@ masked.md = function(data,strong=NULL,thresh=NULL,
     }
 
     if(adjust == "lb"){
-      U.eb = lapply(1:length(U.est),function(k){
+      U.est.adj = lapply(1:length(U.est),function(k){
         nk = N*pi.est[k]
         if(nk>R){
-          temp = eigen(U.est[[k]])
-          temp$vectors%*%(diag(pmax(2/sqrt(nk),temp$values)))%*%t(temp$vectors)
+          U.est[[k]] + 2*diag(sqrt(1/(2*nk)),R)
+          #U.est[[k]] + 2*diag(sqrt(2/nk*1/(diag(solve(U.est[[k]]+diag(R))))^2))
+          #temp = eigen(U.est[[k]])
+          #temp$vectors%*%(diag(pmax(2/sqrt(nk),temp$values)))%*%t(temp$vectors)
         }else{
           NULL
         }
@@ -149,14 +153,14 @@ masked.md = function(data,strong=NULL,thresh=NULL,
     }
   }
 
-  U.eb = U.eb[lengths(U.eb) != 0]
+  U.est.adj = U.est.adj[lengths(U.est.adj) != 0]
 
   # add eb step to adjust estimated U
 
 
   result = list()
   result$U.est = U.est
-  result$U.eb = U.eb
+  result$U.est.adj = U.est.adj
   result$pi = pi
   result$loglik = loglik.obj
 
