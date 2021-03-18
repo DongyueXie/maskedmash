@@ -13,7 +13,7 @@
 
 <meta name="date" content="2021-03-10" />
 
-<title>Check the calibration of FSR of mash.</title>
+<title>Check the calibration of FSR/FDR of mash.</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -397,7 +397,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Check the calibration of FSR of mash.</h1>
+<h1 class="title toc-ignore">Check the calibration of FSR/FDR of mash.</h1>
 <h4 class="author">Dongyue Xie</h4>
 <h4 class="date">2021-03-10</h4>
 
@@ -424,7 +424,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-03-17
+<strong>Last updated:</strong> 2021-03-18
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -515,16 +515,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreea8698eb892fa9ea232d24a57ca2171d330babdf9targetblanka8698eba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/a8698eb892fa9ea232d24a57ca2171d330babdf9" target="_blank">a8698eb</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreee1d30073b42898ea7fad94ec748f0b1f0ca2fc57targetblanke1d3007a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/e1d30073b42898ea7fad94ec748f0b1f0ca2fc57" target="_blank">e1d3007</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreea8698eb892fa9ea232d24a57ca2171d330babdf9targetblanka8698eba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreee1d30073b42898ea7fad94ec748f0b1f0ca2fc57targetblanke1d3007a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/a8698eb892fa9ea232d24a57ca2171d330babdf9" target="_blank">a8698eb</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/e1d30073b42898ea7fad94ec748f0b1f0ca2fc57" target="_blank">e1d3007</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -545,21 +545,13 @@ Untracked files:
     Untracked:  ExDeconDemo_c.log
     Untracked:  ExDeconDemo_loglike.log
     Untracked:  analysis/mashdiagnostics.Rmd
-    Untracked:  code/maskedmashr/maskedmashFDR.R
-    Untracked:  code/maskedmashr/simDataI_ult.R
-    Untracked:  code/simulation/check_mash_lfsr.R
-    Untracked:  code/simulation/maskedmashFDR_simu_tPrior.R
     Untracked:  output/maskedmashFDR/
     Untracked:  to_do.txt
 
 Unstaged changes:
     Modified:   analysis/estimatePrior.Rmd
+    Modified:   analysis/index.Rmd
     Modified:   analysis/maskedmashFDR.Rmd
-    Modified:   code/maskedmashr/mashFDR.R
-    Modified:   code/maskedmashr/mash_wrapper.R
-    Modified:   code/maskedmashr/maskedmash_wrapper.R
-    Modified:   code/maskedmashr/maskedmd.R
-    Modified:   code/maskedmashr/utils.R
 
 </code></pre>
 <p>
@@ -603,6 +595,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e1d30073b42898ea7fad94ec748f0b1f0ca2fc57/analysis/check_mash_fsr.Rmd" target="_blank">e1d3007</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-18
+</td>
+<td>
+wflow_publish(“analysis/check_mash_fsr.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/maskedmash/e175ebaebef23236658d22052bbecf4094978855/docs/check_mash_fsr.html" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/maskedmash/blob/a8698eb892fa9ea232d24a57ca2171d330babdf9/analysis/check_mash_fsr.Rmd" target="_blank">a8698eb</a>
 </td>
 <td>
@@ -624,7 +650,7 @@ wflow_publish(“analysis/check_mash_fsr.Rmd”)
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Check the calibration of FSR of mash.</p>
+<p>Check the calibration of FDR/FSR of mash, using lfsr. (Since lfsr is more conservative than lfdr, we expect the true FDR level <span class="math inline">\(\leq\)</span> target FDR level.)</p>
 <pre class="r"><code>source(&#39;code/simulation/check_mash_lfsr.R&#39;)</code></pre>
 <pre><code>Loading required package: usethis</code></pre>
 <pre><code>Loading mashr</code></pre>
@@ -647,63 +673,209 @@ seed = 12345
 #                 N = n*length(Ulist),signal_sd=signal_sd,
 #                 nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
 # 
-# plot.fsr(out1.ed,titles = &quot;Using estimated covaraince matrices&quot;)
+# plot.out(out1.ed,titles = &quot;Using estimated covaraince matrices&quot;)
 # 
 # 
 # out1.true = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
 #                 N = n*length(Ulist),signal_sd=signal_sd,
 #                 nreps=30,mc.cores = 4,use.U.true = TRUE,seed=seed)
 # 
-# plot.fsr(out1.true,titles = &quot;Using true covaraince matrices&quot;)</code></pre>
+# plot.out(out1.true,titles = &quot;Using true covaraince matrices&quot;)</code></pre>
 </div>
 <div id="when-u-is-rank-1-but-dense" class="section level2">
 <h2>When <span class="math inline">\(U\)</span> is rank 1 but dense</h2>
-<pre class="r"><code>Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
-             U2 = diag(R),
-             U3 = tcrossprod(c(1,-1,1,-1,1)))
+<pre class="r"><code>Ulist = list(U3 = tcrossprod(c(1,-1,1,-1,1)))
 
-out2.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
-                N = n*length(Ulist),signal_sd=signal_sd,
-                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+# out2.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+#                 N = n*length(Ulist),signal_sd=signal_sd,
+#                 nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+# 
+# plot.out(out2.ed,titles = &quot;Using estimated covaraince matrices&quot;)
 
-plot.fsr(out2.ed,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
-<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>out2.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+out2.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
                 N = n*length(Ulist),signal_sd=signal_sd,adjust = NULL,
-                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed,npc=2)
 
-plot.fsr(out2.ed0,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
+plot.out(out2.ed0,titles = &quot;Using ED estimated covaraince matrices, unadjusted&quot;)</code></pre>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e175ebaebef23236658d22052bbecf4094978855/docs/figure/check_mash_fsr.Rmd/unnamed-chunk-3-1.png" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-2">
+Past versions of unnamed-chunk-3-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e175ebaebef23236658d22052bbecf4094978855/docs/figure/check_mash_fsr.Rmd/unnamed-chunk-3-2.png" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-3-3.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="when-u-is-dense-and-full-rank" class="section level2">
 <h2>When <span class="math inline">\(U\)</span> is dense and full rank</h2>
-<pre class="r"><code>u = toeplitz(c(1,0.4,0.3,0.2,0.1))
-Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
-             U2 = diag(R),
-             U3 = u)
+<pre class="r"><code>u = toeplitz(c(1,-0.4,0.3,-0.2,0.1))
+Ulist = list(U3 = u)
 
-out4.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
-                N = n*length(Ulist),signal_sd=signal_sd,
-                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+out4.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,adjust = NULL,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed,npc=2)
 
-plot.fsr(out4.ed,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
+plot.out(out4.ed0,titles = &quot;Using ED estimated covaraince matrices, unadjusted&quot;)</code></pre>
 <p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e175ebaebef23236658d22052bbecf4094978855/docs/figure/check_mash_fsr.Rmd/unnamed-chunk-4-1.png" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="when-u-is-dense-and-rank-2" class="section level2">
 <h2>When <span class="math inline">\(U\)</span> is dense and rank-2</h2>
 <pre class="r"><code>u = toeplitz(c(1,0.4,0.3,0.2,0.1))
 u.eigen = eigen(u)
 u = u.eigen$vectors[,1:2]%*%diag(u.eigen$values[1:2])%*%t(u.eigen$vectors[,1:2])
-Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
-             U2 = diag(R),
-             U3 = u)
+Ulist = list(U3 = u)
 
-out5.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
-                N = n*length(Ulist),signal_sd=signal_sd,
-                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+out5.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,adjust=NULL,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed,npc=2)
 
-plot.fsr(out5.ed,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
+plot.out(out5.ed0,titles = &quot;Using ED estimated covaraince matrices, unadjusted&quot;)</code></pre>
 <p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e175ebaebef23236658d22052bbecf4094978855/docs/figure/check_mash_fsr.Rmd/unnamed-chunk-5-1.png" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="when-u-is-diag-3-sparse-and-rank-2" class="section level2">
 <h2>When <span class="math inline">\(U\)</span> is diag-3-sparse and rank 2</h2>
@@ -717,22 +889,96 @@ u</code></pre>
 [3,]  0.0  0.0    0    0    0
 [4,]  0.0  0.0    0    0    0
 [5,]  0.0  0.0    0    0    0</code></pre>
-<pre class="r"><code>Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
-             U2 = diag(R),
-             U3 = u)
+<pre class="r"><code>Ulist = list(U3 = u)
 
-out6.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
-                N = n*length(Ulist),signal_sd=signal_sd,
-                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
-
-plot.fsr(out6.ed,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
-<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>out6.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+out6.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
                 N = n*length(Ulist),signal_sd=signal_sd,adjust = NULL,
-                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed,npc=2)
 
-plot.fsr(out6.ed0,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
+plot.out(out6.ed0,titles = &quot;Using estimated covaraince matrices, unadjusted&quot;)</code></pre>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e175ebaebef23236658d22052bbecf4094978855/docs/figure/check_mash_fsr.Rmd/unnamed-chunk-6-1.png" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-2">
+Past versions of unnamed-chunk-6-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e175ebaebef23236658d22052bbecf4094978855/docs/figure/check_mash_fsr.Rmd/unnamed-chunk-6-2.png" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-6-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>out6.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed,npc=2)
+
+plot.out(out6.ed,titles = &quot;Using estimated covaraince matrices, adjusted&quot;)</code></pre>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-6-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-6-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-6-6.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="when-u-is-diag-2-sparse-and-rank-3" class="section level2">
 <h2>When <span class="math inline">\(U\)</span> is diag-2-sparse and rank 3</h2>
@@ -746,22 +992,96 @@ u</code></pre>
 [3,]  0.3  0.4  1.0    0    0
 [4,]  0.0  0.0  0.0    0    0
 [5,]  0.0  0.0  0.0    0    0</code></pre>
-<pre class="r"><code>Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
-             U2 = diag(R),
-             U3 = u)
+<pre class="r"><code>Ulist = list(U3 = u)
 
-out7.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
-                N = n*length(Ulist),signal_sd=signal_sd,
-                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
-
-plot.fsr(out7.ed,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
-<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>out7.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+out7.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
                 N = n*length(Ulist),signal_sd=signal_sd,adjust = NULL,
-                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed,npc=2)
 
-plot.fsr(out7.ed0,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
+plot.out(out7.ed0,titles = &quot;Using estimated covaraince matrices, unadjusted&quot;)</code></pre>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e175ebaebef23236658d22052bbecf4094978855/docs/figure/check_mash_fsr.Rmd/unnamed-chunk-7-1.png" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-2">
+Past versions of unnamed-chunk-7-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e175ebaebef23236658d22052bbecf4094978855/docs/figure/check_mash_fsr.Rmd/unnamed-chunk-7-2.png" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>out7.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed,npc=2)
+
+plot.out(out7.ed,titles = &quot;Using estimated covaraince matrices, adjusted&quot;)</code></pre>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-7-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-7-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-7-6.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="when-u-is-diag-1-sparse-and-rank-4" class="section level2">
 <h2>When <span class="math inline">\(U\)</span> is diag-1-sparse and rank 4</h2>
@@ -775,22 +1095,96 @@ u</code></pre>
 [3,]  0.3  0.4  1.0  0.4    0
 [4,]  0.2  0.3  0.4  1.0    0
 [5,]  0.0  0.0  0.0  0.0    0</code></pre>
-<pre class="r"><code>Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
-             U2 = diag(R),
-             U3 = u)
+<pre class="r"><code>Ulist = list(U3 = u)
 
-out8.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
-                N = n*length(Ulist),signal_sd=signal_sd,
-                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
-
-plot.fsr(out8.ed,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
-<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>out8.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+out8.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
                 N = n*length(Ulist),signal_sd=signal_sd,adjust = NULL,
-                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed,npc=2)
 
-plot.fsr(out8.ed0,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
+plot.out(out8.ed0,titles = &quot;Using estimated covaraince matrices, unadjusted&quot;)</code></pre>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e175ebaebef23236658d22052bbecf4094978855/docs/figure/check_mash_fsr.Rmd/unnamed-chunk-8-1.png" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-2">
+Past versions of unnamed-chunk-8-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e175ebaebef23236658d22052bbecf4094978855/docs/figure/check_mash_fsr.Rmd/unnamed-chunk-8-2.png" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>out8.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed,npc=2)
+
+plot.out(out8.ed,titles = &quot;Using estimated covaraince matrices, adjusted&quot;)</code></pre>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-8-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-8-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-8-6.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="when-u-is-diag-3-sparse-and-rank-1" class="section level2">
 <h2>When <span class="math inline">\(U\)</span> is diag-3-sparse and rank 1</h2>
@@ -804,22 +1198,96 @@ u</code></pre>
 [3,]    0    0    0    0    0
 [4,]    0    0    0    0    0
 [5,]    0    0    0    0    0</code></pre>
-<pre class="r"><code>Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
-             U2 = diag(R),
-             U3 = u)
+<pre class="r"><code>Ulist = list(U3 = u)
 
-out9.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
-                N = n*length(Ulist),signal_sd=signal_sd,
-                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
-
-plot.fsr(out9.ed,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
-<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>out9.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+out9.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
                 N = n*length(Ulist),signal_sd=signal_sd,adjust = NULL,
                 nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
 
-plot.fsr(out9.ed0,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
+plot.out(out9.ed0,titles = &quot;Using estimated covaraince matrices, unadj&quot;)</code></pre>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e175ebaebef23236658d22052bbecf4094978855/docs/figure/check_mash_fsr.Rmd/unnamed-chunk-9-1.png" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-2">
+Past versions of unnamed-chunk-9-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e175ebaebef23236658d22052bbecf4094978855/docs/figure/check_mash_fsr.Rmd/unnamed-chunk-9-2.png" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>out9.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.out(out9.ed,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-9-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-9-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-9-6.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="when-u-is-diag-2-sparse-and-rank-1" class="section level2">
 <h2>When <span class="math inline">\(U\)</span> is diag-2-sparse and rank 1</h2>
@@ -833,16 +1301,59 @@ u</code></pre>
 [3,]    1   -1    1    0    0
 [4,]    0    0    0    0    0
 [5,]    0    0    0    0    0</code></pre>
-<pre class="r"><code>Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
-             U2 = diag(R),
-             U3 = u)
+<pre class="r"><code>Ulist = list(U3 = u)
 
-out10.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+
+out10.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
                 N = n*length(Ulist),signal_sd=signal_sd,
                 nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
 
-plot.fsr(out10.ed,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
+plot.out(out10.ed0,titles = &quot;Using estimated covaraince matrices, unadj&quot;)</code></pre>
 <p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e175ebaebef23236658d22052bbecf4094978855/docs/figure/check_mash_fsr.Rmd/unnamed-chunk-10-1.png" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>out10.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.out(out10.ed,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-10-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-10-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-10-6.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="when-u-is-diag-1-sparse-and-rank-1" class="section level2">
 <h2>When <span class="math inline">\(U\)</span> is diag-1-sparse and rank 1</h2>
@@ -856,22 +1367,97 @@ u</code></pre>
 [3,]    1   -1    1   -1    0
 [4,]   -1    1   -1    1    0
 [5,]    0    0    0    0    0</code></pre>
-<pre class="r"><code>Ulist = list(U1 = matrix(0,nrow=R,ncol=R),
-             U2 = diag(R),
-             U3 = u)
+<pre class="r"><code>Ulist = list(U3 = u)
 
-out11.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
-                N = n*length(Ulist),signal_sd=signal_sd,
-                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
 
-plot.fsr(out11.ed,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
-<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>out11.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+out11.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
                 N = n*length(Ulist),signal_sd=signal_sd,adjust = NULL,
                 nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
 
-plot.fsr(out11.ed0,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
+plot.out(out11.ed0,titles = &quot;Using estimated covaraince matrices, unadj&quot;)</code></pre>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e175ebaebef23236658d22052bbecf4094978855/docs/figure/check_mash_fsr.Rmd/unnamed-chunk-11-1.png" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-2">
+Past versions of unnamed-chunk-11-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e175ebaebef23236658d22052bbecf4094978855/docs/figure/check_mash_fsr.Rmd/unnamed-chunk-11-2.png" target="_blank">e175eba</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-11-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>out11.ed = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),signal_sd=signal_sd,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed)
+
+plot.out(out11.ed,titles = &quot;Using estimated covaraince matrices&quot;)</code></pre>
+<p><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-11-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-11-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/check_mash_fsr.Rmd/unnamed-chunk-11-6.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
