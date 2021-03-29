@@ -1,0 +1,62 @@
+---
+title: "Empirical and theoretical null distributions"
+author: "Dongyue Xie"
+date: "2021-03-22"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Consider the hierarchical model 
+\[\mu\sim g(\cdot), \\ z|\mu\sim f_\mu(z).\]
+
+Choose $g$ as a mixture of $K$ priors $g_k$: \[g(\mu) = \sum_{k=0}^{k-1}\pi_kg_k(\mu).\] 
+
+This leads to  the marginal density of $z$ as \[f(z) = \sum_{k=0}^{K-1}\pi_k f_k(z).\]
+
+The posterior is a mixture \[\mu|z\sim \sum_{k=0}^{K-1}\tilde{\pi}_k \tilde{g}_k(\mu|z).\]
+
+In the multiple testing context, $g_0$ corresponds to null model and $\tilde{\pi}_0 = \frac{\pi_0 f_0(z)}{f(z)}$ is the local false discovery rate(lfdr).   The local false sign rate is $lfsr = \min\{p(\mu\leq \tilde{\mu}_0|z), p(\mu\geq \tilde{\mu}_0|z)\}$, where $\tilde{\mu}_0 = E_{\tilde{g}_0}(\mu|z)$.
+
+When $g_0$ is fully specified, it's called the theoretical null. For example, $g_0 = \delta_0$. When $g_0$ is estimated from data, it's called the empirical null. 
+
+The definition of null is important. Consider the normal mixture example, $z|\mu\sim N(\mu,1)$, and $f(z) = \pi_0N(0,\sigma^2_0+1) + \sum_k \pi_k N(0,\sigma^2_k+1)$. If we set $\sigma^2_0$ say as 0 and regard $N(0,1)$ as the null distribution of $\mu$, then $lfdr  = \frac{\pi_0N(z;0,1)}{f(z)}$; if instead we have $\hat{\sigma}^2_0$, then $lfdr  = \frac{\pi_0N(z;0,\hat{\sigma}^2_0+1)}{f(z)}$. 
+
+Now what if use both theoretical and empirical null in the model? The marginal density of $z$ is then 
+\[f(z) = \pi_0N(0,1) + \pi_0' N(0,\hat\sigma^2_0+1)+ \sum_k \pi_k N(0,\sigma^2_k+1).\]
+
+In this model, if we treat both $N(0,1)$ and $N(0,\hat\sigma^2_0+1)$ as null distribution of $\mu$, then the $lfdr = \frac{\pi_0N(z;0,1) + \pi_0'N(z;0,\hat{\sigma}^2_0+1)}{f(z)}$ is still valid. However, if we treat $N(0,1)$ as null, then $lfdr = \frac{\pi_0N(z;0,1)}{f(z)}$ and can seriously under-estimate the true lfdr and lead to inflated false positives.
+
+How would we define/calculate lfsr if both $N(0,1)$ and $N(0,\hat\sigma^2_0+1)$ are null distributions of $z$? 
+
+In mash, we use 'data-driven' covariance matrices. Those matrices might include empirical nulls but we do not recognize them and still only using theoretical nulls. This leads to the under-estimate of the lfdr/lfsr. 
+
+Now the question is how to define null distributions in mash. Especially how to define empirical nulls when estimating the covariance matrices from data.
+
+```{r,eval=F}
+set.seed(12345)
+simdata = simple_sims2(500,sqrt(0.33))
+data = mash_set_data(simdata$Bhat,simdata$Shat)
+U.c = cov_canonical(data)
+U.pca = cov_pca(data,5)
+U.ed = cov_ed(data,U.pca)
+out = mash(data,c(U.c,U.ed))
+rej = mashFDR(out,0.05)
+fdp(rej,which(simdata$B!=0))
+powr(rej,which(simdata$B!=0))
+
+Br = simdata$Bhat - out$result$PosteriorMean
+lfsr = matrix(nrow = nrow(simdata$B),ncol = ncol(simdata$B))
+for(i in 1:ncol(simdata$B)){
+  lfsr[,i] = ash(Br[,i],simdata$Shat[,i])$result$lfsr
+}
+
+```
+
+
+
+
+
+
