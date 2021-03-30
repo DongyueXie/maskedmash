@@ -1,0 +1,114 @@
+---
+title: "Try adapt on masking proportions"
+author: "Dongyue Xie"
+date: "2021-03-29"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(adaptMT)
+summary_adapt <- function(adapt, H0, pvals){
+    results <- apply(adapt$s, 2, function(s){
+        tmp <- (pvals <= s)
+        nfrej <- sum(tmp[which(H0==0)], na.rm = TRUE)
+        ntrej <- sum(tmp[which(H0==1)], na.rm = TRUE)
+        return(c(nfrej, ntrej))
+    })
+    nfrej <- as.numeric(results[1, ])
+    ntrej <- as.numeric(results[2, ])
+    nrej <- nfrej + ntrej
+    FDP <- nfrej / pmax(nrej, 1)
+    power <- ntrej / max(sum(H0),1)
+    df <- data.frame(nrej = nrej, FDP = FDP, power = power)
+    return(df)
+}
+summary_BH <- function(pvals, H0,
+                       alphas = seq(0.01, 0.3, 0.01)){
+    n <- length(pvals)
+    results <- sapply(alphas, function(alpha){
+        khat <- max(c(0, which(sort(pvals) <= alpha * (1:n) / n)))
+        alpha <- alpha * khat / n
+        nfrej <- sum(pvals[which(H0==0)] < alpha, na.rm = TRUE)
+        ntrej <- sum(pvals[which(H0==1)] < alpha, na.rm = TRUE)
+        return(c(nfrej, ntrej))
+    })
+    nfrej <- as.numeric(results[1, ])
+    ntrej <- as.numeric(results[2, ])
+    nrej <- nfrej + ntrej
+    FDP <- nfrej / pmax(nrej, 1)
+    power <- ntrej / max(sum(H0), 1)
+    df <- data.frame(nrej = nrej, FDP = FDP, power = power)
+    return(df)
+}
+```
+
+
+Generate p values from a two group model.
+
+```{r}
+library(parallel)
+pi0 = 0.9
+pi1 = 1-pi0
+n = 1000
+
+
+
+
+x = cbind(rep(1,n))
+colnames(x) = 'x'
+x = as.data.frame(x)
+
+niter = 30
+alphas = c(0.01,0.05,0.1,0.15,0.2,0.3)
+fdps = matrix(nrow = niter,ncol=length(alphas))
+powers = matrix(nrow = niter,ncol=length(alphas))
+
+set.seed(12345)
+
+s0 = c(0.5,0.4,0.3,0.2,0.1,0.05,0.01)
+
+par(mfrow=c(1,2))
+
+for(s in s0){
+  
+  print(s)
+  
+  out_s = mclapply(1:niter,function(i){
+  H = rbinom(n,1,pi1)
+  mu = H*runif(n,-3,3)
+  z = rnorm(n,mu,1)
+  p = 2*(1-pnorm(abs(z)))
+
+  res_glm = adapt_glm(x, p,pi_formulas = "x",
+                      mu_formulas = "x",
+                      s0 = rep(s, n),
+                      alphas = alphas,
+                      verbose=list(print=F,fit=F,ms=F),
+                      nfits = 1)
+  summary_res_glm = summary_adapt(res_glm,H,p)
+  summary_res_glm
+},mc.cores = 4)
+
+fdps = do.call(rbind,lapply(out_s,function(z){z$FDP}))
+powers = do.call(rbind,lapply(out_s,function(z){z$power}))
+
+
+plot(alphas,colMeans(fdps),type='b',ylim=range(alphas),ylab='FDR',xlab='target FDR level',main = paste("Initial threshold",s))
+abline(a=0,b=1,lty=2)
+plot(alphas,colMeans(powers),type='b',ylim=range(powers),ylab='Power',xlab='target FDR level',main = paste("Initial threshold",s))
+
+
+}
+
+
+```
+
+
+
+
+
+
