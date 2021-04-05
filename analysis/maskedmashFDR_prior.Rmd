@@ -27,7 +27,7 @@ get.simu.result = function(out,alpha){
     #            powr(rej.mash,non_null_idx))
     fp.mash = c(fdp(rej.mash,non_null_idx),powr(rej.mash,non_null_idx))
     fp = lapply(x[-c(1:2)],function(z){
-      rej = maskedmashFDR(x$data$Bhat,z,alpha)$rej.set
+      rej = maskedmashFDR(z,alpha)$rej.set
       fdps = fdp(rej,non_null_idx)
       powers = powr(rej,non_null_idx)
       c(fdps,powers)
