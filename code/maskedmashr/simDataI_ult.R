@@ -5,11 +5,8 @@
 #'@param prior normal, t, uniform
 #'@param signal_sd variance of mu's, used as signal_sd^2*U
 #'@param half.uniform True to generate only positive uniforms
-#'@param unif.range range of uniform priors
-simDataI.ult = function(N,Ulist,pi=NULL,prior="t",
-                        signal_sd = sqrt(3),
-                        df=10,half.uniform=FALSE,
-                        unif.range = 3){
+#'@param mean.range range of uniform priors
+simDataI.ult = function(N,Ulist,pi=NULL,prior="t",df=10,half.uniform=FALSE,mean.range = 4){
 
 
   K = length(Ulist)
@@ -22,19 +19,14 @@ simDataI.ult = function(N,Ulist,pi=NULL,prior="t",
   if(prior=='normal'){
 
     for(k in 1:K){
-      Bk = rmvnorm(nsamp[k],rep(0,R),signal_sd^2*Ulist[[k]])
+      Bk = rmvnorm(nsamp[k],rep(0,R),(mean.range/qnorm(0.99))^2*Ulist[[k]])
       B = rbind(B,Bk)
     }
 
   }else if(prior == 't'){
 
     for(k in 1:K){
-      if(df>2){
-        Bk = mvtnorm::rmvt(nsamp[k],sigma=signal_sd^2*Ulist[[k]],df=df)
-      }else{
-        Bk = mvtnorm::rmvt(nsamp[k],sigma=signal_sd^2*Ulist[[k]],df=df)
-      }
-
+      Bk = mvtnorm::rmvt(nsamp[k],sigma=(mean.range/qmvt(0.99,df=df,tail="lower.tail")$quantile)^2*Ulist[[k]],df=df)
       B = rbind(B,Bk)
     }
 
@@ -48,15 +40,15 @@ simDataI.ult = function(N,Ulist,pi=NULL,prior="t",
     #temp = sqrt(signal_sd^2*12)
 
     if(half.uniform){
-      B = B*unif.range
+      B = B*mean.range
     }else{
       non0.idx = which(B!=0)
-      B[non0.idx] = B[non0.idx]*2*unif.range-unif.range
+      B[non0.idx] = B[non0.idx]*2*mean.range-mean.range
     }
 
 
   }else{
-    stop('prior should be one of normal, t, uniform')
+    stop('prior should be one of: normal, t, uniform')
   }
 
 
@@ -66,9 +58,10 @@ simDataI.ult = function(N,Ulist,pi=NULL,prior="t",
   #   Bhat[i,] = rmvnorm(1,B[i,],diag(R))
   # }
   Bhat = matrix(rnorm(N*R,B,sd=1),ncol = R)
+  P = 2*(1-pnorm(abs(Bhat)))
   Shat = matrix(1,nrow=N,ncol=R)
 
-  list(B=B,Bhat=Bhat,Shat=Shat)
+  list(B=B,P=P,Bhat=Bhat,Shat=Shat)
 
 
 }

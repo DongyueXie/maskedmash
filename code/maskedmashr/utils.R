@@ -1,16 +1,16 @@
 
 #'@title masking function
 mask.func = function(z){
-  qnorm(1.5-pnorm((z)))
+  sign(z)*qnorm(1.5-pnorm(abs(z)))
 }
 
 #'@title returns all possible combinations of masked z-scores and |det(Jacobian)|
 #'@param z a vector
 #'@param thresh |z| larger than thresh or s(|z|)<=s(t) will be masked. when thresh<=Phi^{-1}(0.75), all masked.
 #'@return a J*R matrix of all possible z scores, a length J vector of |det(Jacobian)|, and masked z scores.
-enumerate.z = function(z,thresh,max_mask = 10){
-  is.mask = ((abs(z)>=thresh)|(abs(z)<=mask.func(thresh)))&((abs(z)<max_mask)|(abs(z)>mask.func(max_mask)))
-  s_z = sign(z)*mask.func(abs(z))*is.mask + z*(1-is.mask)
+enumerate.z = function(z,thresh){
+  masking = is.mask.z(z,thresh)
+  s_z = mask.func(z)*masking + z*(1-masking)
   z.mask = pmin(z,s_z)
   all.comb = as.matrix(expand.grid(as.list(as.data.frame(rbind(z,s_z)))))
   z.comb = all.comb[!duplicated(all.comb),,drop=FALSE]
@@ -19,6 +19,23 @@ enumerate.z = function(z,thresh,max_mask = 10){
     #abs(prod(dnorm(z.mask[dif.idx])/dnorm(x[dif.idx])))
     })
   return(list(z.mask=z.mask,z.comb = z.comb,z.det.jacob=z.det.jacob))
+}
+
+is.mask.z = function(z,thresh){
+  ((abs(z)>=thresh)|(abs(z)<=mask.func(thresh)))
+}
+
+# is.mask.z = function(z,thresh,max_mask = 10){
+#   ((abs(z)>=thresh)|(abs(z)<=mask.func(thresh)))&((abs(z)<max_mask)&(abs(z)>mask.func(max_mask)))
+# }
+
+is.mask.p = function(p,thresh){
+  if(thresh<=0.5){
+    (p<=thresh)|(p>=(1-thresh))
+  }else{
+    stop('thresh should in [0,0.5]')
+  }
+
 }
 
 

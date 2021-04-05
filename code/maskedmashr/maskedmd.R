@@ -141,7 +141,7 @@ masked.md = function(data,strong=NULL,thresh=NULL,
     if(adjust == "lb"){
       U.est.adj = lapply(1:length(U.est),function(k){
         nk = N*pi.est[k]
-        if(nk>R){
+        if(nk>1){
           U.est[[k]] + 2*diag(sqrt(1/(2*nk)),R)
           #U.est[[k]] + 2*diag(sqrt(2/nk*1/(diag(solve(U.est[[k]]+diag(R))))^2))
           #temp = eigen(U.est[[k]])

@@ -7,24 +7,27 @@ sapply(files.sources, function(x){source(paste('code/maskedmashr/',x,sep=''))})
 
 
 # return a list of : data, and masked mash fit
-sim_study = function(Ulist,pi,N,prior,df,signal_sd = sqrt(3),
+
+#'@param prior normal, t or uniform
+
+sim_study = function(Ulist,pi,N,prior,df,
                      seed=12345,nreps = 20,mc.cores = 4,npc=5,
-                     half.uniform=FALSE,unif.range=3){
+                     half.uniform=FALSE,mean.range=3){
 
   set.seed(seed)
 
   result = mclapply(1:nreps,function(i){
     # generate data
-    simdata = simDataI.ult(N,Ulist,pi,prior,signal_sd,df,half.uniform,unif.range)
+    simdata = simDataI.ult(N,Ulist,pi,prior,df,half.uniform,mean.range)
     #datax = mash_set_data(simdata$Bhat,simdata$Shat)
     # fit model
     mash.out = mash_wrapper(simdata$Bhat,npc=npc)
-    mashonmaskedZ.out = mash_mask(simdata$Bhat,npc=npc)
+    mashonmaskedZ.out = mash_mask(simdata$Bhat,simdata$P,npc=npc)
     #mashonmaskedZ.out2 = mash_mask(simdata$Bhat,thresh=thresh,npc=npc)
-    maskedmash.out = maskedmash_wrapper(simdata$Bhat,npc=npc)
-    maskedmash.out2 = maskedmash_wrapper(simdata$Bhat,thresh=1,npc=npc)
-    maskedmash.out3 = maskedmash_wrapper(simdata$Bhat,thresh=1.5,npc=npc)
-    maskedmash.out4 = maskedmash_wrapper(simdata$Bhat,thresh=2,npc=npc)
+    maskedmash.out = maskedmash_wrapper(simdata$Bhat,simdata$P,npc=npc)
+    maskedmash.out2 = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh=0.3,npc=npc)
+    maskedmash.out3 = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh=0.1,npc=npc)
+    maskedmash.out4 = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh=0.05,npc=npc)
 
     list(data = simdata,
          mash.out=mash.out,
@@ -73,8 +76,8 @@ sim_study = function(Ulist,pi,N,prior,df,signal_sd = sqrt(3),
 
 R = 5
 u = toeplitz(c(1,0.4,0.3,0.2,0.1))
-u[3:5,] = 0
-u[,3:5] = 0
+u[4:5,] = 0
+u[,4:5] = 0
 
 u2 = toeplitz(c(1,-0.4,0.3,0.2,0.1))
 u2[1:3,] = 0
