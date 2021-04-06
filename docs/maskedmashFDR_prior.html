@@ -13,7 +13,7 @@
 
 <meta name="date" content="2021-03-10" />
 
-<title>masked mash on FDR control, t and uniform prior</title>
+<title>masked mash on FDR control, t, uniform prior, half-uniform and normal priors</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -419,7 +419,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">masked mash on FDR control, t and uniform prior</h1>
+<h1 class="title toc-ignore">masked mash on FDR control, t, uniform prior, half-uniform and normal priors</h1>
 <h4 class="author">Dongyue Xie</h4>
 <h4 class="date">2021-03-10</h4>
 
@@ -537,16 +537,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree1a939d57a1f1e7da22820e97dbe21f99a1dc248atargetblank1a939d5a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/1a939d57a1f1e7da22820e97dbe21f99a1dc248a" target="_blank">1a939d5</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree26a55f459dcd930be909b8b9547715ebd42b1factargetblank26a55f4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/26a55f459dcd930be909b8b9547715ebd42b1fac" target="_blank">26a55f4</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree1a939d57a1f1e7da22820e97dbe21f99a1dc248atargetblank1a939d5a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree26a55f459dcd930be909b8b9547715ebd42b1factargetblank26a55f4a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/1a939d57a1f1e7da22820e97dbe21f99a1dc248a" target="_blank">1a939d5</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/26a55f459dcd930be909b8b9547715ebd42b1fac" target="_blank">26a55f4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -607,6 +607,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/26a55f459dcd930be909b8b9547715ebd42b1fac/analysis/maskedmashFDR_prior.Rmd" target="_blank">26a55f4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+<td>
+wflow_publish(“analysis/maskedmashFDR_prior.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/maskedmash/ea354b302d4063f0c707147af6da95fcab1df14f/docs/maskedmashFDR_prior.html" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -910,7 +944,7 @@ u2</code></pre>
 <p>Repeat the process 20 times.</p>
 <pre class="r"><code>out = readRDS(&#39;output/maskedmashFDR/t_prior_range4K4N2000df10.rds&#39;)
 plot.fdr(out)</code></pre>
-<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-3-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-3-1.png" width="1248" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
 Past versions of unnamed-chunk-3-1.png
@@ -933,6 +967,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-3-1.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/DongyueXie/maskedmash/blob/6de15b6c8aeed3f94f518b73ff4b9afdf592ed60/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-3-1.png" target="_blank">6de15b6</a>
@@ -970,7 +1015,7 @@ Dongyue Xie
 </table>
 </div>
 </div>
-<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-3-2.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-3-2.png" width="1248" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-2">
 Past versions of unnamed-chunk-3-2.png
@@ -993,6 +1038,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-3-2.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/DongyueXie/maskedmash/blob/6de15b6c8aeed3f94f518b73ff4b9afdf592ed60/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-3-2.png" target="_blank">6de15b6</a>
@@ -1030,7 +1086,7 @@ Dongyue Xie
 </table>
 </div>
 </div>
-<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-3-3.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-3-3.png" width="1248" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-3">
 Past versions of unnamed-chunk-3-3.png
@@ -1053,6 +1109,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-3-3.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/DongyueXie/maskedmash/blob/6de15b6c8aeed3f94f518b73ff4b9afdf592ed60/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-3-3.png" target="_blank">6de15b6</a>
@@ -1097,7 +1164,7 @@ Dongyue Xie
 <p>Generate 2000 samples from 4 multivariate uniform distribution(marginally [-4,4], obtained from transforming multivariate normals)</p>
 <pre class="r"><code>out = readRDS(&#39;output/maskedmashFDR/uniform_prior_range4K4N2000.rds&#39;)
 plot.fdr(out)</code></pre>
-<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-4-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-4-1.png" width="1248" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
 Past versions of unnamed-chunk-4-1.png
@@ -1120,6 +1187,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-4-1.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/DongyueXie/maskedmash/blob/d88f06cdfaf9cd4329cb7b38aa6d27fc8094196c/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-4-1.png" target="_blank">d88f06c</a>
@@ -1168,7 +1246,7 @@ Dongyue Xie
 </table>
 </div>
 </div>
-<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-4-2.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-4-2.png" width="1248" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-2">
 Past versions of unnamed-chunk-4-2.png
@@ -1191,6 +1269,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-4-2.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/DongyueXie/maskedmash/blob/d88f06cdfaf9cd4329cb7b38aa6d27fc8094196c/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-4-2.png" target="_blank">d88f06c</a>
@@ -1239,7 +1328,7 @@ Dongyue Xie
 </table>
 </div>
 </div>
-<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-4-3.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-4-3.png" width="1248" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-3">
 Past versions of unnamed-chunk-4-3.png
@@ -1262,6 +1351,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-4-3.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/DongyueXie/maskedmash/blob/d88f06cdfaf9cd4329cb7b38aa6d27fc8094196c/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-4-3.png" target="_blank">d88f06c</a>
@@ -1314,7 +1414,7 @@ Dongyue Xie
 <p>marginally [-2,2]</p>
 <pre class="r"><code>out = readRDS(&#39;output/maskedmashFDR/uniform_prior_range2K4N2000.rds&#39;)
 plot.fdr(out)</code></pre>
-<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-5-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-5-1.png" width="1248" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
 Past versions of unnamed-chunk-5-1.png
@@ -1337,6 +1437,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-5-1.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/DongyueXie/maskedmash/blob/d88f06cdfaf9cd4329cb7b38aa6d27fc8094196c/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-5-1.png" target="_blank">d88f06c</a>
@@ -1385,7 +1496,7 @@ Dongyue Xie
 </table>
 </div>
 </div>
-<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-5-2.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-5-2.png" width="1248" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-2">
 Past versions of unnamed-chunk-5-2.png
@@ -1408,6 +1519,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-5-2.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/DongyueXie/maskedmash/blob/d88f06cdfaf9cd4329cb7b38aa6d27fc8094196c/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-5-2.png" target="_blank">d88f06c</a>
@@ -1456,7 +1578,7 @@ Dongyue Xie
 </table>
 </div>
 </div>
-<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-5-3.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-5-3.png" width="1248" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-3">
 Past versions of unnamed-chunk-5-3.png
@@ -1479,6 +1601,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-5-3.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/DongyueXie/maskedmash/blob/d88f06cdfaf9cd4329cb7b38aa6d27fc8094196c/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-5-3.png" target="_blank">d88f06c</a>
@@ -1534,19 +1667,358 @@ Dongyue Xie
 <p>Generate 2000 samples from 4 multivariate uniform distribution(marginally [0,4]).</p>
 <pre class="r"><code>out = readRDS(&#39;output/maskedmashFDR/halfuniform_prior_range4K4N2000.rds&#39;)
 plot.fdr(out)</code></pre>
-<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-6-1.png" width="864" style="display: block; margin: auto;" /><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-6-2.png" width="864" style="display: block; margin: auto;" /><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-6-3.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-6-1.png" width="1248" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-6-1.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-6-2.png" width="1248" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-2">
+Past versions of unnamed-chunk-6-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-6-2.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-6-3.png" width="1248" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-3">
+Past versions of unnamed-chunk-6-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-6-3.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>rm(out)</code></pre>
 <p>[0,2]</p>
 <pre class="r"><code>out = readRDS(&#39;output/maskedmashFDR/halfuniform_prior_range2K4N2000.rds&#39;)
 plot.fdr(out)</code></pre>
-<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-7-1.png" width="864" style="display: block; margin: auto;" /><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-7-2.png" width="864" style="display: block; margin: auto;" /><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-7-3.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-7-1.png" width="1248" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-7-1.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-7-2.png" width="1248" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-2">
+Past versions of unnamed-chunk-7-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-7-2.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-7-3.png" width="1248" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-3">
+Past versions of unnamed-chunk-7-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-7-3.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>rm(out)</code></pre>
 </div>
 <div id="normal-prior" class="section level2">
 <h2>normal prior</h2>
 <pre class="r"><code>out = readRDS(&#39;output/maskedmashFDR/normal_prior_range4K4N2000.rds&#39;)
 plot.fdr(out)</code></pre>
-<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-8-1.png" width="864" style="display: block; margin: auto;" /><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-8-2.png" width="864" style="display: block; margin: auto;" /><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-8-3.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-8-1.png" width="1248" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-8-1.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-8-2.png" width="1248" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-2">
+Past versions of unnamed-chunk-8-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-8-2.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/maskedmashFDR_prior.Rmd/unnamed-chunk-8-3.png" width="1248" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-3">
+Past versions of unnamed-chunk-8-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/ea354b302d4063f0c707147af6da95fcab1df14f/docs/figure/maskedmashFDR_prior.Rmd/unnamed-chunk-8-3.png" target="_blank">ea354b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2021-04-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
