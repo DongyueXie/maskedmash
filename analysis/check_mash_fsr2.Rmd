@@ -1,0 +1,76 @@
+---
+title: "Check the calibration of FSR/FDR of mash"
+author: "Dongyue Xie"
+date: "2021-04-01"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+source('code/simulation/check_mash_lfsr.R')
+```
+
+```{r}
+R = 5
+n = 500
+seed = 12345
+```
+
+## When $U$ is diag-3-sparse and rank 2
+
+
+```{r}
+u = toeplitz(c(1,0.5,0.2,0.2,0.1))
+u[3:5,] = 0
+u[,3:5] = 0
+u
+Ulist = list(U3 = u)
+```
+
+
+1. Using ED + rank 1 init, no adjustment to estimated cov matrices. 
+
+```{r}
+par(mfrow=c(1,3))
+
+out.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),adjust = NULL,
+                nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed,npc=2)
+
+plot.out(out.ed0,titles = "ED estimated cov mat, unadjusted")
+```
+
+
+
+```{r,include=FALSE,eval=FALSE}
+# 2. Use udr + random unconstrained init, no adjustment to estimated cov matrices.
+
+out.udr0 = simu_mash_lfsr_udr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),adjust = NULL,
+                nreps=20,mc.cores = 4,seed=seed)
+
+plot.out(out.udr0,titles = "TEEM estimated cov mat, unadjusted")
+```
+
+Now adjust the estimated covariance matrices from ED by adding $\sigma^2 I$, and we vary $\sigma^2$ from small to large.
+
+```{r}
+
+s_list = c(0.001,0.01,0.05,0.1,0.3,0.5,1,5,10,100)
+
+par(mfrow=c(1,3))
+
+for(s in s_list){
+  out = simu_mash_lfsr_search(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
+                N = n*length(Ulist),
+                s=s,
+                nreps=20,mc.cores = 4,seed=seed,npc=2)
+  plot.out(out,titles = paste("ED estimated cov mat, adjusted with s^2=",s))
+}
+
+
+```
+
