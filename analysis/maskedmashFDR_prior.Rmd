@@ -1,5 +1,5 @@
 ---
-title: "masked mash on FDR control, t and uniform prior"
+title: "masked mash on FDR control, t, uniform prior,  half-uniform and normal priors"
 author: "Dongyue Xie"
 date: "2021-03-10"
 output: workflowr::wflow_html
@@ -113,7 +113,7 @@ u2
 Repeat the process 20 times.  
 
 
-```{r,fig.width=9,fig.height=7}
+```{r,fig.width=13,fig.height=10}
 out = readRDS('output/maskedmashFDR/t_prior_range4K4N2000df10.rds')
 plot.fdr(out)
 rm(out)
@@ -123,7 +123,7 @@ rm(out)
 
 Generate 2000 samples from 4 multivariate uniform distribution(marginally [-4,4], obtained from transforming multivariate normals)
 
-```{r,fig.width=9,fig.height=7}
+```{r,fig.width=13,fig.height=10}
 out = readRDS('output/maskedmashFDR/uniform_prior_range4K4N2000.rds')
 plot.fdr(out)
 rm(out)
@@ -132,7 +132,7 @@ rm(out)
 
 marginally [-2,2]
 
-```{r,fig.width=9,fig.height=7}
+```{r,fig.width=13,fig.height=10}
 out = readRDS('output/maskedmashFDR/uniform_prior_range2K4N2000.rds')
 plot.fdr(out)
 rm(out)
@@ -142,7 +142,7 @@ rm(out)
 
 Generate 2000 samples from 4 multivariate uniform distribution(marginally [0,4]).
 
-```{r,fig.width=9,fig.height=7}
+```{r,fig.width=13,fig.height=10}
 out = readRDS('output/maskedmashFDR/halfuniform_prior_range4K4N2000.rds')
 plot.fdr(out)
 rm(out)
@@ -150,7 +150,7 @@ rm(out)
 
 [0,2]
 
-```{r,fig.width=9,fig.height=7}
+```{r,fig.width=13,fig.height=10}
 out = readRDS('output/maskedmashFDR/halfuniform_prior_range2K4N2000.rds')
 plot.fdr(out)
 rm(out)
@@ -159,7 +159,7 @@ rm(out)
 
 ## normal prior
 
-```{r,fig.width=9,fig.height=7}
+```{r,fig.width=13,fig.height=10}
 out = readRDS('output/maskedmashFDR/normal_prior_range4K4N2000.rds')
 plot.fdr(out)
 ```
