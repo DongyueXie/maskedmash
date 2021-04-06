@@ -8,6 +8,7 @@
 #'@param mean.range range of uniform priors
 simDataI.ult = function(N,Ulist,pi=NULL,prior="t",df=10,half.uniform=FALSE,mean.range = 4){
 
+  library(mvtnorm)
 
   K = length(Ulist)
   R = ncol(Ulist[[1]])

@@ -4,7 +4,7 @@
 #'@description The procedure masks the z scores, by taking the bigger one(absolute value) in masked set, then fit mash.
 
 
-mash_mask = function(Bhat,P,p.thresh=0.5,npc=5,Shat=NULL,verbose=FALSE){
+mash_mask = function(Bhat,P,p.thresh=0.5,npc=5,Shat=NULL,verbose=FALSE,eps=1e-15){
 
 
   R = ncol(Bhat)
