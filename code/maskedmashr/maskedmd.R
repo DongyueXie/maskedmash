@@ -142,7 +142,7 @@ masked.md = function(data,strong=NULL,thresh=NULL,
       U.est.adj = lapply(1:length(U.est),function(k){
         nk = N*pi.est[k]
         if(nk>1){
-          U.est[[k]] + 2*diag(sqrt(1/(2*nk)),R)
+          U.est[[k]] + 2*diag(sqrt(2/nk),R)
           #U.est[[k]] + 2*diag(sqrt(2/nk*1/(diag(solve(U.est[[k]]+diag(R))))^2))
           #temp = eigen(U.est[[k]])
           #temp$vectors%*%(diag(pmax(2/sqrt(nk),temp$values)))%*%t(temp$vectors)

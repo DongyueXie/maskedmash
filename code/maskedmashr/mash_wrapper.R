@@ -1,12 +1,14 @@
 
 
-#'@param adjust how to adjust the covariance matrix, either prior or lb. lb is for lower bound
+#'@param adjust how to adjust the covariance matrix, either prior or lb or const. lb is for lower bound
 
 mash_wrapper = function(Bhat,P=NULL,npc=5,Shat=NULL,
                         nu = ncol(Bhat)+1,verbose=FALSE,
                         adjust = "lb",
                         U.true = NULL,
-                        U.ed=NULL,n.ed=NULL){
+                        U.ed=NULL,
+                        n.ed=NULL,
+                        adj.const = 0.1){
 
 
 
@@ -55,14 +57,20 @@ mash_wrapper = function(Bhat,P=NULL,npc=5,Shat=NULL,
       if(adjust == "lb"){
         U.est = lapply(1:length(U.est),function(k){
           nk = n.ed*U.ed$pi[k]
-          if(nk>R){
-            U.est[[k]] + 2*diag(sqrt(1/(2*nk)),R)
+          if(nk>1){
+            U.est[[k]] + 2*diag(sqrt(2/nk),R)
             #U.est[[k]] + 2*diag(sqrt(2/nk*1/(diag(solve(U.est[[k]]+diag(R))))^2))
             #temp = eigen(U.est[[k]])
             #temp$vectors%*%(diag(pmax(2/sqrt(nk),temp$values)))%*%t(temp$vectors)
           }else{
             NULL
           }
+        })
+      }
+
+      if(adjust == "const"){
+        U.est = lapply(1:length(U.est),function(k){
+            U.est[[k]] + diag(adj.const,R)
         })
       }
 
@@ -73,9 +81,6 @@ mash_wrapper = function(Bhat,P=NULL,npc=5,Shat=NULL,
   }else{
     U.data=U.true
   }
-
-
-
 
   out = mash(data,c(U.c,U.data),verbose=verbose)
   out
