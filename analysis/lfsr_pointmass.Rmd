@@ -9,7 +9,7 @@ editor_options:
 
 ## Introduction
 
-Study the effect of not using point mass in model fitting, on lfsr.
+Study the effect of not using point mass in model fitting, on lfsr. See [here](lfsr_pointmass.pdf) for detailed discussion.
 
 The true model is
 
