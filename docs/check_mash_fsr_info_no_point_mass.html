@@ -515,16 +515,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree56a6fa7fb5cd39193dc3069f5d7734b4299a5a3etargetblank56a6fa7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/56a6fa7fb5cd39193dc3069f5d7734b4299a5a3e" target="_blank">56a6fa7</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree2094072c04a371f9d17e129bee7b850b815ff250targetblank2094072a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/2094072c04a371f9d17e129bee7b850b815ff250" target="_blank">2094072</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree56a6fa7fb5cd39193dc3069f5d7734b4299a5a3etargetblank56a6fa7a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtree2094072c04a371f9d17e129bee7b850b815ff250targetblank2094072a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/56a6fa7fb5cd39193dc3069f5d7734b4299a5a3e" target="_blank">56a6fa7</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/2094072c04a371f9d17e129bee7b850b815ff250" target="_blank">2094072</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -544,7 +544,6 @@ Ignored files:
 Untracked files:
     Untracked:  ExDeconDemo_c.log
     Untracked:  ExDeconDemo_loglike.log
-    Untracked:  analysis/lfsr_pointmass.Rmd
     Untracked:  analysis/mashdiagnostics.Rmd
     Untracked:  code/maskedmashr/info_mat.R
     Untracked:  output/maskedmashFDR/
@@ -601,6 +600,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/2094072c04a371f9d17e129bee7b850b815ff250/analysis/check_mash_fsr_info_no_point_mass.Rmd" target="_blank">2094072</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-04-13
+</td>
+<td>
+wflow_publish(“analysis/check_mash_fsr_info_no_point_mass.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/maskedmash/2f176703a1c993926d71edd9c9b2a9de50011e53/docs/check_mash_fsr_info_no_point_mass.html" target="_blank">2f17670</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-04-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/maskedmash/blob/56a6fa7fb5cd39193dc3069f5d7734b4299a5a3e/analysis/check_mash_fsr_info_no_point_mass.Rmd" target="_blank">56a6fa7</a>
 </td>
 <td>
@@ -650,15 +683,52 @@ u</code></pre>
 [4,] 0.000 0.000 0.000 0.001 0.000
 [5,] 0.000 0.000 0.000 0.000 0.001</code></pre>
 <pre class="r"><code>Ulist = list(U3 = u)</code></pre>
-<pre class="r"><code>par(mfrow=c(1,3))
+<pre class="r"><code>par(mfrow=c(1,2))
 
 out.ed0 = simu_mash_lfsr(Ulist,pi = rep(1/length(Ulist),length(Ulist)),
                 N = n*length(Ulist),adjust = NULL,
                 nreps=20,mc.cores = 4,use.U.true = FALSE,seed=seed,npc=2)
 
-plot.out(out.ed0,titles = &quot;ED estimated cov mat, unadjusted&quot;)
-
-  out = simu_mash_lfsr_info(Ulist,
+plot.out(out.ed0,titles = &quot;ED estimated cov mat, unadjusted&quot;)</code></pre>
+<p><img src="figure/check_mash_fsr_info_no_point_mass.Rmd/unnamed-chunk-4-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/2f176703a1c993926d71edd9c9b2a9de50011e53/docs/figure/check_mash_fsr_info_no_point_mass.Rmd/unnamed-chunk-4-1.png" target="_blank">2f17670</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-04-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>  out = simu_mash_lfsr_info(Ulist,
                             pi = rep(1/length(Ulist),length(Ulist)),
                             N = n*length(Ulist),
                             npc=2,
@@ -668,7 +738,44 @@ plot.out(out.ed0,titles = &quot;ED estimated cov mat, unadjusted&quot;)
                             seed=seed)
 
   plot.out(out,titles = paste(&quot;Adjusted with full info mat&quot;))</code></pre>
-<p><img src="figure/check_mash_fsr_info_no_point_mass.Rmd/unnamed-chunk-4-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p><img src="figure/check_mash_fsr_info_no_point_mass.Rmd/unnamed-chunk-4-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-2">
+Past versions of unnamed-chunk-4-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/2f176703a1c993926d71edd9c9b2a9de50011e53/docs/figure/check_mash_fsr_info_no_point_mass.Rmd/unnamed-chunk-4-2.png" target="_blank">2f17670</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2021-04-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>  out = simu_mash_lfsr_info(Ulist,
                             pi = rep(1/length(Ulist),length(Ulist)),
                             N = n*length(Ulist),
@@ -678,7 +785,7 @@ plot.out(out.ed0,titles = &quot;ED estimated cov mat, unadjusted&quot;)
                             mc.cores = 4,
                             seed=seed)
   plot.out(out,titles = paste(&quot;Adjusted with diag info mat&quot;))</code></pre>
-<p><img src="figure/check_mash_fsr_info_no_point_mass.Rmd/unnamed-chunk-4-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p><img src="figure/check_mash_fsr_info_no_point_mass.Rmd/unnamed-chunk-4-3.png" width="1152" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
