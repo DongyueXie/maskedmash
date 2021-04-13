@@ -1,0 +1,220 @@
+---
+title: "lfsr, pointmass"
+author: "Dongyue Xie"
+date: "2021-04-07"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Study the effect of not using point mass in model fitting, on lfsr.
+
+The true model is
+
+\[z\sim \pi_0 N(0,1) + \pi_1 N(0,1+\sigma^2_1),\]
+
+while we fit the following model
+
+\[z\sim \pi_0N(0,\sigma^2_0+1)+\pi_1 N(0,1+\sigma^2_1),\]
+
+where $\sigma^2_0$ is a small positive number. 
+
+Define $\tilde{\pi}_0 = \frac{\pi_0 N(z;0,1)}{\pi_0 N(z;0,1) + \pi_1 N(z;0,1+\sigma^2_1)}$ and $\hat{\tilde{\pi}}_0 = \frac{\pi_0 N(z;0,1+\sigma^2_0)}{\pi_0N(z;0,\sigma^2_0+1)+\pi_1 N(z;0,1+\sigma^2_1)}$.
+
+```{r}
+library(ashr)
+# z ~ pi0*N(0,1+s0) + pi1*N(0,1+s1) 
+lfsr1 = function(z,pi0,pi1,s0,s1){
+
+  pm1 = s1/(s1+1)*z
+  pv1 = s1/(s1+1)
+  np1 = pnorm(0,pm1,sqrt(pv1))
+  
+  pi0_tilde = pi0*dnorm(z,0,sd = sqrt(1+s0))/(pi0*dnorm(z,0,sd = sqrt(1+s0)) + pi1*dnorm(z,0,sd = sqrt(1+s1)))
+  pi1_tilde = 1-pi0_tilde
+  if(s0==0){
+    
+    np = pi0_tilde + pi1_tilde*np1
+    pp = pi0_tilde + pi1_tilde*(1-np1)
+  }else{
+    pm0 = s0/(s0+1)*z
+    pv0 = s0/(s0+1)
+    np0 = pnorm(0,pm0,sqrt(pv0))
+    np = pi0_tilde*np0 + pi1_tilde*np1
+    pp = pi0_tilde*(1-np0) + pi1_tilde*(1-np1)
+  }
+  lfsr = pmin(np,pp)
+  
+  return(list(lfsr=lfsr,np=np,pi0_tilde = pi0_tilde))
+}
+```
+
+We vary $z$ from 0 to 5, and plot $\hat{\tilde{\pi}}_0$ vs $\tilde{\pi}_0$, and $\widehat{lfsr}$ vs $lfsr$.
+
+In this example, we set $\sigma^2_1 = 4$ and $\sigma^2_0 = 0.01$, $\pi_0=0.8$.
+
+
+```{r}
+n = 1000
+z = seq(0,5,length.out = n)
+pi0 = 0.8
+pi1 = 1-pi0
+s0 = 0.01
+s1 = 4
+fit.true = lfsr1(z,pi0,pi1,0,s1)
+fit.est = lfsr1(z,pi0,pi1,s0,s1)
+
+plot(z,fit.true$pi0_tilde,type = 'l',ylab = 'pi0_tilde')
+lines(z,fit.est$pi0_tilde,type='l',col=4)
+legend("topright",c('true','estimated'),col=c(1,4),lty=c(1,1))
+
+plot(z,log(fit.true$pi0_tilde)-log(fit.est$pi0_tilde),type='l',ylab = 'log(pi0_tilde/pi0_tilde_hat)')
+abline(h=(3/4*pi1/pi0*s0/sqrt(1+s1)),col = 4,lty=2)
+#lines(z[-(1:(n/2))],s0/2*(1-z[-(1:(n/2))]^2)*(1-pi0/pi1*sqrt(1+s1)*exp(-0.5*s1/(1+s1)*z[-(1:(n/2))]^2)),col=4)
+lines(z,s0/2*(1-z^2)*(1-pi0/pi1*sqrt(1+s1)*exp(-0.5*s1/(1+s1)*z^2)),col=4)
+legend('bottomleft',c('true','approx when z small', "appox when z large"),col=c(1,4,4),lty=c(1,2,1))
+```
+
+When $z$ is small, $\hat{\tilde{\pi}}_0$ is very close to the true one, while as $z$ gets larger,it always over-estimate the true one.
+
+```{r}
+plot(z,fit.true$lfsr,type = 'l',ylab = 'lfsr')
+lines(z,fit.est$lfsr,type='l',col=4)
+legend("topright",c('true','estimated'),col=c(1,4),lty=c(1,1))
+
+plot(z[900:1000],fit.true$lfsr[900:1000],type = 'l',ylab = 'lfsr',xlab='z',ylim = range(c(fit.true$lfsr[900:1000],fit.est$lfsr[900:1000])))
+lines(z[900:1000],fit.est$lfsr[900:1000],type='l',col=4)
+legend("topright",c('true','estimated'),col=c(1,4),lty=c(1,1))
+
+plot(fit.true$lfsr,fit.est$lfsr,type='l',xlab='True lfsr', ylab="Estimated lfsr")
+abline(a=0,b=1,lty=2)
+
+plot(z,fit.true$lfsr/fit.est$lfsr,type='l',ylab = "lfsr / lfsr_hat")
+
+plot(z,fit.true$lfsr-fit.est$lfsr,type='l',ylab = "lfsr-lfsr_hat")
+
+plot(fit.true$lfsr-fit.est$lfsr, fit.true$pi0_tilde*(1-pnorm(-sqrt(s0/(1+s0))*z)),type='l',xlab = 'lfsr - lfsr_hat', ylab = 'estimate of (lfsr - lfsr_hat)')
+abline(a=0,b=1,lty=2)
+
+plot(z,log(fit.true$lfsr-fit.est$lfsr),type='l',ylab = "log(lfsr-lfsr_hat)")
+```
+
+$\widehat{lfsr}$ always under-estimates $lfsr$.
+
+We now set $\sigma^2_0 = 0.1$ and re-run the analysis
+
+```{r}
+n = 1000
+z = seq(0,5,length.out = n)
+pi0 = 0.8
+pi1 = 1-pi0
+s0 = 0.1
+s1 = 4
+fit.true = lfsr1(z,pi0,pi1,0,s1)
+fit.est = lfsr1(z,pi0,pi1,s0,s1)
+
+plot(z,fit.true$pi0_tilde,type = 'l',ylab = 'pi0_tilde')
+lines(z,fit.est$pi0_tilde,type='l',col=4)
+legend("topright",c('true','estimated'),col=c(1,4),lty=c(1,1))
+
+plot(z,log(fit.true$pi0_tilde)-log(fit.est$pi0_tilde),type='l',ylab = 'log(pi0_tilde/pi0_tilde_hat)')
+abline(h=(3/4*pi1/pi0*s0/sqrt(1+s1)),col = 4,lty=2)
+#lines(z[-(1:(n/2))],s0/2*(1-z[-(1:(n/2))]^2)*(1-pi0/pi1*sqrt(1+s1)*exp(-0.5*s1/(1+s1)*z[-(1:(n/2))]^2)),col=4)
+lines(z,s0/2*(1-z^2)*(1-pi0/pi1*sqrt(1+s1)*exp(-0.5*s1/(1+s1)*z^2)),col=4)
+legend('bottomleft',c('true','approx when z small', "appox when z large"),col=c(1,4,4),lty=c(1,2,1))
+```
+
+
+```{r}
+plot(z,fit.true$lfsr,type = 'l',ylab = 'lfsr')
+lines(z,fit.est$lfsr,type='l',col=4)
+legend("topright",c('true','estimated'),col=c(1,4),lty=c(1,1))
+
+plot(z[900:1000],fit.true$lfsr[900:1000],type = 'l',ylab = 'lfsr',xlab='z',ylim = range(c(fit.true$lfsr[900:1000],fit.est$lfsr[900:1000])))
+lines(z[900:1000],fit.est$lfsr[900:1000],type='l',col=4)
+legend("topright",c('true','estimated'),col=c(1,4),lty=c(1,1))
+
+plot(fit.true$lfsr,fit.est$lfsr,type='l',xlab='True lfsr', ylab="Estimated lfsr")
+abline(a=0,b=1,lty=2)
+
+plot(z,fit.true$lfsr/fit.est$lfsr,type='l',ylab = "lfsr / lfsr_hat")
+
+plot(z,fit.true$lfsr-fit.est$lfsr,type='l',ylab = "lfsr-lfsr_hat")
+
+plot(fit.true$lfsr-fit.est$lfsr, fit.true$pi0_tilde*(1-pnorm(-sqrt(s0/(1+s0))*z)),type='l',xlab = 'lfsr - lfsr_hat', ylab = 'estimate of (lfsr - lfsr_hat)')
+abline(a=0,b=1,lty=2)
+
+plot(z,log(fit.true$lfsr-fit.est$lfsr),type='l',ylab = "log(lfsr-lfsr_hat)")
+```
+
+Let's try an example using ash.
+
+```{r}
+n = 10000
+pi0 = 0.8
+pi1 = 1-pi0
+s0 = 0
+s1 = 4
+set.seed(12345)
+z = c(rnorm(n*pi0),rnorm(n*(1-pi0),0,sqrt(s1+1)))
+#hist(z,breaks = 100)
+
+fit.true = lfsr1(z,pi0,pi1,0,s1)
+
+out1 = ash(z,1,"normal",pointmass=TRUE,gridmult = 1.3)
+out1$fitted_g
+
+plot(fit.true$lfsr,out1$result$lfsr,pch='.',ylab='lfsr ash pointmass',xlab='lfsr')
+abline(a=0,b=1,lty=2,col='grey50')
+
+out2 = ash(z,1,'normal',pointmass=FALSE,gridmult = 1.3)
+out2$fitted_g
+plot(fit.true$lfsr,out2$result$lfsr,pch='.',ylab='lfsr ash no pointmass',xlab='lfsr')
+abline(a=0,b=1,lty=2,col='grey50')
+
+plot(z,fit.true$lfsr - out2$result$lfsr,pch='.',ylab = "lfsr - lfsr ash no pointmass")
+```
+
+How about we swap things - generate z from a model without pointmass but we fit a model with point mass.
+
+```{r}
+set.seed(12345)
+s0 = 0.1
+z = c(rnorm(n*pi0,0,sqrt(1+s0)),rnorm(n*(1-pi0),0,sqrt(s1+1)))
+#hist(z,breaks = 100)
+
+fit.true = lfsr1(z,pi0,pi1,s0,s1)
+
+out1 = ash(z,1,"normal",pointmass=TRUE,gridmult = 1.2,nullweight=10)
+out1$fitted_g
+
+plot(fit.true$lfsr,out1$result$lfsr,pch='.',ylab='lfsr ash pointmass',xlab='lfsr')
+abline(a=0,b=1,lty=2,col='grey50')
+
+out2 = ash(z,1,'normal',pointmass=FALSE,gridmult = 1.2,nullweight=10)
+out2$fitted_g
+plot(fit.true$lfsr,out2$result$lfsr,pch='.',ylab='lfsr ash no pointmass',xlab='lfsr')
+abline(a=0,b=1,lty=2,col='grey50')
+
+out3 = ash(z,1,'normal',pointmass=FALSE,gridmult = 1.2,nullweight=1)
+out3$fitted_g
+plot(fit.true$lfsr,out3$result$lfsr,pch='.',ylab='lfsr ash no pointmass',xlab='lfsr')
+abline(a=0,b=1,lty=2,col='grey50')
+
+
+```
+
+
+
+## Conclusion
+
+If the true model has a point mass while we fit a model without it, then the estimated lfsr under-estimates the true lfsr. 
+
+
+
+
+
+
+
