@@ -25,3 +25,5 @@ This project explores `masking` in multiple testing.
 3. [Fix the issue of using low rank matrix, general case](mashFIXv_i.html)
 4. [On the null distribution in lfdr](empirical_null.html)
 5. [Checking the calibration of mash lfsr](check_mash_fsr2.html),  [adjust using info mat](check_mash_fsr_info.html)
+6. [on lfsr and point mass](lfsr_pointmass.html)
+7. [Checking the calibration of mash lfsr, no point mass in data-generation](check_mash_fsr_info_no_point_mass.html)
