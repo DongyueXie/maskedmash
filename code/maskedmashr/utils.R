@@ -61,7 +61,7 @@ fdp = function(dis.idx, true.idx){
 }
 
 
-#'@param bhat rejected statisitcs
+#'@param bhat rejected statistics
 #'@param b true b of those rejected ones.
 fsp = function(bhat,b){
   if(length(bhat)==0){

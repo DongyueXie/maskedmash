@@ -39,6 +39,13 @@ mash_wrapper = function(Bhat,P=NULL,npc=5,Shat=NULL,
       U.ed = bovy_wrapper(data,U.pca,subset=strong)
     }
     U.est = U.ed$Ulist
+    ##############
+    ##############
+    # U.est  = lapply(U.est,function(x){
+    #   x - diag(1/sqrt(N),R)
+    # })
+    #############
+    #############
     if(!is.null(adjust)){
 
       if(adjust == 'prior'){

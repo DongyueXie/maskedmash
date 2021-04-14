@@ -163,6 +163,7 @@ masked.md = function(data,strong=NULL,thresh=NULL,
   result$U.est.adj = U.est.adj
   result$pi = pi
   result$loglik = loglik.obj
+  result$post_weights = post_weights
 
   result
 }
