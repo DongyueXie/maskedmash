@@ -188,6 +188,14 @@ plot_res(method = "kde_scalemix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.
 plot_res(method = "amari_scalemix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.15))
 ```
 
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_locmix",idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.15))
+plot_res(method = "kde_locmix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.15))
+plot_res(method = "amari_locmix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.15))
+```
+
+
 
 ## run ash, decaying factor = $1.05$
 
@@ -235,4 +243,72 @@ plot_res(method = "dkw_scalemix",idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.
 plot_res(method = "kde_scalemix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.15))
 plot_res(method = "amari_scalemix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.15))
 ```
+
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_locmix",idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.15))
+plot_res(method = "kde_locmix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.15))
+plot_res(method = "amari_locmix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.15))
+```
+
+
+
+## run ash, decaying factor = $1.06$
+
+
+```{r}
+library(ashr)
+nreps = 100
+n = 5000
+target = seq(-5,0,by=0.2)
+
+a = 0.1
+mixsd = 0.1
+while(a<15.6){
+  a = a*1.1
+  mixsd = c(mixsd,a)
+}
+
+prior = 1.06^((length(mixsd)+1):1-1)
+
+PosProb = matrix(nrow = nreps,ncol = length(target))
+set.seed(12345)
+for(i in 1:nreps){
+  if(i%%5==0){
+    #print(i)
+  }
+  z = read.csv(paste('output/ebci/lfsr_no_point_mass/Z/Zs_rep',i,'.csv',sep=''))$Column1
+  ghat = ash(z,s=1,mixcompdist = 'normal', pointmass = TRUE, 
+             optmethod='mixSQP',prior = prior,mixsd = mixsd)$fitted_g
+    res = ash(target,s=1,g=ghat,fixg=TRUE)
+    PosProb[i,] = res$result$lfsr
+}
+
+ash_posprob_mean = colMeans(PosProb)
+
+round(prior,1)
+
+ghat
+
+```
+
+
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_scalemix",idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.15))
+plot_res(method = "kde_scalemix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.15))
+plot_res(method = "amari_scalemix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.15))
+```
+
+
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_locmix",idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.15))
+plot_res(method = "kde_locmix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.15))
+plot_res(method = "amari_locmix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.15))
+```
+
+
+
+
 
