@@ -1,0 +1,21 @@
+---
+title: "ebci_lfdr"
+author: "Dongyue Xie"
+date: "2022-01-24"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+I tried to let Empirikos return the confidence interval of lfdr, by setting 
+`targets =  Empirikos.PosteriorProbability.(StandardNormalSample.(-5:0.2:5), Interval(0, 0))`. The `Interval(0, 0)` stands for $p(\mu = 0)$.
+
+```{r}
+ebci_lfdr = read.csv('output/ebci/lfdr/spiky_lfdr_first5.csv')
+head(ebci_lfdr)
+```
+
+
+It does not work because all the lower and upper bound returned are zeros.

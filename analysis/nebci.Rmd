@@ -1,0 +1,30 @@
+---
+title: "Nonparametric empirical Bayes confidence interval explorations"
+author: "Dongyue Xie"
+date: "2022-01-25"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+## Overview
+
+Run [Empirikos](https://github.com/nignatiadis/Empirikos.jl), and compare it with ash.
+
+1. [Compare Empirikos with ash on lfsr, no point mass when fitting model](ebci.html): overlay ash results on the figures in paper, extend $|z|$ to -5.
+
+2. [The first 5 replicates in the simulation 1.](ebci_5reps.html): instead of averaging all 100 replicates, look at the first 5 reps.
+
+3. [Does Empirikos work with lfdr?](ebci_lfdr.html): seems not, it returns 0's for lower and upper bound.
+
+4. [Empirikos, lfsr, with and without point mass when fitting model](ebci_with_without_point_mass.html): Again, since Empirikos does not for lfdr, it probably does work after adding the point mass to scale mixtures. 
+
+5. [lfsr, both with point mass when fitting model](ebci_point_mass.html): see 4.
+
+6. [lfsr, Empirikos no point mass, use point mass when fitting ash.](ebci_ash_point_mass.html)
+
+7. [lfsr, Empirikos no point mass, no point mass when fitting ash, null weight decaying](ash_decay_weight.html): use decaying weights for ash
+
+8. [lfsr, Empirikos no point mass, point mass when fitting ash, null weight decaying](ash0_decay_weight.html)
+
