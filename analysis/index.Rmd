@@ -27,3 +27,4 @@ This project explores `masking` in multiple testing.
 5. [Checking the calibration of mash lfsr](check_mash_fsr2.html),  [adjust using info mat](check_mash_fsr_info.html)
 6. [on lfsr and point mass](lfsr_pointmass.html)
 7. [Checking the calibration of mash lfsr, no point mass in data-generation](check_mash_fsr_info_no_point_mass.html)
+8. [Nonparametric empirical Bayes confidence interval explorations](nebci.html)
