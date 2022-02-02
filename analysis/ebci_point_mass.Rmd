@@ -1,0 +1,94 @@
+---
+title: "ebci_point_mass"
+author: "Dongyue Xie"
+date: "2022-01-22"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.width = 12,fig.height = 4)
+```
+
+## Introduction
+
+Following last simulation setting, here we change the prior class when fitting the data, to include a point mass for both ebci and ash, while all other settings remain the same.  
+
+```{r}
+ebci = read.csv('output/ebci/lfsr_point_mass/spiky_lfsr.csv')
+head(ebci)
+unique(ebci$method)
+```
+
+```{r}
+ash_res = readRDS('output/ebci/ash_lfsr_pointmass.rds')
+ash_lfsr = apply(ash_res$lfsr,3,colMeans)
+colnames(ash_lfsr) = ash_res$nullweights
+```
+
+## Scale mixture
+
+
+We look at using Gaussian scale mixture as the prior. 
+
+The prior class is $g\in SN(0.1,15.6,1.1)$, and a point mass.
+
+```{r}
+#t, method, ground_truth_mean,   lower_mean,   upper_mean
+# "dkw_scalemix"   "kde_scalemix"   "amari_scalemix" "dkw_locmix"     "kde_locmix"     "amari_locmix"  
+target = seq(-5,0,by = 0.2)
+method_list = c("dkw_scalemix","kde_scalemix","amari_scalemix")
+
+
+plot_res = function(method,color,idx,ylim=c(0,1)){
+  out = ebci[ebci$method == method,]
+  plot(out$t[idx],out$ground_truth_mean[idx],type='l',xlab='z',ylab=expression(paste('P(',mu>=0,'|',Z==z,')')),
+       ylim=ylim)
+  #axis(1,at=seq(-5,5,by=1))
+  #axis(2,at=seq(0,1,by=0.1))
+  polygon(c(rev(out$t[idx]), out$t[idx]), c(rev(out$upper_mean[idx]), out$lower_mean[idx]), col=color, border = NA)
+  lines(out$t[idx],out$ground_truth_mean[idx])
+  #lines(out$t,out$lower_mean,lty=2)
+  #lines(out$t,out$upper_mean,lty=2)
+  for(j in 1:3){
+    lines(target[idx],ash_lfsr[idx,j],lty=j+1)
+  }
+  abline(h=0.01,lty=3,col='grey40')
+  abline(h=0.05,lty=3,col='grey40')
+  legend('topleft',c('Ground truth',paste('nullweight = ',ash_res$nullweights),method),
+         lty=c(1,2,3,4,NA),bty="n",
+         fill=c(rep(NA,4), color),
+         border = rep(NA,5),
+         x.intersp=c(rep(1,4),1))
+
+}
+
+```
+
+plot the results
+
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_scalemix",idx=1:26,color = rgb(1, 0.6, 0,0.5),ylim=c(0,1))
+plot_res(method = "kde_scalemix",idx=1:26,color = rgb(0.4, 0, 0,0.4),ylim=c(0,1))
+plot_res(method = "amari_scalemix",idx=1:26,color = rgb(0, 0, 0.8,0.4),ylim=c(0,1))
+```
+
+Push z to left, up to -3.
+
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_scalemix",idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.08))
+plot_res(method = "kde_scalemix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.08))
+plot_res(method = "amari_scalemix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.08))
+```
+
+Further push z to left, up to -4.
+
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_scalemix",idx=1:6,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.011))
+plot_res(method = "kde_scalemix",idx=1:6,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.011))
+plot_res(method = "amari_scalemix",idx=1:6,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.011))
+```
+
