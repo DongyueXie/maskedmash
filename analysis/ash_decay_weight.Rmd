@@ -1,0 +1,293 @@
+---
+title: "ash decaying weight"
+author: "Dongyue Xie"
+date: "2022-01-27"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.width = 12,fig.height = 4)
+```
+
+
+## Introduction
+
+Previously, we run ash with only penalizing the first mixture component. Here we try to set a grid of decaying weights, and compare with the Empirikos.
+
+```{r}
+ebci = read.csv('output/ebci/lfsr_no_point_mass/spiky_lfsr.csv')
+```
+
+```{r}
+target = seq(-5,0,by = 0.2)
+method_list = c("dkw_scalemix","kde_scalemix","amari_scalemix")
+
+
+plot_res = function(method,color,idx,ylim=c(0,1)){
+  out = ebci[ebci$method == method,]
+  plot(out$t[idx],out$ground_truth_mean[idx],type='l',
+       xlab='z',ylab=expression(paste('P(',mu>=0,'|',Z==z,')')),
+       ylim=ylim)
+  polygon(c(rev(out$t[idx]), out$t[idx]), c(rev(out$upper_mean[idx]), out$lower_mean[idx]), col=color, border = NA)
+  lines(out$t[idx],out$ground_truth_mean[idx])
+  lines(target[idx],ash_posprob_mean[idx],lty=2)
+  abline(h=0.01,lty=3,col='grey40')
+  abline(h=0.05,lty=3,col='grey40')
+  legend('topleft',c('Ground truth','ash',method),
+         lty=c(1,2,NA),bty="n",
+         fill=c(rep(NA,2), color),
+         border = rep(NA,3),
+         x.intersp=c(rep(1,2),1))
+
+}
+```
+
+
+## run ash, decaying factor = 2
+
+```{r}
+library(ashr)
+nreps = 100
+n = 5000
+target = seq(-5,0,by=0.2)
+
+a = 0.1
+mixsd = 0.1
+while(a<15.6){
+  a = a*1.1
+  mixsd = c(mixsd,a)
+}
+
+prior = 2^(length(mixsd):1-1)
+
+PosProb = matrix(nrow = nreps,ncol = length(target))
+set.seed(12345)
+for(i in 1:nreps){
+  if(i%%5==0){
+    #print(i)
+  }
+  z = read.csv(paste('output/ebci/lfsr_no_point_mass/Z/Zs_rep',i,'.csv',sep=''))$Column1
+  ghat = ash(z,s=1,mixcompdist = 'normal', pointmass = FALSE, 
+             optmethod='mixSQP',prior = prior,mixsd = mixsd)$fitted_g
+    res = ash(target,s=1,g=ghat,fixg=TRUE)
+    PosProb[i,] = res$result$PositiveProb
+}
+
+ash_posprob_mean = colMeans(PosProb)
+
+round(prior,1)
+
+ghat
+
+```
+
+
+
+
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_scalemix",idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.5))
+plot_res(method = "kde_scalemix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.5))
+plot_res(method = "amari_scalemix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.5))
+```
+
+The decaying factor seems too large.
+
+## run ash, decaying factor = $\sqrt{2}$
+
+
+```{r}
+library(ashr)
+nreps = 100
+n = 5000
+target = seq(-5,0,by=0.2)
+
+a = 0.1
+mixsd = 0.1
+while(a<15.6){
+  a = a*1.1
+  mixsd = c(mixsd,a)
+}
+
+prior = sqrt(2)^(length(mixsd):1-1)
+
+PosProb = matrix(nrow = nreps,ncol = length(target))
+set.seed(12345)
+for(i in 1:nreps){
+  if(i%%5==0){
+    #print(i)
+  }
+  z = read.csv(paste('output/ebci/lfsr_no_point_mass/Z/Zs_rep',i,'.csv',sep=''))$Column1
+  ghat = ash(z,s=1,mixcompdist = 'normal', pointmass = FALSE, 
+             optmethod='mixSQP',prior = prior,mixsd = mixsd)$fitted_g
+    res = ash(target,s=1,g=ghat,fixg=TRUE)
+    PosProb[i,] = res$result$PositiveProb
+}
+
+ash_posprob_mean = colMeans(PosProb)
+
+round(prior,1)
+
+ghat
+
+```
+
+
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_scalemix",idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.5))
+plot_res(method = "kde_scalemix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.5))
+plot_res(method = "amari_scalemix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.5))
+```
+
+## run ash, decaying factor = $1.1$
+
+
+```{r}
+library(ashr)
+nreps = 100
+n = 5000
+target = seq(-5,0,by=0.2)
+
+a = 0.1
+mixsd = 0.1
+while(a<15.6){
+  a = a*1.1
+  mixsd = c(mixsd,a)
+}
+
+prior = 1.1^(length(mixsd):1-1)
+
+PosProb = matrix(nrow = nreps,ncol = length(target))
+set.seed(12345)
+for(i in 1:nreps){
+  if(i%%5==0){
+    #print(i)
+  }
+  z = read.csv(paste('output/ebci/lfsr_no_point_mass/Z/Zs_rep',i,'.csv',sep=''))$Column1
+  ghat = ash(z,s=1,mixcompdist = 'normal', pointmass = FALSE, 
+             optmethod='mixSQP',prior = prior,mixsd = mixsd)$fitted_g
+    res = ash(target,s=1,g=ghat,fixg=TRUE)
+    PosProb[i,] = res$result$PositiveProb
+}
+
+ash_posprob_mean = colMeans(PosProb)
+
+round(prior,1)
+
+ghat
+
+```
+
+
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_scalemix",idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.15))
+plot_res(method = "kde_scalemix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.15))
+plot_res(method = "amari_scalemix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.15))
+```
+
+
+## run ash, decaying factor = $1.05$
+
+
+```{r}
+library(ashr)
+nreps = 100
+n = 5000
+target = seq(-5,0,by=0.2)
+
+a = 0.1
+mixsd = 0.1
+while(a<15.6){
+  a = a*1.1
+  mixsd = c(mixsd,a)
+}
+
+prior = 1.05^(length(mixsd):1-1)
+
+PosProb = matrix(nrow = nreps,ncol = length(target))
+set.seed(12345)
+for(i in 1:nreps){
+  if(i%%5==0){
+    #print(i)
+  }
+  z = read.csv(paste('output/ebci/lfsr_no_point_mass/Z/Zs_rep',i,'.csv',sep=''))$Column1
+  ghat = ash(z,s=1,mixcompdist = 'normal', pointmass = FALSE, 
+             optmethod='mixSQP',prior = prior,mixsd = mixsd)$fitted_g
+    res = ash(target,s=1,g=ghat,fixg=TRUE)
+    PosProb[i,] = res$result$PositiveProb
+}
+
+ash_posprob_mean = colMeans(PosProb)
+
+round(prior,1)
+
+ghat
+
+```
+
+
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_scalemix",idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.15))
+plot_res(method = "kde_scalemix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.15))
+plot_res(method = "amari_scalemix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.15))
+```
+
+
+## run ash, decaying factor = $1.06$
+
+
+```{r}
+library(ashr)
+nreps = 100
+n = 5000
+target = seq(-5,0,by=0.2)
+
+a = 0.1
+mixsd = 0.1
+while(a<15.6){
+  a = a*1.1
+  mixsd = c(mixsd,a)
+}
+
+prior = 1.06^(length(mixsd):1-1)
+
+PosProb = matrix(nrow = nreps,ncol = length(target))
+set.seed(12345)
+for(i in 1:nreps){
+  if(i%%5==0){
+    #print(i)
+  }
+  z = read.csv(paste('output/ebci/lfsr_no_point_mass/Z/Zs_rep',i,'.csv',sep=''))$Column1
+  ghat = ash(z,s=1,mixcompdist = 'normal', pointmass = FALSE, 
+             optmethod='mixSQP',prior = prior,mixsd = mixsd)$fitted_g
+    res = ash(target,s=1,g=ghat,fixg=TRUE)
+    PosProb[i,] = res$result$PositiveProb
+}
+
+ash_posprob_mean = colMeans(PosProb)
+
+round(prior,1)
+
+ghat
+
+```
+
+
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_scalemix",idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.15))
+plot_res(method = "kde_scalemix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.15))
+plot_res(method = "amari_scalemix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.15))
+```
+
+
+
+
+
+
+
