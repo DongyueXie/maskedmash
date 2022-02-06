@@ -1,0 +1,86 @@
+---
+title: "Generate z scores from pointmass prior, first 5 interation plot"
+author: "Dongyue Xie"
+date: "2022-02-05"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.width = 10,fig.height = 15)
+```
+
+
+## Introduction
+
+We look at the first 5 iterations in the [simulation](ebci_gen_pointmass.html), instead of the average. 
+
+## Scale mixture
+
+
+```{r}
+target = seq(-5,0,by=0.2)
+first5 = read.csv('output/ebci/lfsr_no_point_mass/spiky_pointmass_lfsr_first5.csv')
+head(first5)
+ash_res = readRDS('output/ebci/ash_lfsr_pointmass2.rds')
+lfsr = ash_res$lfsr
+lfsr_true = ash_res$lfsr_true[1,]
+plot_first5 = function(ebcidf,method,color,idx,ylim=c(0,1)){
+  res = ebcidf[ebcidf$method == method,]
+  for(i in 1:5){
+    out = res[res$id==i,]
+    plot(target[idx],lfsr_true[idx],type='l',
+         xlab='z',ylab=expression(paste('P(',mu>=0,'|',Z==z,')')),
+       ylim=ylim)
+    polygon(c(rev(out$t[idx]), out$t[idx]), c(rev(out$upper[idx]), out$lower[idx]), col=color, border = NA)
+    lines(target[idx],lfsr_true[idx],col='grey50')
+    
+    for(j in 1:3){
+      lines(target[idx],lfsr[i,idx,j],lty=j+1)
+      }
+  #abline(h=0.01,lty=3,col='grey40')
+  #abline(h=0.05,lty=3,col='grey40')
+  legend('topleft',c('Ground truth',paste('nullweight = ',c(1,10,100)),method),
+         lty=c(1,2,3,4,NA),bty="n",
+         fill=c(rep(NA,4), color),
+         border = rep(NA,5),
+         x.intersp=c(rep(1,4),1))
+  
+  }
+}
+
+```
+
+```{r}
+par(mfrow=c(3,2))
+plot_first5(first5,method = "dkw_scalemix",idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.5))
+```
+
+```{r}
+par(mfrow=c(3,2))
+plot_first5(first5,method = "kde_scalemix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.5))
+```
+
+```{r}
+par(mfrow=c(3,2))
+plot_first5(first5,method = "amari_scalemix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.5))
+```
+
+
+## Location mixture
+
+```{r}
+par(mfrow=c(3,2))
+plot_first5(first5,method = "dkw_locmix",idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.5))
+```
+
+```{r}
+par(mfrow=c(3,2))
+plot_first5(first5,method = "kde_locmix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.5))
+```
+
+```{r}
+par(mfrow=c(3,2))
+plot_first5(first5,method = "amari_locmix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.5))
+```
