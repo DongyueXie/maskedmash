@@ -1,5 +1,5 @@
 ---
-title: "Generate z scores from pointmass prior, first 5 interation plot"
+title: "Generate z scores from pointmass prior, first 5 iteration plot"
 author: "Dongyue Xie"
 date: "2022-02-05"
 output: workflowr::wflow_html
