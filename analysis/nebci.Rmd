@@ -28,3 +28,10 @@ Run [Empirikos](https://github.com/nignatiadis/Empirikos.jl), and compare it wit
 
 8. [lfsr, Empirikos no point mass, point mass when fitting ash, null weight decaying](ash0_decay_weight.html)
 
+9. [simulate data from pointmass, Empirikos no point mass, point mass when fitting ash](ebci_gen_pointmass.html)
+
+10. [simulate data from pointmass, Empirikos no point mass, point mass when fitting ash, first 5 iterations](ebci_gen_pointmass_first5.html)
+
+
+
+
