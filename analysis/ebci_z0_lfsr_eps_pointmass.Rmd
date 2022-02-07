@@ -1,0 +1,140 @@
+---
+title: "Generate z scores from pointmass prior, Empirikos eps trick"
+author: "Dongyue Xie"
+date: "2022-02-07"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Nikos suggested a [trick](https://github.com/nignatiadis/Empirikos.jl/issues/11) to include pointmass, basically to use $p(\mu\geq -eps|Z=z)$ where $eps = 2.2\times 10^{-16}$. Now i tried this approach in lfsr confidence interval construction. 
+
+```{r}
+ebci = read.csv('output/ebci/lfsr_no_point_mass/spiky_pointmass_lfsr_eps_pointmass.csv')
+head(ebci)
+unique(ebci$method)
+```
+
+```{r,eval=FALSE}
+library(ashr)
+nreps = 100
+n = 5000
+target = seq(-5,0,by=0.2)
+nullweights = c(1,10,100)
+
+a = 0.1
+mixsd = 0.1
+while(a<15.6){
+  a = a*1.1
+  mixsd = c(mixsd,a)
+}
+
+g_true = normalmix(c(0.5,0.2,0.1,0.1,0.1),rep(0,5),s=c(0,0.25,0.5,1,2))
+lfsr = array(dim=c(nreps,length(target),length(nullweights)))
+lfsr_true = ash(target,s=1,g=g_true,fixg=TRUE)$result$lfsr
+
+set.seed(12345)
+for(i in 1:nreps){
+  if(i%%5==0){
+    print(i)
+  }
+  z = read.csv(paste('output/ebci/lfsr_no_point_mass/Z0lfsr_eps/Zs_rep',i,'.csv',sep=''))$Column1
+  for(j in 1:length(nullweights)){
+    ghat = ash(z,s=1,mixcompdist = 'normal',pointmass = TRUE, optmethod='mixSQP',
+               prior = 'nullbiased',mixsd = mixsd,nullweight=nullweights[j])$fitted_g
+    res = ash(target,s=1,g=ghat,fixg=TRUE)
+    lfsr[i,,j] = res$result$lfsr
+  }
+}
+
+saveRDS(list(lfsr=lfsr,lfsr_true=lfsr_true,g_true=g_true,nullweights=nullweights),
+        file='output/ebci/ash_lfsr_eps_pointmass.rds')
+```
+
+```{r}
+ash_res = readRDS('output/ebci/ash_lfsr_eps_pointmass.rds')
+ash_posprob_mean = apply(ash_res$lfsr,3,colMeans)
+colnames(ash_posprob_mean) = ash_res$nullweights
+lfsr_true = ash_res$lfsr_true
+```
+
+
+## Scale mixture
+
+
+We first look at using Gaussian scale mixture as the prior. 
+
+The prior class is $g\in SN(0.1,15.6,1.1)$ for Empirikos, and add pointmass at 0 for ash.
+
+```{r}
+#t, method, ground_truth_mean,   lower_mean,   upper_mean
+# "dkw_scalemix"   "kde_scalemix"   "amari_scalemix" "dkw_locmix"     "kde_locmix"     "amari_locmix"  
+target = seq(-5,0,by = 0.2)
+method_list = c("dkw_scalemix","kde_scalemix","amari_scalemix")
+
+
+plot_res = function(method,color,idx,ylim=c(0,1)){
+  out = ebci[ebci$method == method,]
+  plot(target[idx],lfsr_true[idx],type='l',xlab='z',
+       ylab=expression(paste('P(',mu>=0,'|',Z==z,')')),
+       ylim=ylim)
+  #axis(1,at=seq(-5,5,by=1))
+  #axis(2,at=seq(0,1,by=0.1))
+  polygon(c(rev(out$t[idx]), out$t[idx]), c(rev(out$upper_mean[idx]), out$lower_mean[idx]), col=color, border = NA)
+  lines(target[idx],lfsr_true[idx])
+  #lines(out$t,out$lower_mean,lty=2)
+  #lines(out$t,out$upper_mean,lty=2)
+  for(j in 1:3){
+    lines(target[idx],ash_posprob_mean[idx,j],lty=j+1)
+  }
+  abline(h=0.01,lty=3,col='grey40')
+  abline(h=0.05,lty=3,col='grey40')
+  legend('topleft',c('Ground truth',paste('nullweight = ',ash_res$nullweights),method),
+         lty=c(1,2,3,4,NA),bty="n",
+         fill=c(rep(NA,4), color),
+         border = rep(NA,5),
+         x.intersp=c(rep(1,4),1))
+
+}
+
+```
+
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_scalemix",idx=1:26,color = rgb(1, 0.6, 0,0.5),ylim=c(0,1))
+plot_res(method = "kde_scalemix",idx=1:26,color = rgb(0.4, 0, 0,0.4),ylim=c(0,1))
+plot_res(method = "amari_scalemix",idx=1:26,color = rgb(0, 0, 0.8,0.4),ylim=c(0,1))
+```
+
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_scalemix",idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.5))
+plot_res(method = "kde_scalemix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.5))
+plot_res(method = "amari_scalemix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.5))
+```
+
+## Location mixture
+
+Now let's take a look at the location mixture prior class. The prior class is $LN(0.25^2,[-6,6])$. ([-6:0.05:6])
+
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_locmix",idx=1:26,color = rgb(1, 0.6, 0,0.5),ylim=c(0,1))
+plot_res(method = "kde_locmix",idx=1:26,color = rgb(0.4, 0, 0,0.4),ylim=c(0,1))
+plot_res(method = "amari_locmix",idx=1:26,color = rgb(0, 0, 0.8,0.4),ylim=c(0,1))
+```
+
+
+```{r}
+par(mfrow=c(1,3))
+plot_res(method = "dkw_locmix",idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.5))
+plot_res(method = "kde_locmix",idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.5))
+plot_res(method = "amari_locmix",idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.5))
+```
+
+
+
+
+
