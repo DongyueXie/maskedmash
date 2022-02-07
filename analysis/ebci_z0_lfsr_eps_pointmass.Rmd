@@ -7,6 +7,12 @@ editor_options:
   chunk_output_type: console
 ---
 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.width = 12,fig.height = 4)
+```
+
+
 ## Introduction
 
 Nikos suggested a [trick](https://github.com/nignatiadis/Empirikos.jl/issues/11) to include pointmass, basically to use $p(\mu\geq -eps|Z=z)$ where $eps = 2.2\times 10^{-16}$. Now i tried this approach in lfsr confidence interval construction. 
