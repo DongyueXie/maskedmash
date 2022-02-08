@@ -1,0 +1,24 @@
+---
+title: "lfdr eps trick"
+author: "Dongyue Xie"
+date: "2022-02-07"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+lfdr = read.csv('output/ebci/lfsr_no_point_mass/spiky_pointmass_lfdr_eps_pointmass.csv')
+```
+
+```{r}
+head(lfdr)
+```
+
+```{r}
+tail(lfdr)
+```
+
+The ground trueth mean now seems plausible but the lower and upper bound are still not working.
