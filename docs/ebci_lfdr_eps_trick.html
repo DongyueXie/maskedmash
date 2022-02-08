@@ -476,16 +476,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreea22dbc2e50feb15e14a5458a5b7f36630320e424targetblanka22dbc2a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/a22dbc2e50feb15e14a5458a5b7f36630320e424" target="_blank">a22dbc2</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreee1d7229221d6e8f66f5d8a7c9befd17d51554d2etargetblanke1d7229a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/DongyueXie/maskedmash/tree/e1d7229221d6e8f66f5d8a7c9befd17d51554d2e" target="_blank">e1d7229</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreea22dbc2e50feb15e14a5458a5b7f36630320e424targetblanka22dbc2a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiemaskedmashtreee1d7229221d6e8f66f5d8a7c9befd17d51554d2etargetblanke1d7229a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/a22dbc2e50feb15e14a5458a5b7f36630320e424" target="_blank">a22dbc2</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/DongyueXie/maskedmash/tree/e1d7229221d6e8f66f5d8a7c9befd17d51554d2e" target="_blank">e1d7229</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -518,9 +518,9 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/check_mash_fsr.Rmd
+    Modified:   analysis/ebci_z0_lfsr_eps_scale0.Rmd
     Modified:   analysis/estimatePrior.Rmd
     Modified:   analysis/maskedmashFDR.Rmd
-    Modified:   analysis/nebci.Rmd
     Modified:   code/maskedmashr/mashFDR.R
     Modified:   code/maskedmashr/mash_wrapper.R
     Modified:   code/maskedmashr/simDataI_ult.R
@@ -568,6 +568,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/maskedmash/blob/e1d7229221d6e8f66f5d8a7c9befd17d51554d2e/analysis/ebci_lfdr_eps_trick.Rmd" target="_blank">e1d7229</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-02-07
+</td>
+<td>
+wflow_publish("analysis/ebci_lfdr_eps_trick.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/maskedmash/8354e3f460d3b93bbbaae69567793495022fa207/docs/ebci_lfdr_eps_trick.html" target="_blank">8354e3f</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-02-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/maskedmash/blob/a22dbc2e50feb15e14a5458a5b7f36630320e424/analysis/ebci_lfdr_eps_trick.Rmd" target="_blank">a22dbc2</a>
 </td>
 <td>
@@ -589,24 +623,104 @@ wflow_publish("analysis/ebci_lfdr_eps_trick.Rmd")
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<pre class="r"><code>lfdr = read.csv(&#39;output/ebci/lfsr_no_point_mass/spiky_pointmass_lfdr_eps_pointmass.csv&#39;)</code></pre>
-<pre class="r"><code>head(lfdr)</code></pre>
-<pre><code>     t       method   lower_mean   upper_mean ground_truth_mean
-1 -5.0 dkw_scalemix 5.265161e-19 5.265161e-19      0.0004884353
-2 -4.8 dkw_scalemix 3.872826e-18 3.872826e-18      0.0010549201
-3 -4.6 dkw_scalemix 3.466252e-18 3.466252e-18      0.0021963350
-4 -4.4 dkw_scalemix 6.463657e-18 6.463657e-18      0.0044010851
-5 -4.2 dkw_scalemix 1.373749e-17 1.373749e-17      0.0084698453
-6 -4.0 dkw_scalemix 2.411997e-17 2.411997e-17      0.0156105406</code></pre>
-<pre class="r"><code>tail(lfdr)</code></pre>
-<pre><code>      t         method   lower_mean   upper_mean ground_truth_mean
-73 -1.0 amari_scalemix 1.153767e-15 1.155487e-15         0.5229140
-74 -0.8 amari_scalemix 1.193138e-15 1.193138e-15         0.5354361
-75 -0.6 amari_scalemix 1.191573e-15 1.193111e-15         0.5447614
-76 -0.4 amari_scalemix 1.275155e-15 1.278064e-15         0.5512056
-77 -0.2 amari_scalemix 1.200045e-15 1.200538e-15         0.5549869
-78  0.0 amari_scalemix 1.205793e-15 1.211371e-15         0.5562334</code></pre>
-<p>The ground trueth mean now seems plausible but the lower and upper bound are still not working.</p>
+<pre class="r"><code>ebci = read.csv(&#39;output/ebci/lfdr/lfdr0_eps/spiky0_lfdr0_eps_scale.csv&#39;)</code></pre>
+<pre class="r"><code>head(ebci)</code></pre>
+<pre><code>     t       method   lower_mean upper_mean ground_truth_mean
+1 -5.0 dkw_scalemix 1.779811e-18 0.04048434      0.0004884353
+2 -4.8 dkw_scalemix 2.292499e-18 0.05711208      0.0010549201
+3 -4.6 dkw_scalemix 5.889544e-18 0.07352526      0.0021963350
+4 -4.4 dkw_scalemix 1.237470e-17 0.09170404      0.0044010851
+5 -4.2 dkw_scalemix 1.455328e-17 0.11269617      0.0084698453
+6 -4.0 dkw_scalemix 2.525368e-17 0.13929415      0.0156105406</code></pre>
+<pre class="r"><code>tail(ebci)</code></pre>
+<pre><code>      t         method   lower_mean upper_mean ground_truth_mean
+73 -1.0 amari_scalemix 1.153376e-15  0.9462151         0.5229140
+74 -0.8 amari_scalemix 1.181507e-15  0.9584304         0.5354361
+75 -0.6 amari_scalemix 1.184824e-15  0.9664294         0.5447614
+76 -0.4 amari_scalemix 1.258457e-15  0.9712463         0.5512056
+77 -0.2 amari_scalemix 1.198542e-15  0.9739156         0.5549869
+78  0.0 amari_scalemix 1.191764e-15  0.9747494         0.5562334</code></pre>
+<pre class="r"><code>library(ashr)
+nreps = 100
+n = 5000
+target = seq(-5,0,by=0.2)
+nullweights = c(1,10,100)
+
+a = 0.1
+mixsd = 0.1
+while(a&lt;15.6){
+  a = a*1.1
+  mixsd = c(mixsd,a)
+}
+
+g_true = normalmix(c(0.5,0.2,0.1,0.1,0.1),rep(0,5),s=c(0,0.25,0.5,1,2))
+lfdr = array(dim=c(nreps,length(target),length(nullweights)))
+lfdr_true = ash(target,s=1,g=g_true,fixg=TRUE)$result$lfdr
+
+set.seed(12345)
+for(i in 1:nreps){
+  
+  print(i)
+  
+  z = read.csv(paste(&#39;output/ebci/lfdr/lfdr0_eps/Z0/Zs_rep&#39;,i,&#39;.csv&#39;,sep=&#39;&#39;))$Column1
+  for(j in 1:length(nullweights)){
+    ghat = ash(z,s=1,mixcompdist = &#39;normal&#39;,pointmass = TRUE, optmethod=&#39;mixSQP&#39;,
+               prior = &#39;nullbiased&#39;,mixsd = mixsd,nullweight=nullweights[j])$fitted_g
+    res = ash(target,s=1,g=ghat,fixg=TRUE)
+    lfdr[i,,j] = res$result$lfdr
+  }
+}
+
+saveRDS(list(lfdr=lfdr,lfdr_true=lfdr_true,g_true=g_true,nullweights=nullweights),
+        file=&#39;output/ebci/lfdr/lfdr0_eps/ash_lfdr.rds&#39;)</code></pre>
+<pre class="r"><code>ash_res = readRDS(&#39;output/ebci/lfdr/lfdr0_eps/ash_lfdr.rds&#39;)
+lfdr_mean = apply(ash_res$lfdr,3,colMeans)
+colnames(lfdr_mean) = ash_res$nullweights
+lfdr_true = ash_res$lfdr_true</code></pre>
+</div>
+<div id="scale-mixture" class="section level2">
+<h2>Scale mixture</h2>
+<p>We first look at using Gaussian scale mixture as the prior.</p>
+<p>The prior class is <span class="math inline">\(g\in SN(0.1,15.6,1.1)\)</span> for Empirikos, and add pointmass at 0 for ash.</p>
+<pre class="r"><code>#t, method, ground_truth_mean,   lower_mean,   upper_mean
+# &quot;dkw_scalemix&quot;   &quot;kde_scalemix&quot;   &quot;amari_scalemix&quot; &quot;dkw_locmix&quot;     &quot;kde_locmix&quot;     &quot;amari_locmix&quot;  
+target = seq(-5,0,by = 0.2)
+method_list = c(&quot;dkw_scalemix&quot;,&quot;kde_scalemix&quot;,&quot;amari_scalemix&quot;)
+
+
+plot_res = function(method,color,idx,ylim=c(0,1)){
+  out = ebci[ebci$method == method,]
+  plot(target[idx],lfdr_true[idx],type=&#39;l&#39;,xlab=&#39;z&#39;,
+       ylab=expression(paste(&#39;P(&#39;,mu&gt;=0,&#39;|&#39;,Z==z,&#39;)&#39;)),
+       ylim=ylim)
+  #axis(1,at=seq(-5,5,by=1))
+  #axis(2,at=seq(0,1,by=0.1))
+  polygon(c(rev(out$t[idx]), out$t[idx]), c(rev(out$upper_mean[idx]), out$lower_mean[idx]), col=color, border = NA)
+  lines(target[idx],lfdr_true[idx])
+  #lines(out$t,out$lower_mean,lty=2)
+  #lines(out$t,out$upper_mean,lty=2)
+  for(j in 1:3){
+    lines(target[idx],lfdr_mean[idx,j],lty=j+1)
+  }
+  abline(h=0.01,lty=3,col=&#39;grey40&#39;)
+  abline(h=0.05,lty=3,col=&#39;grey40&#39;)
+  legend(&#39;topleft&#39;,c(&#39;Ground truth&#39;,paste(&#39;nullweight = &#39;,ash_res$nullweights),method),
+         lty=c(1,2,3,4,NA),bty=&quot;n&quot;,
+         fill=c(rep(NA,4), color),
+         border = rep(NA,5),
+         x.intersp=c(rep(1,4),1))
+
+}</code></pre>
+<pre class="r"><code>par(mfrow=c(1,3))
+plot_res(method = &quot;dkw_scalemix&quot;,idx=1:26,color = rgb(1, 0.6, 0,0.5),ylim=c(0,1))
+plot_res(method = &quot;kde_scalemix&quot;,idx=1:26,color = rgb(0.4, 0, 0,0.4),ylim=c(0,1))
+plot_res(method = &quot;amari_scalemix&quot;,idx=1:26,color = rgb(0, 0, 0.8,0.4),ylim=c(0,1))</code></pre>
+<p><img src="figure/ebci_lfdr_eps_trick.Rmd/unnamed-chunk-7-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>par(mfrow=c(1,3))
+plot_res(method = &quot;dkw_scalemix&quot;,idx=1:11,color = rgb(1, 0.6, 0,0.5),ylim=c(0,0.5))
+plot_res(method = &quot;kde_scalemix&quot;,idx=1:11,color = rgb(0.4, 0, 0,0.4),ylim=c(0,0.5))
+plot_res(method = &quot;amari_scalemix&quot;,idx=1:11,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.5))</code></pre>
+<p><img src="figure/ebci_lfdr_eps_trick.Rmd/unnamed-chunk-8-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -633,17 +747,17 @@ other attached packages:
 [1] workflowr_1.7.0
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.8       compiler_4.1.2   pillar_1.7.0     later_1.3.0     
- [5] git2r_0.29.0     jquerylib_0.1.4  tools_4.1.2      getPass_0.2-2   
- [9] digest_0.6.29    evaluate_0.14    tibble_3.1.6     lifecycle_1.0.1 
-[13] pkgconfig_2.0.3  rlang_1.0.1      cli_3.1.1        rstudioapi_0.13 
-[17] yaml_2.2.2       xfun_0.29        fastmap_1.1.0    httr_1.4.2      
-[21] stringr_1.4.0    knitr_1.37       fs_1.5.2         vctrs_0.3.8     
-[25] rprojroot_2.0.2  glue_1.6.1       R6_2.5.1         processx_3.5.2  
-[29] fansi_1.0.2      rmarkdown_2.11   callr_3.7.0      magrittr_2.0.2  
-[33] whisker_0.4      ps_1.6.0         promises_1.2.0.1 htmltools_0.5.2 
-[37] ellipsis_0.3.2   httpuv_1.6.5     utf8_1.2.2       stringi_1.7.6   
-[41] crayon_1.4.2    </code></pre>
+ [1] Rcpp_1.0.8       highr_0.9        compiler_4.1.2   pillar_1.7.0    
+ [5] later_1.3.0      git2r_0.29.0     jquerylib_0.1.4  tools_4.1.2     
+ [9] getPass_0.2-2    digest_0.6.29    evaluate_0.14    tibble_3.1.6    
+[13] lifecycle_1.0.1  pkgconfig_2.0.3  rlang_1.0.1      cli_3.1.1       
+[17] rstudioapi_0.13  yaml_2.2.2       xfun_0.29        fastmap_1.1.0   
+[21] httr_1.4.2       stringr_1.4.0    knitr_1.37       fs_1.5.2        
+[25] vctrs_0.3.8      rprojroot_2.0.2  glue_1.6.1       R6_2.5.1        
+[29] processx_3.5.2   fansi_1.0.2      rmarkdown_2.11   callr_3.7.0     
+[33] magrittr_2.0.2   whisker_0.4      ps_1.6.0         promises_1.2.0.1
+[37] htmltools_0.5.2  ellipsis_0.3.2   httpuv_1.6.5     utf8_1.2.2      
+[41] stringi_1.7.6    crayon_1.4.2    </code></pre>
 </div>
 </div>
 
