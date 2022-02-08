@@ -32,6 +32,10 @@ Run [Empirikos](https://github.com/nignatiadis/Empirikos.jl), and compare it wit
 
 10. [simulate data from pointmass, Empirikos no point mass, point mass when fitting ash, first 5 iterations](ebci_gen_pointmass_first5.html)
 
+11. [lfsr, simulate data from pointmass, Empirikos pointmass eps trick,point mass when fitting ash](ebci_z0_lfsr_eps_pointmass.html)
 
+12. [lfsr, Empirikos, before and after the eps trick](ebci_eps_trick.html)
 
+13. [lfdr, Empirikos, eps trick](ebci_lfdr_eps_trick.html)
 
+14. [lfsr, Empirikos, eps trick, generate point mass, scale mixture point mass](ebci_z0_lfsr_eps_scale0.html)
