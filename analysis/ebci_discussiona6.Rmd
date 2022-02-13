@@ -1,0 +1,244 @@
+---
+title: "ebci disucssion simulation"
+author: "Dongyue Xie"
+date: "2022-02-09"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+
+We perform simulation studies to compare Empirikos and ash, illustrating our discussion on choosing one global worst-case prior for selecting a subset of findings. 
+
+We compare total five Empirikos AMARI confidence intervals in two simulation settings with ash, a total number 10 comparisons. 
+
+The five Empirikos methods are:
+
+1. Empirikos Gaussian scale mixture $SN(0.1,15.6,1.1)$;
+
+2. Empirikos Gaussian location mixture $LN([-6:0.05:6],0.25)$;
+
+3. Add a small scale mixture component with sd $10^{-5}$ to Empirikos Gaussian scale mixture $SN(0.1,15.6,1.1)$;
+
+4. Add a point-mass $\delta_0$ to Empirikos Gaussian scale mixture $SN(0.1,15.6,1.1)$;
+
+5. NPMLE, by using $LN([-6:0.02:6],0)$.
+
+For the two simulation settings, we generate effects $\mu$ from 
+
+1. $G_{spiky} = 0.4N(0,0.25^2)+0.2N(0,0.5^2)+0.2N(0,1^2)+0.2N(0,2^2)$;
+
+2. $0.5\delta_0 + 0.5G_{spiky}$.
+
+
+## Simulation setting 1
+
+When running ash, we consider nullweights 1,10,100.
+
+```{r,eval=FALSE}
+library(ashr)
+target = seq(-5,-3,by=0.2)
+nullweights = c(1,10,100)
+nreps = 30
+n = 5000
+
+a = 0.1
+mixsd = 0.1
+while(a<15.6){
+  a = a*1.1
+  mixsd = c(mixsd,a)
+}
+
+g_true = normalmix(c(0.5,0.2,0.1,0.1,0.1),rep(0,5),s=c(0,0.25,0.5,1,2))
+lfsr = array(dim=c(nreps,length(target),length(nullweights)))
+lfsr0 = array(dim=c(nreps,length(target),length(nullweights)))
+lfsr_true = ash(target,s=1,g=g_true,fixg=TRUE)$result$lfsr
+
+set.seed(12345)
+for(i in 1:nreps){
+  if(i%%5==0){
+    print(i)
+  }
+  z = read.csv(paste('output/ebci_discussion/Z0_a6/Zs_rep',i,'.csv',sep=''))$Column1
+  for(j in 1:length(nullweights)){
+    ghat = ash(z,s=1,mixcompdist = 'normal',pointmass = TRUE, optmethod='mixSQP',
+               prior = 'nullbiased',mixsd = mixsd,nullweight=nullweights[j])$fitted_g
+    res = ash(target,s=1,g=ghat,fixg=TRUE)
+    lfsr0[i,,j] = res$result$lfsr
+    
+    # ghat = ash(z,s=1,mixcompdist = 'normal',pointmass = FALSE, optmethod='mixSQP',
+    #            prior = 'nullbiased',mixsd = mixsd,nullweight=nullweights[j])$fitted_g
+    # res = ash(target,s=1,g=ghat,fixg=TRUE)
+    # lfsr[i,,j] = res$result$lfsr
+  }
+}
+
+saveRDS(list(lfsr0=lfsr0,lfsr_true=lfsr_true,
+             g_true=g_true,nullweights=nullweights),
+        file='output/ebci_discussion/ash_Z0_a6.rds')
+```
+
+
+```{r}
+ash_res = readRDS('output/ebci_discussion/ash_Z0_a6.rds')
+ash_lfsr = apply(ash_res$lfsr0,3,colMeans)
+colnames(ash_lfsr) = ash_res$nullweights
+lfsr_true = ash_res$lfsr_true
+```
+
+```{r}
+ebci = read.csv('output/ebci_discussion/spiky0_a6.csv')
+unique(ebci$method)
+```
+
+```{r}
+ploter = function(method,ebci,ash_lfsr,lfsr_true,idx,target,color = rgb(0, 0, 0.8,0.4),ylim=c(0,0.5)){
+  out = ebci[ebci$method == method,]
+  plot(target[idx],lfsr_true[idx],type='l',xlab='z',
+       ylab=expression(paste('P(',mu>=0,'|',Z==z,')')),
+       ylim=ylim)
+  polygon(c(rev(out$t[idx]), out$t[idx]), c(rev(out$upper_mean[idx]), out$lower_mean[idx]), col=color, border = NA)
+  lines(target[idx],lfsr_true[idx])
+  for(j in 1:3){
+    lines(target[idx],ash_lfsr[idx,j],lty=j+1)
+  }
+  abline(h=0.01,lty=3,col='grey40')
+  abline(h=0.05,lty=3,col='grey40')
+  legend('topleft',c('Ground truth',paste('nullweight = ',ash_res$nullweights),method),
+         lty=c(1,2,3,4,NA),bty="n",
+         fill=c(rep(NA,4), color),
+         border = rep(NA,5),
+         x.intersp=c(rep(1,4),1))
+}
+```
+
+```{r,eval=FALSE}
+mtd_list = c("amari_scalemix","amari_scalemix_eps","amari_scalemix0", "amari_locmix",   "amari_locmix_npmle")
+
+pdf(file = "output/ebci_discussion/spiky0_a6_51.pdf",  
+    width = 3, 
+    height = 15) 
+
+par(mfrow=c(5,1))
+for(method in mtd_list){
+  ploter(method,ebci,ash_lfsr,lfsr_true,idx=1:11,target=seq(-5,-3,by=0.2))
+}
+
+dev.off()
+#knitr::include_graphics("output/ebci_discussion/spiky0_a4.pdf")
+```
+
+## Simulation setting 2
+
+No pointmass at 0 when generating data
+
+```{r,eval=FALSE}
+library(ashr)
+target = seq(-5,-3,by=0.2)
+nullweights = c(1,10,100)
+nreps = 18
+n = 5000
+
+a = 0.1
+mixsd = 0.1
+while(a<15.6){
+  a = a*1.1
+  mixsd = c(mixsd,a)
+}
+
+g_true = normalmix(2*c(0.2,0.1,0.1,0.1),rep(0,4),s=c(0.25,0.5,1,2))
+lfsr = array(dim=c(nreps,length(target),length(nullweights)))
+lfsr0 = array(dim=c(nreps,length(target),length(nullweights)))
+lfsr_true = ash(target,s=1,g=g_true,fixg=TRUE)$result$lfsr
+
+set.seed(12345)
+for(i in 1:nreps){
+  if(i%%5==0){
+    print(i)
+  }
+  z = read.csv(paste('output/ebci_discussion/Z/Zs_rep',i,'.csv',sep=''))$Column1
+  for(j in 1:length(nullweights)){
+    ghat = ash(z,s=1,mixcompdist = 'normal',pointmass = TRUE, optmethod='mixSQP',
+               prior = 'nullbiased',mixsd = mixsd,nullweight=nullweights[j])$fitted_g
+    res = ash(target,s=1,g=ghat,fixg=TRUE)
+    lfsr0[i,,j] = res$result$lfsr
+    
+    ghat = ash(z,s=1,mixcompdist = 'normal',pointmass = FALSE, optmethod='mixSQP',
+               prior = 'nullbiased',mixsd = mixsd,nullweight=nullweights[j])$fitted_g
+    res = ash(target,s=1,g=ghat,fixg=TRUE)
+    lfsr[i,,j] = res$result$lfsr
+  }
+}
+
+saveRDS(list(lfsr=lfsr,lfsr0=lfsr0,lfsr_true=lfsr_true,
+             g_true=g_true,nullweights=nullweights),
+        file='output/ebci_discussion/ash_Z_a6.rds')
+```
+
+```{r}
+ebci = read.csv('output/ebci_discussion/spiky.csv')
+unique(ebci$method)
+```
+
+```{r}
+ash_res = readRDS('output/ebci_discussion/ash_Z_a6.rds')
+ash_lfsr = apply(ash_res$lfsr0,3,colMeans)
+colnames(ash_lfsr) = ash_res$nullweights
+lfsr_true = ash_res$lfsr_true
+```
+
+
+```{r,eval=FALSE}
+mtd_list = c("amari_scalemix","amari_scalemix_eps","amari_scalemix0", "amari_locmix",   "amari_locmix_npmle")
+
+pdf(file = "output/ebci_discussion/spiky_a6_51.pdf",  
+    width = 3, 
+    height = 15) 
+
+par(mfrow=c(5,1))
+for(method in mtd_list){
+  ploter(method,ebci,ash_lfsr,lfsr_true,idx=1:11,target=seq(-5,-3,by=0.2),ylim=c(0,0.3))
+}
+
+dev.off()
+#knitr::include_graphics("output/ebci_discussion/spiky0_a4.pdf")
+```
+
+
+```{r,eval=FALSE}
+
+### 5 by 2 plot, or 2 by 5 plot
+
+ebci = read.csv('output/ebci_discussion/spiky.csv')
+ash_res = readRDS('output/ebci_discussion/ash_Z_a6.rds')
+ash_lfsr = apply(ash_res$lfsr0,3,colMeans)
+colnames(ash_lfsr) = ash_res$nullweights
+lfsr_true = ash_res$lfsr_true
+
+
+pdf(file = "output/ebci_discussion/test25.pdf",  
+    width = 16, 
+    height = 6) 
+
+par(mfrow=c(2,5))
+for(method in mtd_list){
+  ploter(method,ebci,ash_lfsr,lfsr_true,idx=1:11,target=seq(-5,-3,by=0.2))
+}
+
+
+ash_res = readRDS('output/ebci_discussion/ash_Z0_a6.rds')
+ash_lfsr = apply(ash_res$lfsr0,3,colMeans)
+colnames(ash_lfsr) = ash_res$nullweights
+lfsr_true = ash_res$lfsr_true
+ebci = read.csv('output/ebci_discussion/spiky0_a6.csv')
+
+for(method in mtd_list){
+  ploter(method,ebci,ash_lfsr,lfsr_true,idx=1:11,target=seq(-5,-3,by=0.2),ylim=c(0,0.5))
+}
+
+dev.off()
+```
+
+
