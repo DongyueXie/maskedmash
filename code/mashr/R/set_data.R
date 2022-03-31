@@ -20,9 +20,9 @@
 #'   Bhat/Shat. Shat and df should not be specified when pval is
 #'   provided.
 #'
-#' @param V an R by R matrix / [R x R x J] array of effect specific
+#' @param V an R by R matrix / [R x R x N] array of effect specific
 #'   correlation matrix of error correlations; must be positive
-#'   definite. [So Bhat_j distributed as N(B_j,diag(Shat_j) V_j
+#'   definite. [So Bhat_j distributed as N(B_j,diag(Shat_j) V[,,j]
 #'   diag(Shat_j)) where _j denotes the jth row of a matrix]. Defaults
 #'   to identity.
 #'
@@ -120,12 +120,13 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
     ## Shat = Bhat/Z where Z is the Z score corresponding to a p value from a t test done on (Bhat,Shat_orig,df)
     Shat = Bhat / p2z(2 * pt(-abs(Bhat/Shat), df), Bhat)
   }
-  if (!isTRUE(all.equal(is.na(Bhat), is.na(Shat), check.attributes=FALSE))) {
+  na_idx = which(is.na(Bhat))
+  sbhat_not_null = !all(Shat == 1)
+  if (!isTRUE(all.equal(na_idx, which(is.na(Shat)), check.attributes=FALSE)) && sbhat_not_null) {
     stop("Missing data pattern is inconsistent between Bhat and Shat")
   }
-  na_idx = which(is.na(Bhat))
   # transform data according to alpha
-  if (alpha != 0 && !all(Shat == 1)) {
+  if (alpha != 0 && sbhat_not_null) {
     ## alpha models dependence of effect size on standard error
     ## alpha > 0 implies larger effects has large standard error
     ## a special case when alpha = 1 is the EZ model
@@ -157,7 +158,7 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
 #' R, R is number of conditions, or the name of reference group. If
 #' there is no reference group, it can be the string 'mean'.
 #'
-#' @param V an R by R matrix / [R x R x J] array of correlation matrix
+#' @param V an R by R matrix / [R x R x N] array of correlation matrix
 #' of error correlations
 #'
 #' @return a updated mash data object

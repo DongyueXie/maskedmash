@@ -73,7 +73,7 @@ simple z score threshold" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.50</span>
       </span>
     </div>
 
@@ -91,8 +91,8 @@ simple z score threshold" />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="http://github.com/stephenslab/mashr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/stephenslab/mashr/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -110,7 +110,7 @@ simple z score threshold" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Estimate null correlations (simple)</h1>
-    <small class="dont-index">Source: <a href='http://github.com/stephenslab/mashr/blob/master/R/est_cor.R'><code>R/est_cor.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/stephenslab/mashr/blob/master/R/est_cor.R'><code>R/est_cor.R</code></a></small>
     <div class="hidden name"><code>estimate_null_correlation_simple.Rd</code></div>
     </div>
 
@@ -152,11 +152,11 @@ score &lt; z_thresh in all conditions.</p>
 <span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span><span class='op'>(</span><span class='va'>simdata</span><span class='op'>$</span><span class='va'>Bhat</span>, <span class='va'>simdata</span><span class='op'>$</span><span class='va'>Shat</span><span class='op'>)</span>
 <span class='fu'>estimate_null_correlation_simple</span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;             condition_1 condition_2 condition_3 condition_4 condition_5
-#&gt; condition_1   1.0000000 -0.06902590  0.03823190  0.12797704  0.16615204
-#&gt; condition_2  -0.0690259  1.00000000  0.06848560  0.29195746  0.05490694
-#&gt; condition_3   0.0382319  0.06848560  1.00000000 -0.04648041 -0.02602396
-#&gt; condition_4   0.1279770  0.29195746 -0.04648041  1.00000000 -0.07451916
-#&gt; condition_5   0.1661520  0.05490694 -0.02602396 -0.07451916  1.00000000</div><div class='input'>
+#&gt; condition_1  1.00000000  0.12216163  0.14021685  0.02274549  0.02900161
+#&gt; condition_2  0.12216163  1.00000000  0.20515760  0.19361343  0.04130783
+#&gt; condition_3  0.14021685  0.20515760  1.00000000  0.07123083  0.04814979
+#&gt; condition_4  0.02274549  0.19361343  0.07123083  1.00000000  0.16566549
+#&gt; condition_5  0.02900161  0.04130783  0.04814979  0.16566549  1.00000000</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

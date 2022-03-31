@@ -75,7 +75,7 @@ magnitude in each pair of conditions, based on the poterior mean" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.50</span>
       </span>
     </div>
 
@@ -93,8 +93,8 @@ magnitude in each pair of conditions, based on the poterior mean" />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="http://github.com/stephenslab/mashr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/stephenslab/mashr/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -113,7 +113,7 @@ magnitude in each pair of conditions, based on the poterior mean" />
     <div class="page-header">
     <h1>Compute the proportion of (significant) signals shared by
 magnitude in each pair of conditions, based on the poterior mean</h1>
-    <small class="dont-index">Source: <a href='http://github.com/stephenslab/mashr/blob/master/R/get_functions.R'><code>R/get_functions.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/stephenslab/mashr/blob/master/R/get_functions.R'><code>R/get_functions.R</code></a></small>
     <div class="hidden name"><code>get_pairwise_sharing.Rd</code></div>
     </div>
 
@@ -165,27 +165,27 @@ another. The results are returned as an R by R matrix.</p>
 </div><div class='output co'>#&gt;  - Computing 200 x 141 likelihood matrix.
 #&gt;  - Likelihood calculations took 0.01 seconds.
 #&gt;  - Fitting model with 141 mixture components.
-#&gt;  - Model fitting took 0.15 seconds.
+#&gt;  - Model fitting took 0.16 seconds.
 #&gt;  - Computing posterior matrices.
 #&gt;  - Computation allocated took 0.00 seconds.</div><div class='input'><span class='fu'>get_pairwise_sharing</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span> <span class='co'># sharing by magnitude (same sign)</span>
 </div><div class='output co'>#&gt;             condition_1 condition_2 condition_3 condition_4 condition_5
-#&gt; condition_1   1.0000000   0.9473684   1.0000000   0.9000000   0.9500000
-#&gt; condition_2   0.9473684   1.0000000   0.9473684   0.9473684   1.0000000
-#&gt; condition_3   1.0000000   0.9473684   1.0000000   0.8947368   0.9473684
-#&gt; condition_4   0.9000000   0.9473684   0.8947368   1.0000000   1.0000000
-#&gt; condition_5   0.9500000   1.0000000   0.9473684   1.0000000   1.0000000</div><div class='input'><span class='fu'>get_pairwise_sharing</span><span class='op'>(</span><span class='va'>m</span>, factor<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span> <span class='co'># sharing by sign</span>
+#&gt; condition_1         1.0         0.6         0.6         0.6         0.6
+#&gt; condition_2         0.6         1.0         1.0         1.0         1.0
+#&gt; condition_3         0.6         1.0         1.0         1.0         1.0
+#&gt; condition_4         0.6         1.0         1.0         1.0         1.0
+#&gt; condition_5         0.6         1.0         1.0         1.0         1.0</div><div class='input'><span class='fu'>get_pairwise_sharing</span><span class='op'>(</span><span class='va'>m</span>, factor<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span> <span class='co'># sharing by sign</span>
 </div><div class='output co'>#&gt;             condition_1 condition_2 condition_3 condition_4 condition_5
-#&gt; condition_1   1.0000000   0.9473684           1        0.95        0.95
-#&gt; condition_2   0.9473684   1.0000000           1        1.00        1.00
-#&gt; condition_3   1.0000000   1.0000000           1        1.00        1.00
-#&gt; condition_4   0.9500000   1.0000000           1        1.00        1.00
-#&gt; condition_5   0.9500000   1.0000000           1        1.00        1.00</div><div class='input'><span class='fu'>get_pairwise_sharing</span><span class='op'>(</span><span class='va'>m</span>, FUN<span class='op'>=</span><span class='va'>abs</span><span class='op'>)</span> <span class='co'># sharing by magnitude when sign is ignored</span>
+#&gt; condition_1         1.0         0.7         0.8         0.8         0.7
+#&gt; condition_2         0.7         1.0         1.0         1.0         1.0
+#&gt; condition_3         0.8         1.0         1.0         1.0         1.0
+#&gt; condition_4         0.8         1.0         1.0         1.0         1.0
+#&gt; condition_5         0.7         1.0         1.0         1.0         1.0</div><div class='input'><span class='fu'>get_pairwise_sharing</span><span class='op'>(</span><span class='va'>m</span>, FUN<span class='op'>=</span><span class='va'>abs</span><span class='op'>)</span> <span class='co'># sharing by magnitude when sign is ignored</span>
 </div><div class='output co'>#&gt;             condition_1 condition_2 condition_3 condition_4 condition_5
-#&gt; condition_1   1.0000000   0.9473684   1.0000000   0.9000000   0.9500000
-#&gt; condition_2   0.9473684   1.0000000   0.9473684   0.9473684   1.0000000
-#&gt; condition_3   1.0000000   0.9473684   1.0000000   0.8947368   0.9473684
-#&gt; condition_4   0.9000000   0.9473684   0.8947368   1.0000000   1.0000000
-#&gt; condition_5   0.9500000   1.0000000   0.9473684   1.0000000   1.0000000</div></pre>
+#&gt; condition_1         1.0         0.6         0.6         0.6         0.8
+#&gt; condition_2         0.6         1.0         1.0         1.0         1.0
+#&gt; condition_3         0.6         1.0         1.0         1.0         1.0
+#&gt; condition_4         0.6         1.0         1.0         1.0         1.0
+#&gt; condition_5         0.8         1.0         1.0         1.0         1.0</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

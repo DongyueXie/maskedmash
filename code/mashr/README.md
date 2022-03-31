@@ -1,8 +1,8 @@
 # mashr: Multivariate Adaptive Shrinkage in R
 
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/mashr)](https://cran.r-project.org/package=mashr)
-[![Travis Build Status](https://travis-ci.org/stephenslab/mashr.svg?branch=master)](https://travis-ci.org/stephenslab/mashr)
-[![codecov](https://codecov.io/gh/stephenslab/mashr/branch/master/graph/badge.svg)](https://codecov.io/gh/stephenslab/mashr)
+[![Travis Build Status](https://travis-ci.org/stephenslab/mashr.svg?branch=master)](https://travis-ci.org/stephenslab/mashr/)
+[![codecov](https://codecov.io/gh/stephenslab/mashr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/stephenslab/mashr/)
 
 This package implements methods to estimate and test many effects in
 many conditions (or many effects on many outcomes).
@@ -54,12 +54,12 @@ installed on your computer, and R should be correctly configured to
 call these compilers when installing packages from source. For more
 information, see the [CRAN documentation][cran-docs].
 
-Alternatively, you may use [devtools][devtools] to install the latest
+Alternatively, you may use [remotes][remotes] to install the latest
 version of mashr from GitHub:
 
 ```R
-install.packages("devtools")
-devtools::install_github("stephenslab/mashr")
+install.packages("remotes")
+remotes::install_github("stephenslab/mashr")
 ```
    
 This command should automatically install any missing dependencies
@@ -89,16 +89,14 @@ connected to Internet while running these commands):
    ```
 
 + Prior to submitting the package to CRAN, the following modifications
-need to be made: (1) remove the `Remotes:` entry in `DESCRIPTION`; (2)
-remove the `flash_mash.Rmd` vignette; (3) remove "flashr" from
-`Suggests:` in `DESCRIPTION`; (4) Make sure version number is of the
-form x.y.z.
+need to be made: (1) remove the `Remotes:` entry in `DESCRIPTION`; and
+(2) set `eval = FALSE` in the `flash_mash.Rmd` vignette.
 
-[mashr-pkg-for-paper]: http://github.com/stephenslab/mashr-paper
+[mashr-pkg-for-paper]: https://github.com/stephenslab/mashr-paper
 [cran-docs]: https://cran.r-project.org/manuals.html
 [mash-paper]: https://doi.org/10.1038/s41588-018-0268-8
 [mashr-release]: https://github.com/stephenslab/mashr/releases/tag/v0.2-11
-[devtools]: https://github.com/r-lib/devtools
+[remotes]: https://github.com/r-lib/remotes
 [flashr]: https://github.com/stephenslab/flashr
 [vignette-intro]: https://stephenslab.github.io/mashr/articles/intro_mash.html
 [vignette-data-driven-cov]: https://stephenslab.github.io/mashr/articles/intro_mash_dd.html

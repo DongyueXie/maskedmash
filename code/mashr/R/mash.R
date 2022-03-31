@@ -57,6 +57,13 @@
 #' posterior estimates, 3: and posterior covariance matrices, 4: and
 #' likelihood matrices
 #'
+#' @param output_lfdr If \code{output_lfdr = TRUE}, output local false
+#'   discovery rate estimates. The lfdr tends to be sensitive to
+#'   mis-estimated covariance matrices, and generally we do not
+#'   recommend using them; we recommend using the local false sign rate
+#'   (lfsr) instead, which is always returned, even when
+#'   \code{output_lfdr = TRUE}.
+#' 
 #' @return a list with elements result, loglik and fitted_g
 #'
 #' @examples
@@ -86,7 +93,8 @@ mash = function(data,
                 A = NULL,
                 posterior_samples = 0,
                 seed = 123,
-                outputlevel = 2) {
+                outputlevel = 2,
+                output_lfdr = FALSE) {
 
   algorithm.version = match.arg(algorithm.version)
 
@@ -133,7 +141,6 @@ mash = function(data,
   if (add.mem.profile)
     if (!requireNamespace("profmem",quietly = TRUE))
       stop("add.mem.profile = TRUE requires the profmem package")
-
 
   # Calculate likelihood matrix.
   if (verbose)
@@ -213,6 +220,8 @@ mash = function(data,
   } else {
     posterior_matrices = NULL
   }
+  if (!output_lfdr)
+    posterior_matrices$lfdr <- NULL
   # Compute marginal log-likelihood.
   vloglik = compute_vloglik_from_matrix_and_pi(pi_s,lm,data$Shat_alpha)
   loglik = sum(vloglik)
@@ -292,13 +301,15 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm
   lm_res = calc_relative_lik_matrix(data, xUlist, algorithm.version = algorithm.version)
   which.comp = (g$pi > pi_thresh)
 
-  print(system.time(
-  posterior_weights <- compute_posterior_weights(g$pi[which.comp], exp(lm_res$loglik_matrix[,which.comp]))))
-  print(system.time(
-  posterior_matrices <- compute_posterior_matrices(data, xUlist[which.comp],
-                                                  posterior_weights,
-                                                  algorithm.version, A=A, output_posterior_cov=output_posterior_cov,
-                                                  posterior_samples = posterior_samples, seed=seed)))
+  posterior_weights <-
+    compute_posterior_weights(g$pi[which.comp],
+                              exp(lm_res$loglik_matrix[,which.comp]))
+  posterior_matrices <-
+    compute_posterior_matrices(data, xUlist[which.comp],
+                               posterior_weights,algorithm.version, A=A,
+                               output_posterior_cov=output_posterior_cov,
+                               posterior_samples = posterior_samples,
+                               seed=seed)
   names(posterior_weights) = which(which.comp)
   return(posterior_matrices)
 }

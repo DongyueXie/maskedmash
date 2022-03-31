@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.50</span>
       </span>
     </div>
 
@@ -90,8 +90,8 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="http://github.com/stephenslab/mashr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/stephenslab/mashr/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -109,7 +109,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Find effects that are significant in at least one condition</h1>
-    <small class="dont-index">Source: <a href='http://github.com/stephenslab/mashr/blob/master/R/get_functions.R'><code>R/get_functions.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/stephenslab/mashr/blob/master/R/get_functions.R'><code>R/get_functions.R</code></a></small>
     <div class="hidden name"><code>get_significant_results.Rd</code></div>
     </div>
 
@@ -153,15 +153,15 @@ by order of most significant to least</p>
 <span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span><span class='op'>(</span><span class='va'>simdata</span><span class='op'>$</span><span class='va'>Bhat</span>, <span class='va'>simdata</span><span class='op'>$</span><span class='va'>Shat</span><span class='op'>)</span>
 <span class='va'>m</span> <span class='op'>=</span> <span class='fu'><a href='mash.html'>mash</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;  - Computing 200 x 141 likelihood matrix.
-#&gt;  - Likelihood calculations took 0.01 seconds.
+#&gt;  - Likelihood calculations took 0.00 seconds.
 #&gt;  - Fitting model with 141 mixture components.
-#&gt;  - Model fitting took 0.19 seconds.
+#&gt;  - Model fitting took 0.17 seconds.
 #&gt;  - Computing posterior matrices.
 #&gt;  - Computation allocated took 0.00 seconds.</div><div class='input'><span class='fu'>get_significant_results</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; effect_155 effect_199 effect_189 effect_186 effect_182 effect_175 effect_162 
-#&gt;        155        199        189        186        182        175        162 
-#&gt; effect_173 effect_133 
-#&gt;        173        133 </div></pre>
+</div><div class='output co'>#&gt; effect_169 effect_162 effect_164 effect_178 effect_194 effect_161 effect_192 
+#&gt;        169        162        164        178        194        161        192 
+#&gt; effect_199 effect_156 effect_173 
+#&gt;        199        156        173 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

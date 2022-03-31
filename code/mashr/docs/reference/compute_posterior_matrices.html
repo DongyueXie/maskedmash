@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.50</span>
       </span>
     </div>
 
@@ -90,8 +90,8 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="http://github.com/stephenslab/mashr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/stephenslab/mashr/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -109,7 +109,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Compute posterior matrices.</h1>
-    <small class="dont-index">Source: <a href='http://github.com/stephenslab/mashr/blob/master/R/posterior.R'><code>R/posterior.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/stephenslab/mashr/blob/master/R/posterior.R'><code>R/posterior.R</code></a></small>
     <div class="hidden name"><code>compute_posterior_matrices.Rd</code></div>
     </div>
 
@@ -194,7 +194,10 @@ posteriors. It is used when <code>posterior_samples &gt; 0</code>.</p></td>
    <dt>ZeroProb</dt><dd><p>J x Q matrix of posterior (marginal) probability
     of being zero.</p></dd>
 
-   <dt>lfsr</dt><dd><p>J x Q matrix of local false sign rates.</p></dd>
+   <dt>lfsr</dt><dd><p>J x Q matrix of local false sign rate estimates.</p></dd>
+
+   <dt>lfdr</dt><dd><p>J x Q matrix of local false discovery rate
+     estimates.</p></dd>
 
    <dt>PosteriorCov</dt><dd><p>Q x Q x J array of posterior covariance
      matrices, if the <code>output_posterior_cov = TRUE</code>.</p></dd>

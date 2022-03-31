@@ -29,24 +29,28 @@ cov_pca = function(data,npc,subset = NULL){
   Ulist = cov_from_factors(t(f), "PCA")
   d = diag(res.svd$d[1:npc])
   Ulist = c(Ulist, list("tPCA"= f %*% d^2 %*% t(f)/length(subset)))
+  for (i in 1:length(Ulist)) {
+    rownames(Ulist[[i]]) <- colnames(data$Bhat)
+    colnames(Ulist[[i]]) <- colnames(data$Bhat)
+  }
   return(Ulist)
 }
 
-#' @title Perform Empirical Bayes Matrix Factorization via FLASH and return a list of 
+#' @title Perform Empirical Bayes Matrix Factorization via FLASH and return a list of
 #' candidate covariance matrices
 #'
 #' @param data a mash data object
 #'
-#' @param factors "default" to use \code{flashr} default function to initialize factors, currently \code{udv_si}. 
+#' @param factors "default" to use \code{flashr} default function to initialize factors, currently \code{udv_si}.
 #' "nonneg" to implement a non-negative constraint on the factors
 #'
 #' @param subset indices of the subset of data to use (set to NULL for
 #' all data)
 #' @param remove_singleton whether or not factors corresponding to singleton matrices should be removed from output
-#' @param tag specific a tag to name the contents in the return objects. You may want to choose different tags for 
+#' @param tag specific a tag to name the contents in the return objects. You may want to choose different tags for
 #' different paramter combinations. Default is set to \code{init_fn} parameter in \code{flashr::flash}.
 #' @param output_model if specified a filename, the FLASH model will be saved to that file in RDS format.
-#' 
+#'
 #' @param \dots additional parameters passed to \code{flashr::flash}
 #' @return Returns a list of covariance matrices
 #' @examples
@@ -54,15 +58,16 @@ cov_pca = function(data,npc,subset = NULL){
 #' # for an example
 #'
 #' @importFrom assertthat assert_that
-#' @importFrom flashr flash flash_set_data
 #' @importFrom softImpute softImpute
 #' @export
 #'
 cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_singleton=FALSE, tag=NULL, output_model=NULL, ...) {
+  if (!requireNamespace("flashr",quietly = TRUE))
+    stop("cov_flash requires package flashr")
   # Only keep factors with at least two values greater than 1 / sqrt(n)
   find_nonunique_effects <- function(fl) {
     thresh <- 1/sqrt(ncol(fl$fitted_values))
-    vals_above_avg <- colSums(fl$ldf$f > thresh)
+    vals_above_avg <- colSums(abs(fl$ldf$f) > thresh)
     nonuniq_effects <- which(vals_above_avg > 1)
     message(paste("Removing", length(vals_above_avg) - length(nonuniq_effects), "singleton effect vectors"))
     return(fl$ldf$f[, nonuniq_effects, drop = FALSE])
@@ -82,12 +87,12 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
   factors = match.arg(factors)
   # set default parameters
   args = list(...)
-  args$data = flash_set_data(as.matrix(data$Bhat[subset,]))
+  args$data = flashr::flash_set_data(as.matrix(data$Bhat[subset,]))
   if (!exists("init_fn", args)) {
     args$init_fn = factors
     if (factors == 'default') args$init_fn = "udv_si"
     if (factors == 'nonneg') args$init_fn = nonneg
-  } 
+  }
   if (!exists("greedy", args)) args$greedy = T
   if (!exists("backfit", args)) args$backfit = T
   if (factors == "nonneg") {
@@ -97,7 +102,7 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
                            f = list(mixcompdist = "+uniform",
                                optmethod = "mixSQP"))
   }
-  f = do.call(flash, args)
+  f = do.call(flashr::flash, args)
   if (remove_singleton) flash_factors = find_nonunique_effects(f)
   else flash_factors = as.matrix(f$ldf$f)
   if (!is.null(output_model)) saveRDS(list(model=f, factors=flash_factors), output_model)
@@ -105,6 +110,10 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
   U.flash = list()
   U.flash[[paste0("tFLASH_", tag)]] = t(f$fitted_values) %*% f$fitted_values / nrow(f$fitted_values)
   if (ncol(flash_factors)>0) U.flash = c(U.flash, c(cov_from_factors(t(flash_factors), paste0("FLASH_", tag))))
+  for (i in 1:length(U.flash)) {
+    rownames(U.flash[[i]]) <- colnames(data$Bhat)
+    colnames(U.flash[[i]]) <- colnames(data$Bhat)
+  }
   return(U.flash)
 }
 
@@ -127,7 +136,7 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
 #'
 #' @details Runs the extreme deconvolution algorithm from Bovy et al
 #' (Annals of Applied Statistics) to estimate data-driven covariance
-#' matrices. It can be initialized with, for example running \code{cov_pca} with, 
+#' matrices. It can be initialized with, for example running \code{cov_pca} with,
 #' say, 5 PCs.
 #' @examples
 #' data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
